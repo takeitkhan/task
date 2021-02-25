@@ -1,0 +1,176 @@
+@extends('layouts.app')
+@section('title')
+    include Site Of Task
+@endsection
+
+<section class="hero is-white borderBtmLight">
+    <nav class="level">
+        @include('component.title_set', [
+            'spTitle' => 'include Site Of Task',
+            'spSubTitle' => 'Add a Site of task',
+            'spShowTitleSet' => true
+        ])
+
+        @include('component.button_set', [
+            'spShowButtonSet' => true,
+            'spAddUrl' => null,
+            'spAddUrl' => route('tasks.create'),
+            'spAllData' => route('tasks.index'),
+            'spSearchData' => route('tasks.search'),
+        ])
+
+        @include('component.filter_set', [
+            'spShowFilterSet' => true,
+            'spPlaceholder' => 'Search tasks...',
+            'spMessage' => $message = $message ?? NULl,
+            'spStatus' => $status = $status ?? NULL
+        ])
+    </nav>
+</section>
+@section('column_left')
+    <article class="panel is-primary" id="app">
+    <?php $task_id = request()->get('task_id');?>
+        <p class="panel-tabs">
+            <a href="{{ !empty($taskId) ? route('tasks.edit', $taskId) : route('tasks.edit', $task_id)}}" class="" >Task Information</a>
+            <a class="is-active">Site Information</a>
+            <a href="{{ !empty($taskId) ? route('taskvehicle.create').'?task_id='.$taskId : route('taskvehicle.create', $task_id).'?task_id='.$taskId }}"class="">Vehicle Information</a>
+            <a href="{{ !empty($taskId) ? route('taskmaterial.create').'?task_id='.$taskId : route('taskmaterial.create', $task_id).'?task_id='.$taskId }}"class="">Material Information</a>
+        </p>
+
+       
+            
+
+        <div class="customContainer">
+            <?php  if(!empty($tasksite) && $tasksite->id){
+                $routeUrl = route('tasksites.update', $task->id);
+                $method = 'PUT';
+            }
+            elseif(!empty($taskId)){
+                $routeUrl = route('tasksites.update', $taskId);
+                $method = 'PUT';
+            }
+            else{
+                $routeUrl =  route('tasksites.store');
+                $method = 'post';
+            } ?>
+            {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
+
+            @if($task_id)            
+                {{ Form::hidden('task_id', $task_id ?? '') }}
+            @endif
+            @if(!empty($taskId))
+                {{ Form::hidden('task_id', $taskId ?? '') }}
+            @endif
+           
+            <div class="columns">
+                <div class="column is-6">
+                
+                    <div class="field">
+                        
+                    {{ Form::label('site_id', 'Site', array('class' => 'label')) }}
+                    <div class="control">
+                        <div dclass="select is-multiple"> 
+                        @php $sites = \Tritiyo\Site\Models\Site::select('site_code', 'id')->get() @endphp
+                        <select id="site_select" multiple="multiple" name="site_id[]" class="input" required>
+                            @foreach($sites as $site)
+                            <option value="{{$site->id}}" 
+
+                            @if(isset($taskSites))
+                                @foreach($taskSites as $data)
+                                    {{$data->site_id == $site->id ? 'selected' : ''}}
+                                @endforeach
+                            @endif
+
+                            >{{$site->site_code}}</option>
+                            @endforeach
+                        </select>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="column is-6">
+                    <div class="field">
+                        {{ Form::label('resource_id', 'Resource', array('class' => 'label')) }}
+                        <div class="control">
+                            <div sclass="select is-multiple">
+
+                                @php $resources = \App\Models\User::where('role', '2')->select('name', 'id')->get() @endphp
+                                <select id='resource_select' multiple="multiple" name="resource_id[]" class="input" required>
+                                    @foreach($resources as $resource)
+                                        <option value="{{$resource->id}}"
+                                        @if(isset($taskSites))
+                                            @foreach($taskSites as $data)
+                                                {{$data->resource_id == $resource->id ? 'selected' : ''}}
+                                            @endforeach
+                                        @endif
+                                        >{{$resource->name}}</option>
+                                    @endforeach
+                                </select>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                   
+            <div class="columns">
+                <div class="column">
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <button class="button is-success is-small">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ Form::close() }}
+        </div>
+    </article>
+@endsection
+
+@section('column_right')
+    <article class="is-primary">
+        <div class="box">
+            <h1 class="title is-5">Important Note</h1>
+            <p>
+                The default password is stored in the database when the admin authority creates the user.
+                <br/>
+                Default password: <strong>bizradix@123</strong>
+            </p>
+            <br/>
+            <p>
+                After you provide the basic information, you create a list of users, now you will find the created user
+                and
+                update the information for your user.
+            </p>
+        </div>
+    </article>
+
+
+
+
+
+
+@endsection
+
+
+@section('cusjs')
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
+
+<script>
+    $(document).ready(function() {
+        $('#resource_select').select2({
+            placeholder: "Select Resource",
+            allowClear: true
+        });
+        $('#site_select').select2({
+            placeholder: "Select Site",
+            allowClear: true
+        });
+    });
+</script>
+
+@endsection
