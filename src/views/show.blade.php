@@ -186,9 +186,9 @@
     <br/>
     @php
         $proofs = \Tritiyo\Task\Models\TaskProof::where('task_id', $task->id)->first();
-        //dd($proofs);
+        //dump($proofs);
     @endphp
-    @if(auth()->user()->isResource(auth()->user()->id))
+    @if(auth()->user()->isResource(auth()->user()->id) || auth()->user()->isManager(auth()->user()->id))
         <div class="card tile is-child">
             <header class="card-header">
                 <p class="card-header-title" style="background: lemonchiffon">
@@ -204,9 +204,11 @@
                     <div class="columns">
                         <div class="column is-2">Resource Proof</div>
                         <div class="column is-1">:</div>
+                        @if(auth()->user()->isResource(auth()->user()->id) )
                         <div class="column">
                             <input name="resource_proof" type="file"/>
                         </div>
+                        @endif
                         <div class="column">
                             @if(($proofs != NULL))
                             <img  src="{{ url('public/proofs/' .  $proofs->resource_proof ) }}"
@@ -217,9 +219,11 @@
                     <div class="columns">
                         <div class="column is-2">Vehicle Proof</div>
                         <div class="column is-1">:</div>
-                        <div class="column">
+                        @if(auth()->user()->isResource(auth()->user()->id) )
+                        <div class="column">                        
                             <input name="vehicle_proof" type="file"/>
                         </div>
+                        @endif
                         <div class="column">
                             @if(($proofs != NULL))
                             <img  src="{{ url('public/proofs/' . $proofs->vehicle_proof ) }}"
@@ -230,9 +234,11 @@
                     <div class="columns">
                         <div class="column is-2">Material Proof</div>
                         <div class="column is-1">:</div>
+                        @if(auth()->user()->isResource(auth()->user()->id) )
                         <div class="column">
                             <input name="material_proof" type="file"/>
                         </div>
+                        @endif
                         <div class="column">
                             @if(($proofs != NULL))
                             <img  src="{{ url('public/proofs/' . $proofs->material_proof) }}"
@@ -258,7 +264,20 @@
 @endsection
 
 @section('column_right')
+<div class="card tile is-child">
+    <header class="card-header">
+        <p class="card-header-title">
+            <span class="icon"><i class="fas fa-tasks default"></i></span>
+            Status
+        </p>
+    </header>
 
+    <div class="card-content">
+            
+    
+    
+    </div>
+</div>
 @endsection
 @section('cusjs')
     <style type="text/css">

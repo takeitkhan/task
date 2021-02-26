@@ -19,6 +19,9 @@ use Tritiyo\Task\Repositories\TaskMaterial\TaskMaterialInterface;
 use Tritiyo\Task\Repositories\TaskProof\TaskProofEloquent;
 use Tritiyo\Task\Repositories\TaskProof\TaskProofInterface;
 
+use Tritiyo\Task\Repositories\TaskStatus\TaskStatusEloquent;
+use Tritiyo\Task\Repositories\TaskStatus\TaskStatusInterface;
+
 class TaskServiceProvider extends ServiceProvider
 {
 
@@ -48,5 +51,7 @@ class TaskServiceProvider extends ServiceProvider
         $this->app->singleton(TaskMaterialInterface::class, TaskMaterialEloquent::class);
 
         $this->app->singleton(TaskProofInterface::class, TaskProofEloquent::class);
+
+        $this->app->singleton(TaskStatusInterface::class, TaskStatusEloquent::class);
     }
 }

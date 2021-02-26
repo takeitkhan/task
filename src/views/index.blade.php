@@ -42,6 +42,8 @@
     <div class="columns is-multiline">
         @if(!empty($tasks))
             @foreach($tasks as $task)
+             
+
                 @if($task->user_id == auth()->user()->id || $task->site_head == auth()->user()->id)
                     <div class="column is-4">
                         <div class="borderedCol">
@@ -52,7 +54,7 @@
                                             <strong>
                                                 <a href="{{ route('tasks.show', $task->id) }}"
                                                    title="View route">
-                                                    <strong>Task Code: </strong> {{ $task->task_code }},
+                                                    <strong style="color: #555;">Task Name: </strong> {{ $task->task_name }}
                                                 </a>
                                             </strong>
                                             <br/>
@@ -61,12 +63,7 @@
                                                 @php $project = \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first() @endphp
                                                 {{  $project->name }}
                                             </small>
-                                            <br/>
-                                            <small>
-                                                <strong>Site: </strong>
-
-                                            </small>
-                                            <br/>
+                                            
                                         </p>
                                     </div>
                                     <nav class="level is-mobile">

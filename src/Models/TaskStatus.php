@@ -5,12 +5,11 @@ namespace Tritiyo\Task\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TaskSite extends Model
+class TaskStatus extends Model
 {
     use HasFactory;
-    protected $table = 'tasks_site';
-    public $timestamps = true;
+    protected $table = 'tasks_status';
     protected $fillable = [
-      'task_id', 'site_id', 'resource_id'
+      'code', 'task_id', 'task_perform', 'performed_for', 'requisition_id', 'message'
     ];
 }

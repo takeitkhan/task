@@ -84,7 +84,9 @@ class TaskSiteController extends Controller
                 foreach($request->resource_id as $k => $r) {
                     $arr['task_id'] = $request->task_id;
                     $arr['site_id'] = $row;
-                    $arr['resource_id'] = $r;   
+                    $arr['resource_id'] = $r; 
+                    $arr['created_at'] = now();   
+                    $arr['updated_at'] = now();   
                     $tasksite = $this->tasksite->create($arr);                 
                 }                
             }
@@ -146,7 +148,9 @@ class TaskSiteController extends Controller
             foreach($request->resource_id as $k => $r) {
                     $arr['task_id'] = $request->task_id;
                     $arr['site_id'] = $row;
-                    $arr['resource_id'] = $r; 
+                    $arr['resource_id'] = $r;
+                    $arr['created_at'] = now(); 
+                    $arr['updated_at'] = now(); 
                     $t->insert($arr);
             }   
         }
