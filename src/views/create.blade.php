@@ -43,7 +43,7 @@
                 <a href="{{route('taskmaterial.create')}}?task_id={{$task->id}}"class="">Material Information</a>
             @endif
         </p>
-            
+
 
         <div class="customContainer">
             <?php  if(!empty($task) && $task->id){
@@ -55,7 +55,7 @@
             } ?>
             {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
 
-            @if(request()->get('type') == 'emergency')            
+            @if(request()->get('type') == 'emergency')
                 {{ Form::hidden('task_type', $task->task_type ?? 'emergency') }}
             @else
                 {{ Form::hidden('task_type', $task->task_type ?? 'general') }}
@@ -79,12 +79,12 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="column is-3">
                     <div class="field">
-                        {{ Form::label('task_code', 'Task Code', array('class' => 'label')) }}
+                        {{ Form::label('task_name', 'Task Name', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::text('task_code', $task->task_code ?? NULL, ['class' => 'input', 'placeholder' => 'Enter Task Code...']) }}
+                            {{ Form::text('task_name', $task->task_name ?? NULL, ['class' => 'input', 'placeholder' => 'Enter Task Name...']) }}
                         </div>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                     </div>
                 </div>
             </div>
-                   
+
             <div class="columns">
                 <div class="column">
                     <div class="field is-grouped">

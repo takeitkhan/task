@@ -59,7 +59,7 @@ class TaskController extends Controller
         $validator = Validator::make($request->all(),
             [
                 'project_id' => 'required',
-                'task_code' => 'required',
+                'task_name' => 'required',
             ]
         );
         // process the login
@@ -73,10 +73,12 @@ class TaskController extends Controller
                 'user_id'  => auth()->user()->id,
                 'task_type' => $request->task_type,
                 'project_id' => $request->project_id,
-                'task_code' => $request->task_code,
+                'task_code' => $request->task_code ?? null,
+                'task_name' => $request->task_name,
                 'site_head' => $request->site_head,
                 'task_details' => $request->task_details,
             ];
+
             try {
                 $task = $this->task->create($attributes);
                 return view('task::create', ['task' => $task]);
@@ -123,7 +125,8 @@ class TaskController extends Controller
             'user_id'  => auth()->user()->id,
             'task_type' => $request->task_type,
             'project_id' => $request->project_id,
-            'task_code' => $request->task_code,
+            'task_code' => $request->task_code ?? null,
+            'task_name' => $request->task_name,
             'site_head' => $request->site_head,
             'task_details' => $request->task_details,
         ];
@@ -165,5 +168,5 @@ class TaskController extends Controller
     public function taskVehicleStore(Request $request){
         dd($request->all());
     }
-   
+
 }

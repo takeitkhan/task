@@ -29,7 +29,13 @@
 </section>
 @section('column_left')
     <article class="panel is-primary" id="app">
-        <?php $task_id = request()->get('task_id');?>
+        <?php
+            $task_id = request()->get('task_id');
+            if(empty($taskSites)){
+                $taskId = $task_id; //taskId variable asign in tasksite controller
+            }
+            //$taskId = !empty($task_id) ?? $task_id;
+        ;?>
         <p class="panel-tabs">
             <a href="{{ !empty($taskId) ? route('tasks.edit', $taskId) : route('tasks.edit', $task_id)}}" class="">Task
                 Information</a>
