@@ -2,6 +2,7 @@
 
 namespace Tritiyo\Task\Controllers;
 
+use Tritiyo\Task\Helpers\TaskHelper;
 use Tritiyo\Task\Models\TaskMaterial;
 use Tritiyo\Task\Repositories\TaskMaterial\TaskMaterialInterface;
 use App\Http\Controllers\Controller;
@@ -53,7 +54,7 @@ class TaskMaterialController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $validator = Validator::make($request->all(),
             [
                 'task_id' => 'required',
@@ -68,16 +69,16 @@ class TaskMaterialController extends Controller
                 ->withInput();
         } else {
             // store
-        
+
             foreach($request->material_id as $key => $row) {
                 $attributes = [
                     'task_id'  => $request->task_id,
                     'material_id' => $request->material_id[$key],
                     'material_qty' => $request->material_qty[$key],
-                ];          
-                $taskmaterial = $this->taskmaterial->create($attributes);               
+                ];
+                $taskmaterial = $this->taskmaterial->create($attributes);
             }
-            
+
             try {
               //  $taskmaterial = $this->tasksite->create($arr);
                 //return view('task::create', ['task' => $taskmaterial]);
@@ -121,6 +122,17 @@ class TaskMaterialController extends Controller
     {
         //dd($request->all());
 
+        if(auth()->user()->isApprover(auth()->user()->id)) {
+            TaskHelper::statusUpdateOrInsert([
+                'code' => TaskHelper::getStatusKey(12),
+                'task_id' => $request->task_id,
+                'action_performed_by' => auth()->user()->id,
+                'performed_for' => null,
+                'requisition_id' => null,
+                'message' => TaskHelper::getStatusMessage(12)
+            ]);
+        }
+
         $t = TaskMaterial::where('task_id', $request->task_id);
         $t->delete();
         foreach($request->material_id as $key => $row) {
@@ -128,13 +140,13 @@ class TaskMaterialController extends Controller
                 'task_id'  => $request->task_id,
                 'material_id' => $request->material_id[$key],
                 'material_qty' => $request->material_qty[$key],
-            ];          
-            $taskmaterial = $this->taskmaterial->create($attributes);               
+            ];
+            $taskmaterial = $this->taskmaterial->create($attributes);
         }
        //dd($request->all());
         try {
             //$taskmaterial = $this->task->update($taskmaterial->id, $attributes);
-           
+
            return back()->with('message', 'Successfully saved')->with('status', 1);
                 // ->with('task', $taskmaterial);
         } catch (\Exception $e) {

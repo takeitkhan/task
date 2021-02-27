@@ -32,7 +32,7 @@
         <a style="float: right; display: block">
             <span style="cursor: pointer;" class="tag is-success" id="addrow">Add Breakdown &nbsp; <strong>+</strong></span>
         </a>
-    
+
         <?php $task_id = request()->get('task_id');?>
         <p class="panel-tabs">
             <a href="{{ route('tasks.edit', $task_id) }}?task_id={{$task_id}}">Task Information</a>
@@ -54,16 +54,16 @@
 
             {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
 
-            @if($task_id)            
+            @if($task_id)
                 {{ Form::hidden('task_id', $task_id ?? '') }}
             @endif
             @if(!empty($taskId))
                 {{ Form::hidden('tassk_id', $taskId ?? '') }}
             @endif
 
-            @php 
+            @php
                 $materials = \Tritiyo\Material\Models\Material::get();
-                $getTaskMaterial = \Tritiyo\Task\Models\TaskMaterial::where('task_id', $task_id)->get() 
+                $getTaskMaterial = \Tritiyo\Task\Models\TaskMaterial::where('task_id', $task_id)->get()
             @endphp
             @if(count( $getTaskMaterial) > 0)
                 @foreach( $getTaskMaterial as $mat)
@@ -92,7 +92,7 @@
                             <label></label> <br/>
                             <button class="button is-danger is-small ibtnDel">Delete</button>
                         </div>
-                        
+
                     </div>
                 </div>
                  @endforeach
@@ -118,9 +118,9 @@
                     </div>
                 </div>
             @endif
-            
-            
-            
+
+
+
 
             <div class="columns">
                 <div class="column">
@@ -137,22 +137,10 @@
 @endsection
 
 @section('column_right')
-    <article class="is-primary">
-        <div class="box">
-            <h1 class="title is-5">Important Note</h1>
-            <p>
-                The default password is stored in the database when the admin authority creates the user.
-                <br/>
-                Default password: <strong>bizradix@123</strong>
-            </p>
-            <br/>
-            <p>
-                After you provide the basic information, you create a list of users, now you will find the created user
-                and
-                update the information for your user.
-            </p>
-        </div>
-    </article>
+    @php
+        $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
+    @endphp
+    @include('task::task_status_sidebar')
 
 @endsection
 
@@ -217,7 +205,7 @@
                 cols += '<br/><button class="button is-danger is-small ibtnDel">Delete</button>';
                 cols += '</div>';
                 cols += '</div>';
-            
+
             $("div#myTable").append(cols);
             selectRefresh()
             counter++;
@@ -226,11 +214,11 @@
 
 
         $("div#myTable").on("click", ".ibtnDel", function (event) {
-            $(this).closest("div.columns").remove();       
+            $(this).closest("div.columns").remove();
             counter -= 1
         });
     });
-    
+
     </script>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
@@ -247,7 +235,7 @@
         function selectRefresh() {
         $('select#material_select').select2({
         });
-        } 
+        }
         selectRefresh()
     </script>
 

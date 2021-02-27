@@ -5,11 +5,12 @@ namespace Tritiyo\Task\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TaskStatus extends Model
+class TaskChunck extends Model
 {
     use HasFactory;
-    protected $table = 'tasks_status';
+
+    protected $table = 'tasks_chunck';
     protected $fillable = [
-      'code', 'task_id', 'action_performed_by', 'performed_for', 'requisition_id', 'message'
+        'task_id', 'manager_data'
     ];
 }

@@ -103,9 +103,7 @@
                 <div class="columns">
                     <div class="column is-2">Task Details</div>
                     <div class="column is-1">:</div>
-                </div>
-                <div class="columns">
-                    <div class="column is-12">
+                    <div class="column">
                         {{ $task->task_details ?? NULL }}
                     </div>
                 </div>
@@ -183,101 +181,39 @@
             </div>
         </div>
     </div>
-    <br/>
+
     @php
+        $taskStatus = \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->where('action_performed_by', auth()->user()->id)
+                      ->orderBy('id', 'desc')->first();
         $proofs = \Tritiyo\Task\Models\TaskProof::where('task_id', $task->id)->first();
-        //dump($proofs);
     @endphp
-    @if(auth()->user()->isResource(auth()->user()->id) || auth()->user()->isManager(auth()->user()->id))
-        <div class="card tile is-child">
-            <header class="card-header">
-                <p class="card-header-title" style="background: lemonchiffon">
-                    <span class="icon"><i class="fas fa-tasks default"></i></span>
-                    Submit Proof
-                </p>
-            </header>
 
-            <div class="card-content">
-                <div class="card-data">
-                    {{ Form::open(array('url' => route('taskproof.store'), 'method' => 'POST', 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
-                    {{ Form::hidden('task_id', $task->id ?? '') }}
-                    <div class="columns">
-                        <div class="column is-2">Resource Proof</div>
-                        <div class="column is-1">:</div>
-                        @if(auth()->user()->isResource(auth()->user()->id) )
-                        <div class="column">
-                            <input name="resource_proof" type="file"/>
-                        </div>
-                        @endif
-                        <div class="column">
-                            @if(($proofs != NULL))
-                            <img  src="{{ url('public/proofs/' .  $proofs->resource_proof ) }}"
-                                width=""/>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="columns">
-                        <div class="column is-2">Vehicle Proof</div>
-                        <div class="column is-1">:</div>
-                        @if(auth()->user()->isResource(auth()->user()->id) )
-                        <div class="column">                        
-                            <input name="vehicle_proof" type="file"/>
-                        </div>
-                        @endif
-                        <div class="column">
-                            @if(($proofs != NULL))
-                            <img  src="{{ url('public/proofs/' . $proofs->vehicle_proof ) }}"
-                                width=""/>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="columns">
-                        <div class="column is-2">Material Proof</div>
-                        <div class="column is-1">:</div>
-                        @if(auth()->user()->isResource(auth()->user()->id) )
-                        <div class="column">
-                            <input name="material_proof" type="file"/>
-                        </div>
-                        @endif
-                        <div class="column">
-                            @if(($proofs != NULL))
-                            <img  src="{{ url('public/proofs/' . $proofs->material_proof) }}"
-                                width=""/>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="columns">
-                        <div class="column">
-                            <div class="field is-grouped">
-                                <div class="control">
-                                    <button class="button is-success is-small">Save Changes</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {{ Form::close() }}
-                </div>
-            </div>
-        </div>
+    @if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id))
+        @include('task::taskaction.task_proof_images')
+        {{--        @include('task::taskaction.task_approver_accept_decline')--}}
+    @else
+        @if(empty($taskStatus) || $taskStatus->code == 'declined' && auth()->user()->isResource(auth()->user()->id))
+            @include('task::taskaction.task_accept_decline')
+        @elseif(empty($taskStatus) || $taskStatus->code == 'head_accepted')
+            @include('task::taskaction.task_proof_form')
+        @elseif(empty($taskStatus) || $taskStatus->code == 'proof_given')
+            @include('task::taskaction.task_proof_images')
+        @endif
     @endif
 @endsection
 
 @section('column_right')
-<div class="card tile is-child">
-    <header class="card-header">
-        <p class="card-header-title">
-            <span class="icon"><i class="fas fa-tasks default"></i></span>
-            Status
-        </p>
-    </header>
+    <div class="card tile is-child">
+        <header class="card-header">
+            <p class="card-header-title">
+                <span class="icon"><i class="fas fa-tasks default"></i></span>
+                Status
+            </p>
+        </header>
 
-    <div class="card-content">
-            
-    
-    
+        <div class="card-content">
+        </div>
     </div>
-</div>
 @endsection
 @section('cusjs')
     <style type="text/css">

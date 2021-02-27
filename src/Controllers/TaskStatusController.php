@@ -3,6 +3,7 @@
 namespace Tritiyo\Task\Controllers;
 
 use Tritiyo\Task\Models\TaskStatus;
+use Tritiyo\Task\Helpers\TaskHelper;
 use Tritiyo\Task\Repositories\TaskStatus\TaskStatusInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -53,35 +54,40 @@ class TaskStatusController extends Controller
      */
     public function store(Request $request)
     {
-        
         $validator = Validator::make($request->all(),
             [
-                'task_id' => 'required',
-                'vehicle_id' => 'required',
-                'vehicle_rent' => 'required',
+                'task_id' => 'required'
             ]
         );
         // process the login
         if ($validator->fails()) {
-            return redirect('tasks.create')
+            return redirect('tasks.show', $request->task_id)
                 ->withErrors($validator)
                 ->withInput();
         } else {
-            // store
-        
-            foreach($request->vehicle_id as $key => $row) {
-                $attributes = [
-                    'task_id'  => $request->task_id,
-                    'vehicle_id' => $request->vehicle_id[$key],
-                    'vehicle_rent' => $request->vehicle_rent[$key],
-                ];          
-                $taskstatus = $this->taskstatus->create($attributes);               
+            $taskMsgHandler = $request->task_message_handler;
+            if ($request->accept == true) {
+                $key = TaskHelper::getStatusKey($taskMsgHandler);
+                $message = TaskHelper::getStatusMessage($taskMsgHandler);
+            } else if ($request->decline == true) {
+                $key = TaskHelper::getStatusKey(11);
+                $message = TaskHelper::getStatusMessage(11);
+            } else {
+                return redirect(route('tasks.index'))->with(['status' => 1, 'message' => 'Nothing performed']);
             }
-            
+
+
+            TaskHelper::statusUpdate([
+                'code' => $key,
+                'task_id' => $request->task_id,
+                'action_performed_by' => auth()->user()->id,
+                'performed_for' => null,
+                'requisition_id' => null,
+                'message' => $message
+            ]);
+
             try {
-              //  $taskstatus = $this->tasksite->create($arr);
-                //return view('task::create', ['task' => $taskstatus]);
-                return redirect(route('tasks.index'))->with(['status' => 1, 'message' => 'Successfully created']);
+                return redirect(route('tasks.show', $request->task_id))->with(['status' => 1, 'message' => 'Successfully created']);
             } catch (\Exception $e) {
                 return view('task::create')->with(['status' => 0, 'message' => 'Error']);
             }
@@ -123,20 +129,20 @@ class TaskStatusController extends Controller
 
         $t = TaskStatus::where('task_id', $request->task_id);
         $t->delete();
-        foreach($request->vehicle_id as $key => $row) {
+        foreach ($request->vehicle_id as $key => $row) {
             $attributes = [
-                'task_id'  => $request->task_id,
+                'task_id' => $request->task_id,
                 'vehicle_id' => $request->vehicle_id[$key],
                 'vehicle_rent' => $request->vehicle_rent[$key],
-            ];          
-            $taskstatus = $this->taskstatus->create($attributes);               
+            ];
+            $taskstatus = $this->taskstatus->create($attributes);
         }
-       //dd($request->all());
+        //dd($request->all());
         try {
             //$taskstatus = $this->task->update($taskstatus->id, $attributes);
-           
-           return back()->with('message', 'Successfully saved')->with('status', 1);
-                // ->with('task', $taskstatus);
+
+            return back()->with('message', 'Successfully saved')->with('status', 1);
+            // ->with('task', $taskstatus);
         } catch (\Exception $e) {
             return view('task::edit', $taskstatus->id)->with(['status' => 0, 'message' => 'Error']);
         }

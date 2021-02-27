@@ -2,6 +2,7 @@
 
 namespace Tritiyo\Task\Controllers;
 
+use Tritiyo\Task\Helpers\TaskHelper;
 use Tritiyo\Task\Models\TaskVehicle;
 use Tritiyo\Task\Repositories\TaskVehicle\TaskVehicleInterface;
 use App\Http\Controllers\Controller;
@@ -53,7 +54,7 @@ class TaskVehicleController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $validator = Validator::make($request->all(),
             [
                 'task_id' => 'required',
@@ -68,16 +69,16 @@ class TaskVehicleController extends Controller
                 ->withInput();
         } else {
             // store
-        
+
             foreach($request->vehicle_id as $key => $row) {
                 $attributes = [
                     'task_id'  => $request->task_id,
                     'vehicle_id' => $request->vehicle_id[$key],
                     'vehicle_rent' => $request->vehicle_rent[$key],
-                ];          
-                $taskvehicle = $this->taskvehicle->create($attributes);               
+                ];
+                $taskvehicle = $this->taskvehicle->create($attributes);
             }
-            
+
             try {
               //  $taskvehicle = $this->tasksite->create($arr);
                 //return view('task::create', ['task' => $taskvehicle]);
@@ -119,6 +120,17 @@ class TaskVehicleController extends Controller
      */
     public function update(Request $request)
     {
+
+        if(auth()->user()->isApprover(auth()->user()->id)) {
+            TaskHelper::statusUpdateOrInsert([
+                'code' => TaskHelper::getStatusKey(12),
+                'task_id' => $request->task_id,
+                'action_performed_by' => auth()->user()->id,
+                'performed_for' => null,
+                'requisition_id' => null,
+                'message' => TaskHelper::getStatusMessage(12)
+            ]);
+        }
         //dd($request->all());
 
         $t = TaskVehicle::where('task_id', $request->task_id);
@@ -128,13 +140,13 @@ class TaskVehicleController extends Controller
                 'task_id'  => $request->task_id,
                 'vehicle_id' => $request->vehicle_id[$key],
                 'vehicle_rent' => $request->vehicle_rent[$key],
-            ];          
-            $taskvehicle = $this->taskvehicle->create($attributes);               
+            ];
+            $taskvehicle = $this->taskvehicle->create($attributes);
         }
        //dd($request->all());
         try {
             //$taskvehicle = $this->task->update($taskvehicle->id, $attributes);
-           
+
            return back()->with('message', 'Successfully saved')->with('status', 1);
                 // ->with('task', $taskvehicle);
         } catch (\Exception $e) {

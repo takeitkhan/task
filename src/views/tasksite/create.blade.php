@@ -139,28 +139,10 @@
 @endsection
 
 @section('column_right')
-    <article class="is-primary">
-        <div class="box">
-            <h1 class="title is-5">Important Note</h1>
-            <p>
-                The default password is stored in the database when the admin authority creates the user.
-                <br/>
-                Default password: <strong>bizradix@123</strong>
-            </p>
-            <br/>
-            <p>
-                After you provide the basic information, you create a list of users, now you will find the created user
-                and
-                update the information for your user.
-            </p>
-        </div>
-    </article>
-
-
-
-
-
-
+    @php
+        $task = \Tritiyo\Task\Models\Task::where('id', $taskId)->first();
+    @endphp
+    @include('task::task_status_sidebar')
 @endsection
 
 

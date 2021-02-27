@@ -2,6 +2,7 @@
 
 namespace Tritiyo\Task\Controllers;
 
+use Tritiyo\Task\Helpers\TaskHelper;
 use Tritiyo\Task\Models\Task;
 use Tritiyo\Task\Models\TaskSite;
 use Tritiyo\Task\Models\TaskVehicle;
@@ -70,7 +71,7 @@ class TaskController extends Controller
         } else {
             // store
             $attributes = [
-                'user_id'  => auth()->user()->id,
+                'user_id' => auth()->user()->id,
                 'task_type' => $request->task_type,
                 'project_id' => $request->project_id,
                 'task_code' => $request->task_code ?? null,
@@ -108,6 +109,22 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
+        if (auth()->user()->isApprover(auth()->user()->id)) {
+            $chunck = array(
+                'task' => $task,
+                'task_site' => \Tritiyo\Task\Models\TaskSite::where('task_id', $task->id)->get()->toArray(),
+                'task_vehicle' => \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task->id)->get()->toArray(),
+                'task_material' => \Tritiyo\Task\Models\TaskMaterial::where('task_id', $task->id)->get()->toArray(),
+                'task_proof' => \Tritiyo\Task\Models\TaskProof::where('task_id', $task->id)->get()->toArray(),
+                'task_status' => \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->get()->toArray(),
+            );
+
+            //$chunck_update = \Tritiyo\Task\Models\TaskChunck::update();
+            $chunck = \Tritiyo\Task\Models\TaskChunck::updateOrCreate(
+                array('task_id' => $task->id),
+                array('manager_data' => json_encode($chunck))
+            );
+        }
         return view('task::edit', ['task' => $task]);
     }
 
@@ -120,9 +137,19 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
+        if(auth()->user()->isApprover(auth()->user()->id)) {
+            TaskHelper::statusUpdateOrInsert([
+                'code' => TaskHelper::getStatusKey(12),
+                'task_id' => $request->task->id,
+                'action_performed_by' => auth()->user()->id,
+                'performed_for' => null,
+                'requisition_id' => null,
+                'message' => TaskHelper::getStatusMessage(12)
+            ]);
+        }
+
         // store
         $attributes = [
-            'user_id'  => auth()->user()->id,
             'task_type' => $request->task_type,
             'project_id' => $request->project_id,
             'task_code' => $request->task_code ?? null,
@@ -160,12 +187,14 @@ class TaskController extends Controller
 
 
     //Vehicle
-    public function taskVehicleCreate(Request $request){
+    public function taskVehicleCreate(Request $request)
+    {
         //dd($request->all());
         return view('task::taskvehicle.create');
     }
 
-    public function taskVehicleStore(Request $request){
+    public function taskVehicleStore(Request $request)
+    {
         dd($request->all());
     }
 

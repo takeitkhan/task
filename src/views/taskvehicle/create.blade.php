@@ -30,72 +30,73 @@
 @section('column_left')
     <article class="panel is-primary" id="app">
         <a style="float: right; display: block">
-            <span style="cursor: pointer;" class="tag is-success" id="addrow">Add Breakdown &nbsp; <strong>+</strong></span>
+            <span style="cursor: pointer;" class="tag is-success"
+                  id="addrow">Add Breakdown &nbsp; <strong>+</strong></span>
         </a>
-    
+
         <?php $task_id = request()->get('task_id');?>
         <p class="panel-tabs">
             <a href="{{ route('tasks.edit', $task_id) }}?task_id={{$task_id}}">Task Information</a>
             <a href="{{ route('tasks.site.edit', $task_id) }}?task_id={{$task_id}}" class="">Site Information</a>
             <a class="is-active">Vehicle Information</a>
-            <a href="{{route('taskmaterial.create')}}?task_id={{$task_id}}"class="">Material Information</a>
+            <a href="{{route('taskmaterial.create')}}?task_id={{$task_id}}" class="">Material Information</a>
         </p>
 
 
         <div class="customContainer">
-            <?php  if(!empty($task_id) && $task_id){
+            <?php  if (!empty($task_id) && $task_id) {
                 $routeUrl = route('taskvehicle.update', $task_id);
                 $method = 'PUT';
-            }
-            else{
-                $routeUrl =  route('taskvehicle.store');
+            } else {
+                $routeUrl = route('taskvehicle.store');
                 $method = 'post';
             } ?>
 
             {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
 
-            @if($task_id)            
+            @if($task_id)
                 {{ Form::hidden('task_id', $task_id ?? '') }}
             @endif
             @if(!empty($taskId))
                 {{ Form::hidden('tassk_id', $taskId ?? '') }}
             @endif
 
-            @php 
+            @php
                 $vehicles = \Tritiyo\Vehicle\Models\Vehicle::get();
-                $getTaskVehicle = \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task_id)->get() 
+                $getTaskVehicle = \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task_id)->get()
             @endphp
             @if(count( $getTaskVehicle) > 0)
                 @foreach( $getTaskVehicle as $veh)
-                <div id="myTable">
-                    <div class="columns s{{$veh->id}}">
-                        <div class="column is-4">
-                            <div class="field">
-                                {{ Form::label('vehicle_id', 'Vehicle', array('class' => 'label')) }}
-                                <div class="control">
-                                    <select name="vehicle_id[]" id="vehicle_select" class="input" required>
-                                        <option value="">Select Vehicle</option>
-                                        @foreach($vehicles as $vehicle)
-                                            <option value="{{$vehicle->id}}" {{ $veh->vehicle_id == $vehicle->id ? 'selected' : '' }} >{{$vehicle->name}}</option>
-                                        @endforeach
-                                    </select>
+                    <div id="myTable">
+                        <div class="columns s{{$veh->id}}">
+                            <div class="column is-4">
+                                <div class="field">
+                                    {{ Form::label('vehicle_id', 'Vehicle', array('class' => 'label')) }}
+                                    <div class="control">
+                                        <select name="vehicle_id[]" id="vehicle_select" class="input" required>
+                                            <option value="">Select Vehicle</option>
+                                            @foreach($vehicles as $vehicle)
+                                                <option
+                                                    value="{{$vehicle->id}}" {{ $veh->vehicle_id == $vehicle->id ? 'selected' : '' }} >{{$vehicle->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="column is-5">
-                            {{ Form::label('vehicle_rent', 'Vehicle Rent', array('class' => 'label')) }}
-                            {{ Form::text('vehicle_rent[]', $veh->vehicle_rent, array('class' => 'input')) }}
-                        </div>
+                            <div class="column is-5">
+                                {{ Form::label('vehicle_rent', 'Vehicle Rent', array('class' => 'label')) }}
+                                {{ Form::text('vehicle_rent[]', $veh->vehicle_rent, array('class' => 'input')) }}
+                            </div>
 
-                        <div class="column is-1">
-                            <label></label> <br/>
-                            <button class="button is-danger is-small ibtnDel">Delete</button>
+                            <div class="column is-1">
+                                <label></label> <br/>
+                                <button class="button is-danger is-small ibtnDel">Delete</button>
+                            </div>
+
                         </div>
-                        
                     </div>
-                </div>
-                 @endforeach
+                @endforeach
             @else
                 <div id="myTable">
                     <div class="columns">
@@ -105,7 +106,7 @@
                                 @foreach($vehicles as $vehicle)
                                     <option value="{{$vehicle->id}}">{{$vehicle->name }}</option>
                                 @endforeach
-                            <select>
+                                <select>
                         </div>
                         <div class="column is-5">
                             <label for="vehicle_rent" class="label">Vehicle Rent</label>
@@ -118,9 +119,7 @@
                     </div>
                 </div>
             @endif
-            
-            
-            
+
 
             <div class="columns">
                 <div class="column">
@@ -137,27 +136,11 @@
 @endsection
 
 @section('column_right')
-    <article class="is-primary">
-        <div class="box">
-            <h1 class="title is-5">Important Note</h1>
-            <p>
-                The default password is stored in the database when the admin authority creates the user.
-                <br/>
-                Default password: <strong>bizradix@123</strong>
-            </p>
-            <br/>
-            <p>
-                After you provide the basic information, you create a list of users, now you will find the created user
-                and
-                update the information for your user.
-            </p>
-        </div>
-    </article>
-
+    @php
+        $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
+    @endphp
+    @include('task::task_status_sidebar')
 @endsection
-
-
-
 @section('cusjs')
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -166,9 +149,7 @@
         new Vue({
             el: '#app',
             data: {
-                breakdowns: [{
-
-                }],
+                breakdowns: [{}],
             },
             methods: {
                 deleteRow(index, breakdown) {
@@ -179,11 +160,10 @@
                     }
                 },
                 addNewRow() {
-                    this.breakdowns.push({
-                    });
+                    this.breakdowns.push({});
                 },
                 getInputName(index, dataName) {
-                    console,log(index);
+                    console, log(index);
                     return "breakdowns[" + index + "][" + dataName + "]";
                 },
             }
@@ -192,20 +172,20 @@
 
 
 
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
     <script>
-    //Add Row Function
-    $(document).ready(function () {
-    var counter = 1;
+        //Add Row Function
+        $(document).ready(function () {
+            var counter = 1;
 
-        $("#addrow").on("click", function () {
-            var cols = '<div class="columns r'+counter+'">';
-             cols += '<div class="column is-4">';
+            $("#addrow").on("click", function () {
+                var cols = '<div class="columns r' + counter + '">';
+                cols += '<div class="column is-4">';
                 cols += '<label for="vehicle_id" class="label">Vehicle</label>';
                 cols += '<select name="vehicle_id[]" id="vehicle_select" class="input" required>';
                 cols += '<?php foreach($vehicles as $vehicle){?>';
-                cols += '<option value="<?php echo $vehicle->id ;?>"><?php echo $vehicle->name ;?></option>';
+                cols += '<option value="<?php echo $vehicle->id;?>"><?php echo $vehicle->name;?></option>';
                 cols += '<?php } ?>';
                 cols += '<select>';
                 cols += '</div>';
@@ -217,40 +197,39 @@
                 cols += '<br/><button class="button is-danger is-small ibtnDel">Delete</button>';
                 cols += '</div>';
                 cols += '</div>';
-            $("div#myTable").append(cols);
-            selectRefresh();
-            counter++;
+                $("div#myTable").append(cols);
+                selectRefresh();
+                counter++;
+            });
+
+
+            $("div#myTable").on("click", ".ibtnDel", function (event) {
+                $(this).closest("div.columns").remove();
+                counter -= 1
+            });
         });
 
-
-
-        $("div#myTable").on("click", ".ibtnDel", function (event) {
-            $(this).closest("div.columns").remove();       
-            counter -= 1
-        });
-    });
-    
     </script>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
     <script>
-         $('#vehicle_select').select2({
+        $('#vehicle_select').select2({
             placeholder: "Select Vehicle",
             allowClear: true
         });
 
         //Select 2
         function selectRefresh() {
-        $('select#vehicle_select').select2({
-        });
-        } 
+            $('select#vehicle_select').select2({});
+        }
+
         selectRefresh()
     </script>
 
-;
+    ;
 
 
 @endsection

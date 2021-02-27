@@ -2,6 +2,7 @@
 
 namespace Tritiyo\Task\Controllers;
 
+use Tritiyo\Task\Helpers\TaskHelper;
 use Tritiyo\Task\Models\TaskSite;
 use Tritiyo\Task\Repositories\TaskSiteInterface;
 use App\Http\Controllers\Controller;
@@ -68,7 +69,7 @@ class TaskSiteController extends Controller
                 ->withInput();
         } else {
 
-            
+
             // store
             $attributes = [
                 'task_id'  => $request->task_id,
@@ -77,20 +78,20 @@ class TaskSiteController extends Controller
             ];
 
             //dd($request->resource_id);
-        
+
             $arr = array();
 
             foreach($request->site_id as $key => $row) {
                 foreach($request->resource_id as $k => $r) {
                     $arr['task_id'] = $request->task_id;
                     $arr['site_id'] = $row;
-                    $arr['resource_id'] = $r; 
-                    $arr['created_at'] = now();   
-                    $arr['updated_at'] = now();   
-                    $tasksite = $this->tasksite->create($arr);                 
-                }                
+                    $arr['resource_id'] = $r;
+                    $arr['created_at'] = now();
+                    $arr['updated_at'] = now();
+                    $tasksite = $this->tasksite->create($arr);
+                }
             }
-            
+
             try {
               //  $tasksite = $this->tasksite->create($arr);
                 //return view('task::create', ['task' => $tasksite]);
@@ -132,14 +133,16 @@ class TaskSiteController extends Controller
      */
     public function update(Request $request)
     {
-        //dd($request->all());
-        // store
-        // $attributes = [
-        //     'project_id' => $request->project_id,
-        //     'location' => $request->location,
-        //     'site_code' => $request->site_code,
-        //     'budget' => $request->budget,
-        // ];
+        if(auth()->user()->isApprover(auth()->user()->id)) {
+            TaskHelper::statusUpdateOrInsert([
+                'code' => TaskHelper::getStatusKey(12),
+                'task_id' => $request->task_id,
+                'action_performed_by' => auth()->user()->id,
+                'performed_for' => null,
+                'requisition_id' => null,
+                'message' => TaskHelper::getStatusMessage(12)
+            ]);
+        }
 
         $arr = array();
         $t = TaskSite::where('task_id', $request->task_id);
@@ -149,15 +152,15 @@ class TaskSiteController extends Controller
                     $arr['task_id'] = $request->task_id;
                     $arr['site_id'] = $row;
                     $arr['resource_id'] = $r;
-                    $arr['created_at'] = now(); 
-                    $arr['updated_at'] = now(); 
+                    $arr['created_at'] = now();
+                    $arr['updated_at'] = now();
                     $t->insert($arr);
-            }   
+            }
         }
        //dd($request->all());
         try {
             //$tasksite = $this->task->update($tasksite->id, $attributes);
-           
+
            return back()->with('message', 'Successfully saved')->with('status', 1);
                 // ->with('task', $tasksite);
         } catch (\Exception $e) {

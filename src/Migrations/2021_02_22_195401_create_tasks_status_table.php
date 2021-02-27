@@ -15,9 +15,9 @@ class CreateTasksStatusTable extends Migration
     {
         Schema::create('tasks_status', function (Blueprint $table) {
             $table->id();
-            $table->integer('code');
+            $table->string('code');
             $table->string('task_id')->nullable();
-            $table->string('task_perform')->nullable();
+            $table->string('action_performed_by')->nullable();
             $table->string('performed_for')->nullable();
             $table->string('requisition_id')->nullable();
             $table->string('message')->nullable();

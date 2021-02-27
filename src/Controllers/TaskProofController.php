@@ -3,7 +3,9 @@
 namespace Tritiyo\Task\Controllers;
 
 use Tritiyo\Task\Models\TaskProof;
+use Tritiyo\Task\Helpers\TaskHelper;
 use Tritiyo\Task\Repositories\TaskProof\TaskProofInterface;
+use Tritiyo\Task\Repositories\TaskStatus\TaskStatusInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
@@ -16,12 +18,19 @@ class TaskProofController extends Controller
     private $taskproof;
 
     /**
+     * @var TaskSiteInterface
+     */
+    private $taskstatus;
+
+    /**
      * RoutelistController constructor.
      * @param TaskProofInterface $taskproof
+     * @param TaskStatusInterface $taskstatus
      */
-    public function __construct(TaskProofInterface $taskproof)
+    public function __construct(TaskProofInterface $taskproof, TaskStatusInterface $taskstatus)
     {
         $this->taskproof = $taskproof;
+        $this->taskstatus = $taskstatus;
     }
 
     /**
@@ -81,6 +90,15 @@ class TaskProofController extends Controller
             ];
             //dd($attributes);
             $taskproof = $this->taskproof->create($attributes);
+
+            TaskHelper::statusUpdate([
+                'code' => TaskHelper::getStatusKey(2),
+                'task_id' => $request->task_id,
+                'action_performed_by' => auth()->user()->id,
+                'performed_for' => null,
+                'requisition_id' => null,
+                'message' => TaskHelper::getStatusMessage(2)
+            ]);
 
             if ($taskproof == true) {
                 return back()
