@@ -67,7 +67,7 @@ class TaskVehicleController extends Controller
             return redirect('tasks.create')
                 ->withErrors($validator)
                 ->withInput();
-        } else {
+        } elseif($request->vehicle_id) {
             // store
 
             foreach ($request->vehicle_id as $key => $row) {
@@ -133,17 +133,18 @@ class TaskVehicleController extends Controller
             ]);
         }
         //dd($request->all());
-
-        $t = TaskVehicle::where('task_id', $request->task_id);
-        $t->delete();
-        foreach ($request->vehicle_id as $key => $row) {
-            $attributes = [
-                'task_id' => $request->task_id,
-                'vehicle_id' => $request->vehicle_id[$key],
-                'vehicle_rent' => $request->vehicle_rent[$key],
-                'vehicle_note' => $request->vehicle_note[$key],
-            ];
-            $taskvehicle = $this->taskvehicle->create($attributes);
+        if($request->vehicle_id){
+            $t = TaskVehicle::where('task_id', $request->task_id);
+            $t->delete();
+            foreach ($request->vehicle_id as $key => $row) {
+                $attributes = [
+                    'task_id' => $request->task_id,
+                    'vehicle_id' => $request->vehicle_id[$key],
+                    'vehicle_rent' => $request->vehicle_rent[$key],
+                    'vehicle_note' => $request->vehicle_note[$key],
+                ];
+                $taskvehicle = $this->taskvehicle->create($attributes);
+            }
         }
         //dd($request->all());
         try {

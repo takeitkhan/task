@@ -138,7 +138,7 @@ class TaskController extends Controller
     public function update(Request $request, Task $task)
     {
 
-        if (auth()->user()->isManager(auth()->user()->id)) {
+        if (auth()->user()->isManager(auth()->user()->id) && $request->task_assigned_to_head) {
 
             $atts = Task::find($task->id);
             $atts->task_assigned_to_head = $request->task_assigned_to_head;

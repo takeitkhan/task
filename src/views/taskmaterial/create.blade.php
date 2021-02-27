@@ -84,7 +84,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="column is-1">
+                            <div class="column is-2">
                                 {{ Form::label('material_qty', 'Material Qty', array('class' => 'label')) }}
                                 {{ Form::text('material_qty[]', $mat->material_qty, array('class' => 'input')) }}
                             </div>
@@ -117,7 +117,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="column is-1">
+                        <div class="column is-2">
                             <label for="material_qty" class="label">Material Qty</label>
                             <input name="material_qty[]" type="text" value="" class="input" required>
                         </div>
@@ -202,7 +202,7 @@
 
             $("#addrow").on("click", function () {
                 var cols = '<div class="columns r' + counter + '">';
-                cols += '<div class="column is-4">';
+                cols += '<div class="column is-2">';
                 cols += '<label for="material_id" class="label">Material</label>';
                 cols += '<select name="material_id[]" id="material_select" class="input" required>';
                 cols += '<?php foreach($materials as $material){?>';
@@ -210,11 +210,19 @@
                 cols += '<?php } ?>';
                 cols += '<select>';
                 cols += '</div>';
-                cols += '<div class="column is-5">';
-                cols += '<label for="material_qty" class="label">Material Qty Rent</label>';
+                cols += '<div class="column is-2">';
+                cols += '<label for="material_qty" class="label">Material Qty</label>';
                 cols += '<input name="material_qty[]" type="text" value="" class="input" required>';
                 cols += '</div>';
-                cols += '<div class="column is-2">';
+                cols +=  '<div class="column is-2">';
+                cols +=  '<label for="material_amount" class="label">Material Amount</label>';
+                cols +=  '<input name="material_amount[]" type="text" value="" class="input">';
+                cols +=  '</div>';
+                cols +=  '<div class="column is-5">';
+                cols +=  '<label for="material_note" class="label">Note</label>';
+                cols +=  '<input name="material_note[]" type="text" value="" class="input">';
+                cols +=  '</div>';
+                cols += '<div class="column is-1">';
                 cols += '<br/><button class="button is-danger is-small ibtnDel">Delete</button>';
                 cols += '</div>';
                 cols += '</div>';
