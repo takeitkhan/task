@@ -189,7 +189,7 @@
 
             $("#addrow").on("click", function () {
                 var cols = '<div class="columns r' + counter + '">';
-                cols += '<div class="column is-4">';
+                cols += '<div class="column is-2">';
                 cols += '<label for="vehicle_id" class="label">Vehicle</label>';
                 cols += '<select name="vehicle_id[]" id="vehicle_select" class="input" required>';
                 cols += '<?php foreach($vehicles as $vehicle){?>';
@@ -197,11 +197,15 @@
                 cols += '<?php } ?>';
                 cols += '<select>';
                 cols += '</div>';
-                cols += '<div class="column is-5">';
+                cols += '<div class="column is-2">';
                 cols += '<label for="vehicle_rent" class="label">Vehicle Rent</label>';
                 cols += '<input name="vehicle_rent[]" type="text" value="" class="input" required>';
                 cols += '</div>';
-                cols += '<div class="column is-2">';
+                cols += '<div class="column is-6">';
+                cols += '<label for="vehicle_note" class="label">Note</label>';
+                cols += '<input name="vehicle_note[]" type="text" value="" class="input" required>';
+                cols +=  '</div>';
+                cols += '<div class="column is-1">';
                 cols += '<br/><button class="button is-danger is-small ibtnDel">Delete</button>';
                 cols += '</div>';
                 cols += '</div>';
