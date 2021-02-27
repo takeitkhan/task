@@ -72,17 +72,17 @@ class TaskSiteController extends Controller
 
             // store
             $attributes = [
-                'task_id'  => $request->task_id,
+                'task_id' => $request->task_id,
                 'site_id' => $request->site_id,
-                'resource_id' => $request->resource_id,
+                'resource_id' => $request->resource_id
             ];
 
             //dd($request->resource_id);
 
             $arr = array();
 
-            foreach($request->site_id as $key => $row) {
-                foreach($request->resource_id as $k => $r) {
+            foreach ($request->site_id as $key => $row) {
+                foreach ($request->resource_id as $k => $r) {
                     $arr['task_id'] = $request->task_id;
                     $arr['site_id'] = $row;
                     $arr['resource_id'] = $r;
@@ -92,9 +92,11 @@ class TaskSiteController extends Controller
                 }
             }
 
+
             try {
-              //  $tasksite = $this->tasksite->create($arr);
+                //  $tasksite = $this->tasksite->create($arr);
                 //return view('task::create', ['task' => $tasksite]);
+
                 return redirect(route('tasks.index'))->with(['status' => 1, 'message' => 'Successfully created']);
             } catch (\Exception $e) {
                 return view('task::create')->with(['status' => 0, 'message' => 'Error']);
@@ -133,36 +135,36 @@ class TaskSiteController extends Controller
      */
     public function update(Request $request)
     {
-        if(auth()->user()->isApprover(auth()->user()->id)) {
+        if (auth()->user()->isApprover(auth()->user()->id)) {
             TaskHelper::statusUpdateOrInsert([
-                'code' => TaskHelper::getStatusKey(12),
+                'code' => TaskHelper::getStatusKey('task_approver_edited'),
                 'task_id' => $request->task_id,
                 'action_performed_by' => auth()->user()->id,
                 'performed_for' => null,
                 'requisition_id' => null,
-                'message' => TaskHelper::getStatusMessage(12)
+                'message' => TaskHelper::getStatusMessage('task_approver_edited')
             ]);
         }
 
         $arr = array();
         $t = TaskSite::where('task_id', $request->task_id);
         $t->delete();
-        foreach($request->site_id as $key => $row) {
-            foreach($request->resource_id as $k => $r) {
-                    $arr['task_id'] = $request->task_id;
-                    $arr['site_id'] = $row;
-                    $arr['resource_id'] = $r;
-                    $arr['created_at'] = now();
-                    $arr['updated_at'] = now();
-                    $t->insert($arr);
+        foreach ($request->site_id as $key => $row) {
+            foreach ($request->resource_id as $k => $r) {
+                $arr['task_id'] = $request->task_id;
+                $arr['site_id'] = $row;
+                $arr['resource_id'] = $r;
+                $arr['created_at'] = now();
+                $arr['updated_at'] = now();
+                $t->insert($arr);
             }
         }
-       //dd($request->all());
+        //dd($request->all());
         try {
             //$tasksite = $this->task->update($tasksite->id, $attributes);
 
-           return back()->with('message', 'Successfully saved')->with('status', 1);
-                // ->with('task', $tasksite);
+            return back()->with('message', 'Successfully saved')->with('status', 1);
+            // ->with('task', $tasksite);
         } catch (\Exception $e) {
             return view('task::edit', $tasksite->id)->with(['status' => 0, 'message' => 'Error']);
         }
@@ -180,7 +182,8 @@ class TaskSiteController extends Controller
         return redirect()->back()->with(['status' => 1, 'message' => 'Successfully deleted']);
     }
 
-    public function taskSitebyTaskId($id){
+    public function taskSitebyTaskId($id)
+    {
         $taskSites = TaskSite::where('task_id', $id)->get();
         $taskId = $id;
         return view('task::tasksite.create', compact('taskSites', 'taskId'));

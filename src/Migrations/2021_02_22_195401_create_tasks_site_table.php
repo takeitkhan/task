@@ -18,6 +18,8 @@ class CreateTasksSiteTable extends Migration
             $table->integer('task_id');
             $table->string('site_id');
             $table->string('resource_id');
+            $table->integer('da_amount');
+            $table->string('da_note');
             $table->timestamps();
         });
     }

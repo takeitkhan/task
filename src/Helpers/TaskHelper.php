@@ -22,31 +22,31 @@ class TaskHelper
                 'key' => 'approver_approved',
                 'message' => 'Task approved by approver'
             ),
-            4 => array(
+            'requisition_placed' => array(
                 'key' => 'requisition_placed',
                 'message' => 'Requisition placed by manager',
             ),
-            5 => array(
-                'key' => 'cfo_approved',
+            'cfo_requisition_approved' => array(
+                'key' => 'cfo_requisition_approved',
                 'message' => 'Requisition approved by CFO'
             ),
-            6 => array(
+            'accountant_sent' => array(
                 'key' => 'accountant_sent',
                 'message' => 'Requisition approved by accountant'
             ),
-            7 => array(
-                'key' => 'bill_submitted',
+            'bill_submitted_by_resource' => array(
+                'key' => 'bill_submitted_by_resource',
                 'message' => 'Bill submitted by resource'
             ),
-            8 => array(
+            'manager_bill_approved' => array(
                 'key' => 'manager_bill_approved',
                 'message' => 'Bill approved by manager'
             ),
-            9 => array(
+            'cfo_bill_approved' => array(
                 'key' => 'cfo_bill_approved',
                 'message' => 'Bill approved by CFO'
             ),
-            10 => array(
+            'accountant_bill_approved' => array(
                 'key' => 'accountant_bill_approved',
                 'message' => 'Bill approved by accountant'
             ),
@@ -56,7 +56,7 @@ class TaskHelper
                 'message' => 'Declined by site head'
             ),
 
-            12 => array(
+            'task_approver_edited' => array(
                 'key' => 'task_approver_edited',
                 'message' => 'Task edited by approver'
             ),
@@ -65,13 +65,18 @@ class TaskHelper
                 'key' => 'approver_declined',
                 'message' => 'Declined by approver'
             ),
-            14 => array(
-                'key' => 'cfo_declined',
-                'message' => 'Declined by CFO'
+            'cfo_requisition_declined' => array(
+                'key' => 'cfo_requisition_declined',
+                'message' => 'Requisition declined by CFO'
             ),
-            15 => array(
-                'key' => 'accountant_declined',
-                'message' => 'Declined by accountant'
+            'accountant_requisition_declined' => array(
+                'key' => 'accountant_requisition_declined',
+                'message' => 'Requisition declined by accountant'
+            ),
+
+            'task_assigned_to_head' => array(
+                'key' => 'task_assigned_to_head',
+                'message' => 'Task assigned to head'
             ),
 
         );
@@ -104,9 +109,6 @@ class TaskHelper
 
     public static function statusUpdate(array $options = array())
     {
-
-        //dd($options);
-
         $default = [
             'code' => null,
             'task_id' => null,
@@ -126,10 +128,10 @@ class TaskHelper
             'requisition_id' => $new->requisition_id,
             'message' => $new->message
         ];
+
         $taskstatus = TaskStatus::create($status_attributes);
         return $taskstatus;
     }
-
 
 
     public static function statusUpdateOrInsert(array $options = array())
@@ -161,7 +163,6 @@ class TaskHelper
         $taskstatus = TaskStatus::updateOrCreate(
             $status_attributes
         );
-        return 'ok';
         return $taskstatus;
     }
 

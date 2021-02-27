@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class TaskVehicle extends Model
 {
     use HasFactory;
+
     protected $table = 'tasks_vehicle';
     protected $fillable = [
-      'task_id', 'vehicle_id', 'vehicle_rent'
+        'task_id', 'vehicle_id', 'vehicle_rent', 'vehicle_note'
     ];
 }

@@ -70,17 +70,19 @@ class TaskMaterialController extends Controller
         } else {
             // store
 
-            foreach($request->material_id as $key => $row) {
+            foreach ($request->material_id as $key => $row) {
                 $attributes = [
-                    'task_id'  => $request->task_id,
+                    'task_id' => $request->task_id,
                     'material_id' => $request->material_id[$key],
                     'material_qty' => $request->material_qty[$key],
+                    'material_amount' => $request->material_amount[$key],
+                    'material_note' => $request->material_note[$key],
                 ];
                 $taskmaterial = $this->taskmaterial->create($attributes);
             }
 
             try {
-              //  $taskmaterial = $this->tasksite->create($arr);
+                //  $taskmaterial = $this->tasksite->create($arr);
                 //return view('task::create', ['task' => $taskmaterial]);
                 return redirect(route('tasks.index'))->with(['status' => 1, 'message' => 'Successfully created']);
             } catch (\Exception $e) {
@@ -122,33 +124,35 @@ class TaskMaterialController extends Controller
     {
         //dd($request->all());
 
-        if(auth()->user()->isApprover(auth()->user()->id)) {
+        if (auth()->user()->isApprover(auth()->user()->id)) {
             TaskHelper::statusUpdateOrInsert([
-                'code' => TaskHelper::getStatusKey(12),
+                'code' => TaskHelper::getStatusKey('task_approver_edited'),
                 'task_id' => $request->task_id,
                 'action_performed_by' => auth()->user()->id,
                 'performed_for' => null,
                 'requisition_id' => null,
-                'message' => TaskHelper::getStatusMessage(12)
+                'message' => TaskHelper::getStatusMessage('task_approver_edited')
             ]);
         }
 
         $t = TaskMaterial::where('task_id', $request->task_id);
         $t->delete();
-        foreach($request->material_id as $key => $row) {
+        foreach ($request->material_id as $key => $row) {
             $attributes = [
-                'task_id'  => $request->task_id,
+                'task_id' => $request->task_id,
                 'material_id' => $request->material_id[$key],
                 'material_qty' => $request->material_qty[$key],
+                'material_amount' => $request->material_amount[$key],
+                'material_note' => $request->material_note[$key],
             ];
             $taskmaterial = $this->taskmaterial->create($attributes);
         }
-       //dd($request->all());
+        //dd($request->all());
         try {
             //$taskmaterial = $this->task->update($taskmaterial->id, $attributes);
 
-           return back()->with('message', 'Successfully saved')->with('status', 1);
-                // ->with('task', $taskmaterial);
+            return back()->with('message', 'Successfully saved')->with('status', 1);
+            // ->with('task', $taskmaterial);
         } catch (\Exception $e) {
             return view('task::edit', $taskmaterial->id)->with(['status' => 0, 'message' => 'Error']);
         }

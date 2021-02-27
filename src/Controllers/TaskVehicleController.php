@@ -70,17 +70,18 @@ class TaskVehicleController extends Controller
         } else {
             // store
 
-            foreach($request->vehicle_id as $key => $row) {
+            foreach ($request->vehicle_id as $key => $row) {
                 $attributes = [
-                    'task_id'  => $request->task_id,
+                    'task_id' => $request->task_id,
                     'vehicle_id' => $request->vehicle_id[$key],
                     'vehicle_rent' => $request->vehicle_rent[$key],
+                    'vehicle_note' => $request->vehicle_note[$key],
                 ];
                 $taskvehicle = $this->taskvehicle->create($attributes);
             }
 
             try {
-              //  $taskvehicle = $this->tasksite->create($arr);
+                //  $taskvehicle = $this->tasksite->create($arr);
                 //return view('task::create', ['task' => $taskvehicle]);
                 return redirect(route('tasks.index'))->with(['status' => 1, 'message' => 'Successfully created']);
             } catch (\Exception $e) {
@@ -121,34 +122,35 @@ class TaskVehicleController extends Controller
     public function update(Request $request)
     {
 
-        if(auth()->user()->isApprover(auth()->user()->id)) {
+        if (auth()->user()->isApprover(auth()->user()->id)) {
             TaskHelper::statusUpdateOrInsert([
-                'code' => TaskHelper::getStatusKey(12),
+                'code' => TaskHelper::getStatusKey('task_approver_edited'),
                 'task_id' => $request->task_id,
                 'action_performed_by' => auth()->user()->id,
                 'performed_for' => null,
                 'requisition_id' => null,
-                'message' => TaskHelper::getStatusMessage(12)
+                'message' => TaskHelper::getStatusMessage('task_approver_edited')
             ]);
         }
         //dd($request->all());
 
         $t = TaskVehicle::where('task_id', $request->task_id);
         $t->delete();
-        foreach($request->vehicle_id as $key => $row) {
+        foreach ($request->vehicle_id as $key => $row) {
             $attributes = [
-                'task_id'  => $request->task_id,
+                'task_id' => $request->task_id,
                 'vehicle_id' => $request->vehicle_id[$key],
                 'vehicle_rent' => $request->vehicle_rent[$key],
+                'vehicle_note' => $request->vehicle_note[$key],
             ];
             $taskvehicle = $this->taskvehicle->create($attributes);
         }
-       //dd($request->all());
+        //dd($request->all());
         try {
             //$taskvehicle = $this->task->update($taskvehicle->id, $attributes);
 
-           return back()->with('message', 'Successfully saved')->with('status', 1);
-                // ->with('task', $taskvehicle);
+            return back()->with('message', 'Successfully saved')->with('status', 1);
+            // ->with('task', $taskvehicle);
         } catch (\Exception $e) {
             return view('task::edit', $taskvehicle->id)->with(['status' => 0, 'message' => 'Error']);
         }
@@ -166,7 +168,8 @@ class TaskVehicleController extends Controller
         return redirect()->back()->with(['status' => 1, 'message' => 'Successfully deleted']);
     }
 
-    public function taskSitebyTaskId($id){
+    public function taskSitebyTaskId($id)
+    {
         $taskSites = TaskSite::where('task_id', $id)->get();
         $taskId = $id;
         return view('task::tasksite.create', compact('taskSites', 'taskId'));

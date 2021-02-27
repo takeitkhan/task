@@ -1,6 +1,9 @@
-
 {{--    <article class="panel is-primary">--}}
 {{--        <div class="customContainer">--}}
+
+@if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id))
+    @include('task::taskaction.ready_for_assign_to_head')
+@endif
 @if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id))
     @include('task::taskaction.task_approver_accept_decline')
 @endif
@@ -128,18 +131,26 @@
                                 <td>{{ \Tritiyo\Vehicle\Models\Vehicle::where('id', $data->vehicle_id)->first()->name  }}</td>
                                 <td>{{ $data->vehicle_rent  }}</td>
                             </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <small>
+                                        Note: {{ $data->vehicle_note ?? NULL }}
+                                    </small>
+                                </td>
+                            </tr>
                         @endforeach
                     </table>
 
                     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                         <tr>
-                            <th colspan="4">Material Information</th>
+                            <th colspan="5">Material Information</th>
                         </tr>
                         <tr>
                             <th>ID</th>
                             <th>Task ID</th>
                             <th>Material</th>
                             <th>Quantity</th>
+                            <th>Amount</th>
                         </tr>
                         @foreach($task_material as $data)
                             <tr>
@@ -147,6 +158,14 @@
                                 <td>{{ $data->task_id }}</td>
                                 <td>{{ \Tritiyo\Material\Models\Material::where('id', $data->material_id)->first()->name  }}</td>
                                 <td>{{ $data->material_qty  }}</td>
+                                <td>{{ $data->material_amount  }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">
+                                    <small>
+                                        Note: {{ $data->material_note }}
+                                    </small>
+                                </td>
                             </tr>
                         @endforeach
                     </table>

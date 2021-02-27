@@ -18,6 +18,8 @@ class CreateTasksMaterialTable extends Migration
             $table->integer('task_id');
             $table->string('material_id');
             $table->string('material_qty');
+            $table->integer('material_amount');
+            $table->string('material_note');
             $table->timestamps();
         });
     }

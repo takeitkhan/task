@@ -30,7 +30,8 @@
 @section('column_left')
     <article class="panel is-primary">
         @if(request()->get('type') != 'emergency')
-            <a style="display:block; float:right;" href="{{ route('tasks.create') }}?type=emergency" class="button is-small is-danger" aria-haspopup="true" aria-controls="dropdown-menu" style="    height: 24px;
+            <a style="display:block; float:right;" href="{{ route('tasks.create') }}?type=emergency"
+               class="button is-small is-danger" aria-haspopup="true" aria-controls="dropdown-menu" style="    height: 24px;
     margin-bottom: 6px;">
                 <span><i class="fas fa-plus"></i> Emergency Task</span>
             </a>
@@ -39,18 +40,18 @@
             <a class="is-active">Task Information</a>
             @if(!empty($task) && $task->id)
                 <a href="{{ route('tasksites.create') }}?task_id={{$task->id}}" class="">Site Information</a>
-                <a href="{{route('taskvehicle.create')}}?task_id={{$task->id}}"class="">Vehicle Information</a>
-                <a href="{{route('taskmaterial.create')}}?task_id={{$task->id}}"class="">Material Information</a>
+                <a href="{{route('taskvehicle.create')}}?task_id={{$task->id}}" class="">Vehicle Information</a>
+                <a href="{{route('taskmaterial.create')}}?task_id={{$task->id}}" class="">Material Information</a>
             @endif
         </p>
 
 
         <div class="customContainer">
-            <?php  if(!empty($task) && $task->id){
+            <?php  if (!empty($task) && $task->id) {
                 $routeUrl = route('tasks.update', $task->id);
                 $method = 'PUT';
-            } else{
-                $routeUrl =  route('tasks.store');
+            } else {
+                $routeUrl = route('tasks.store');
                 $method = 'post';
             } ?>
             {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
@@ -74,7 +75,7 @@
                     <div class="field">
                         {{ Form::label('site_head', 'Site Head', array('class' => 'label')) }}
                         <div class="control">
-                        <?php $siteHead = \App\Models\User::where('role', 2)->pluck('name', 'id')->prepend('Select Site Head', ''); ?>
+                            <?php $siteHead = \App\Models\User::where('role', 2)->pluck('name', 'id')->prepend('Select Site Head', ''); ?>
                             {{ Form::select('site_head', $siteHead, $task->site_head ?? NULL, ['class' => 'input', 'id' => 'sitehead_select']) }}
                         </div>
                     </div>
@@ -93,7 +94,7 @@
 
                 <div class="column is-9">
                     <div class="field">
-                        {{ Form::label('task_details', 'Task details (Please put all the activity details here.)', array('class' => 'label')) }}
+                        {{ Form::label('task_details', 'Task details [Please put all the activity details here]', array('class' => 'label')) }}
                         <div class="control">
                             {{ Form::textarea('task_details', $task->task_details ?? NULL, ['class' => 'textarea', 'rows' => 5, 'placeholder' => 'Enter task details...']) }}
                         </div>
@@ -117,33 +118,16 @@
 
 @section('column_right')
 
-    <article class="is-primary">
-        <div class="box">
-            <h1 class="title is-5">Important Note</h1>
-            <p>
-                The default password is stored in the database when the admin authority creates the user.
-                <br/>
-                Default password: <strong>bizradix@123</strong>
-            </p>
-            <br/>
-            <p>
-                After you provide the basic information, you create a list of users, now you will find the created user
-                and
-                update the information for your user.
-            </p>
-        </div>
-    </article>
-
 @endsection
 
 @section('cusjs')
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
     <script>
-         $('#sitehead_select').select2({
+        $('#sitehead_select').select2({
             placeholder: "Select Head of Site",
             allowClear: true
         });

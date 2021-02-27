@@ -22,6 +22,7 @@ class CreateTasksTable extends Migration
             $table->integer('project_id');
             $table->integer('site_head');
             $table->text('task_details')->nullable();
+            $table->enum('task_assigned_to_head', ['Yes', 'No'])->nullable();
             $table->string('is_active')->default('1');
             $table->timestamps();
         });

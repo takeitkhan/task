@@ -137,16 +137,37 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        if(auth()->user()->isApprover(auth()->user()->id)) {
+
+        if (auth()->user()->isManager(auth()->user()->id)) {
+
+            $atts = Task::find($task->id);
+            $atts->task_assigned_to_head = $request->task_assigned_to_head;
+            $atts->save();
+
+
+            TaskHelper::statusUpdate([
+                'code' => TaskHelper::getStatusKey('task_assigned_to_head'),
+                'task_id' => $request->task_id,
+                'action_performed_by' => auth()->user()->id,
+                'performed_for' => null,
+                'requisition_id' => null,
+                'message' => TaskHelper::getStatusMessage('task_assigned_to_head')
+            ]);
+
+            return redirect()->back();
+        }
+
+        if (auth()->user()->isApprover(auth()->user()->id)) {
             TaskHelper::statusUpdateOrInsert([
-                'code' => TaskHelper::getStatusKey(12),
+                'code' => TaskHelper::getStatusKey('task_approver_edited'),
                 'task_id' => $request->task->id,
                 'action_performed_by' => auth()->user()->id,
                 'performed_for' => null,
                 'requisition_id' => null,
-                'message' => TaskHelper::getStatusMessage(12)
+                'message' => TaskHelper::getStatusMessage('task_approver_edited')
             ]);
         }
+
 
         // store
         $attributes = [
@@ -156,8 +177,8 @@ class TaskController extends Controller
             'task_name' => $request->task_name,
             'site_head' => $request->site_head,
             'task_details' => $request->task_details,
+            'task_assigned_to_head' => $request->task_assigned_to_head,
         ];
-
         try {
             $task = $this->task->update($task->id, $attributes);
 

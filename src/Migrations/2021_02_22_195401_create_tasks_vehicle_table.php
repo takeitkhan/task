@@ -18,6 +18,7 @@ class CreateTasksVehicleTable extends Migration
             $table->integer('task_id');
             $table->string('vehicle_id');
             $table->string('vehicle_rent');
+            $table->string('vehicle_note');
             $table->timestamps();
         });
     }

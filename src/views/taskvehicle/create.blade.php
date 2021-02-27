@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title')
-    include Vehicle Of Task
+    Include vehicle information of task
 @endsection
 
 <section class="hero is-white borderBtmLight">
@@ -69,7 +69,7 @@
                 @foreach( $getTaskVehicle as $veh)
                     <div id="myTable">
                         <div class="columns s{{$veh->id}}">
-                            <div class="column is-4">
+                            <div class="column is-2">
                                 <div class="field">
                                     {{ Form::label('vehicle_id', 'Vehicle', array('class' => 'label')) }}
                                     <div class="control">
@@ -84,9 +84,13 @@
                                 </div>
                             </div>
 
-                            <div class="column is-5">
+                            <div class="column is-2">
                                 {{ Form::label('vehicle_rent', 'Vehicle Rent', array('class' => 'label')) }}
                                 {{ Form::text('vehicle_rent[]', $veh->vehicle_rent, array('class' => 'input')) }}
+                            </div>
+                            <div class="column is-6">
+                                {{ Form::label('vehicle_note', 'Note', array('class' => 'label')) }}
+                                {{ Form::text('vehicle_note[]', $veh->vehicle_note, array('class' => 'input')) }}
                             </div>
 
                             <div class="column is-1">
@@ -100,17 +104,21 @@
             @else
                 <div id="myTable">
                     <div class="columns">
-                        <div class="column is-4">
+                        <div class="column is-2">
                             <label for="vehicle_id" class="label">Vehicle</label>
                             <select name="vehicle_id[]" id="vehicle_select" class="input" required>
                                 @foreach($vehicles as $vehicle)
                                     <option value="{{$vehicle->id}}">{{$vehicle->name }}</option>
                                 @endforeach
-                                <select>
+                            </select>
                         </div>
-                        <div class="column is-5">
+                        <div class="column is-2">
                             <label for="vehicle_rent" class="label">Vehicle Rent</label>
                             <input name="vehicle_rent[]" type="text" value="" class="input" required>
+                        </div>
+                        <div class="column is-6">
+                            <label for="vehicle_note" class="label">Note</label>
+                            <input name="vehicle_note[]" type="text" value="" class="input" required>
                         </div>
                         <div class="column is-1">
                             <label></label> <br/>

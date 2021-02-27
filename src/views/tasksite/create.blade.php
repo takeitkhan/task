@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title')
-    include Site Of Task
+    Include site information for task
 @endsection
 
 <section class="hero is-white borderBtmLight">
@@ -30,12 +30,12 @@
 @section('column_left')
     <article class="panel is-primary" id="app">
         <?php
-            $task_id = request()->get('task_id');
-            if(empty($taskSites)){
-                $taskId = $task_id; //taskId variable asign in tasksite controller
-            }
-            //$taskId = !empty($task_id) ?? $task_id;
-        ;?>
+        $task_id = request()->get('task_id');
+        if (empty($taskSites)) {
+            $taskId = $task_id; //taskId variable asign in tasksite controller
+        }
+        //$taskId = !empty($task_id) ?? $task_id;
+        ?>
         <p class="panel-tabs">
             <a href="{{ !empty($taskId) ? route('tasks.edit', $taskId) : route('tasks.edit', $task_id)}}" class="">Task
                 Information</a>
@@ -46,9 +46,9 @@
                class="">Material Information</a>
         </p>
 
-
         <div class="customContainer">
-            <?php  if (!empty($tasksite) && $tasksite->id) {
+            <?php
+            if (!empty($tasksite) && $tasksite->id) {
                 $routeUrl = route('tasksites.update', $task->id);
                 $method = 'PUT';
             } elseif (!empty($taskId)) {
@@ -57,7 +57,8 @@
             } else {
                 $routeUrl = route('tasksites.store');
                 $method = 'post';
-            } ?>
+            }
+            ?>
             {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
 
             @if($task_id)
@@ -72,7 +73,7 @@
 
                     <div class="field">
 
-                        {{ Form::label('site_id', 'Site', array('class' => 'label')) }}
+                        {{ Form::label('site_id', 'Sites', array('class' => 'label')) }}
                         <div class="control">
                             <div dclass="select is-multiple">
                                 @php $sites = \Tritiyo\Site\Models\Site::get() @endphp
@@ -86,7 +87,7 @@
                                                 @endforeach
                                             @endif
 
-                                        >{{$site->site_code}}</option>
+                                        >{{ $site->site_code }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -95,7 +96,7 @@
                 </div>
                 <div class="column is-6">
                     <div class="field">
-                        {{ Form::label('resource_id', 'Resource', array('class' => 'label')) }}
+                        {{ Form::label('resource_id', 'Site Resources', array('class' => 'label')) }}
                         <div class="control">
                             <div sclass="select is-multiple">
 
@@ -114,7 +115,9 @@
                                                 {{$data->resource_id == $resource->id ? 'selected' : ''}}
                                                 @endforeach
                                             @endif
-                                        >{{$resource->name}}</option>
+                                        >
+                                            {{ $resource->name }}
+                                        </option>
                                     @endforeach
                                 </select>
 
@@ -123,7 +126,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="columns">
                 <div class="column">
                     <div class="field is-grouped">

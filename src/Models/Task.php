@@ -10,6 +10,6 @@ class Task extends Model
     use HasFactory;
     protected $table = 'tasks';
     protected $fillable = [
-      'user_id', 'task_name', 'task_code',  'task_type', 'project_id', 'site_head', 'task_details', 'is_active'
+      'user_id', 'task_name', 'task_code',  'task_type', 'project_id', 'site_head', 'task_details', 'task_assigned_to_head', 'is_active'
     ];
 }
