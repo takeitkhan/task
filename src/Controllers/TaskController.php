@@ -11,6 +11,7 @@ use Tritiyo\Task\Repositories\TaskInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
+use Session;
 
 class TaskController extends Controller
 {
@@ -154,8 +155,8 @@ class TaskController extends Controller
                 'requisition_id' => null,
                 'message' => TaskHelper::getStatusMessage('task_assigned_to_head')
             ]);
-
-            return redirect()->back();
+            return redirect()->back()->with('message', 'Saved successfully');
+           
         }
 
         if (auth()->user()->isApprover(auth()->user()->id)) {
@@ -180,6 +181,7 @@ class TaskController extends Controller
             'task_details' => $request->task_details,
             'task_assigned_to_head' => $request->task_assigned_to_head,
         ];
+        return redirect()->back()->with('message', 'Edited Successfully');
         //dd($attributes);
         try {
             $task = $this->task->update($task->id, $attributes);
