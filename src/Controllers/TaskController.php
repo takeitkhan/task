@@ -57,6 +57,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request->all());
         $validator = Validator::make($request->all(),
             [
                 'project_id' => 'required',
@@ -179,6 +180,7 @@ class TaskController extends Controller
             'task_details' => $request->task_details,
             'task_assigned_to_head' => $request->task_assigned_to_head,
         ];
+        //dd($attributes);
         try {
             $task = $this->task->update($task->id, $attributes);
 

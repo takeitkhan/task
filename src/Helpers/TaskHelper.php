@@ -10,7 +10,7 @@ class TaskHelper
     public static function taskMessageHandler()
     {
         $task_statuses = array(
-            1 => array(
+            'head_accepted' => array(
                 'key' => 'head_accepted',
                 'message' => 'Task accepted by site head'
             ),
@@ -18,7 +18,7 @@ class TaskHelper
                 'key' => 'proof_given',
                 'message' => 'Task proof given by site head'
             ),
-            3 => array(
+            'approver_approved' => array(
                 'key' => 'approver_approved',
                 'message' => 'Task approved by approver'
             ),
@@ -51,7 +51,7 @@ class TaskHelper
                 'message' => 'Bill approved by accountant'
             ),
 
-            11 => array(
+            'head_declined' => array(
                 'key' => 'head_declined',
                 'message' => 'Declined by site head'
             ),
@@ -61,7 +61,7 @@ class TaskHelper
                 'message' => 'Task edited by approver'
             ),
 
-            13 => array(
+            'approver_declined' => array(
                 'key' => 'approver_declined',
                 'message' => 'Declined by approver'
             ),
@@ -164,6 +164,16 @@ class TaskHelper
             $status_attributes
         );
         return $taskstatus;
+    }
+
+
+    public static function buttonInputApproveDecline($approve, $decline){
+        
+        $html = '<input type="hidden" name="accept[]" value="'.$approve.'" class="button is-success"/>';
+        $html .= '<input type="submit" name="accept[]" value="Approve" class="button is-success"/>';
+        $html .= '<input type="hidden" name="decline[]" value="'.$decline.'" class="button is-danger"/>';
+        $html .= '<input type="submit" name="decline[]" value="Decline" class="button is-danger"/>';
+        return $html;
     }
 
 }

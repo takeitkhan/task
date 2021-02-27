@@ -14,13 +14,11 @@
             <div class="card-data">
                 {{ Form::open(array('url' => route('taskstatus.store'), 'method' => 'POST', 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
                 {{ Form::hidden('task_id', $task->id ?? '') }}
-                {{ Form::hidden('task_message_handler', '1' ?? '') }}
 
-                @if(!empty($taskStatuss) && ($taskStatuss->code == 'declined' && auth()->user()->id == $taskStatuss->action_performed_by))
+                @if(!empty($taskStatuss) && ($taskStatuss->code == 'head_declined' && auth()->user()->id == $taskStatuss->action_performed_by))
                     <button class="button is-danger">Task Declined</button>
                 @else
-                    <input type="submit" name="accept" value="Accept" class="button is-success"/>
-                    <input type="submit" name="decline" value="Decline" class="button is-danger"/>
+                <?php echo Tritiyo\Task\Helpers\TaskHelper::buttonInputApproveDecline('head_accepted', 'head_declined');?>
                 @endif
 
                 {{ Form::close() }}

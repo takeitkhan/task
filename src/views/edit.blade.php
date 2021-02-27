@@ -44,6 +44,7 @@
             {{ Form::open(array('url' => route('tasks.update', $task->id), 'method' => 'PUT', 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
 
             {{ Form::hidden('task_type', $task->task_type ?? '') }}
+            {{ Form::hidden('task_assigned_to_head', $task->task_assigned_to_head ?? 'Yes') }}
 
             <div class="columns">
                 <div class="column is-3">

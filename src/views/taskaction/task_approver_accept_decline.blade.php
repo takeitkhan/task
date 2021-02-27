@@ -18,15 +18,18 @@
 
                 @if(!empty($taskStatus) && $taskStatus->code == 'declined' && auth()->user()->id == $taskStatus->action_performed_by)
                     <button class="button is-danger">Task Declined</button>
+                    
                 @elseif(!empty($taskStatuss)  && $taskStatuss->code == 'task_approver_edited')
-                    {{ Form::hidden('task_message_handler', '3' ?? '') }}
-                    <input type="submit" name="accept" value="Approve" class="button is-success"/>
-                    <input type="submit" name="decline" value="Decline" class="button is-danger"/>
+                    <?php echo Tritiyo\Task\Helpers\TaskHelper::buttonInputApproveDecline('approver_approved', 'approver_declined');?>
+
                 @elseif(!empty($taskStatuss)  && $taskStatuss->code == 'approver_approved')
                     <button class="button is-success">Task Approved</button>
+
+                @elseif(!empty($taskStatuss)  && $taskStatuss->code == 'approver_declined')
+                <button class="button is-danger">Task Declined</button>
+
                 @else
-                    <input type="submit" name="accept" value="Approve" class="button is-success"/>
-                    <input type="submit" name="decline" value="Decline" class="button is-danger"/>
+                    <?php echo Tritiyo\Task\Helpers\TaskHelper::buttonInputApproveDecline('approver_approved', 'approver_declined');?>
                 @endif
 
                 {{ Form::close() }}

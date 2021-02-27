@@ -54,6 +54,7 @@ class TaskStatusController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request->all());
         $validator = Validator::make($request->all(),
             [
                 'task_id' => 'required'
@@ -65,13 +66,14 @@ class TaskStatusController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         } else {
-            $taskMsgHandler = $request->task_message_handler;
-            if ($request->accept == true) {
-                $key = TaskHelper::getStatusKey($taskMsgHandler);
-                $message = TaskHelper::getStatusMessage($taskMsgHandler);
-            } else if ($request->decline == true) {
-                $key = TaskHelper::getStatusKey(11);
-                $message = TaskHelper::getStatusMessage(11);
+            //$taskMsgHandler = $request->task_message_handler;
+            
+            if (!empty($request->accept[1]) && $request->accept[1] == 'Approve') {
+                $key = TaskHelper::getStatusKey($request->accept[0]);
+                $message = TaskHelper::getStatusMessage($request->accept[0]);
+            } else if ($request->decline[1] == 'Decline') {
+                $key = TaskHelper::getStatusKey($request->decline[0]);
+                $message = TaskHelper::getStatusMessage($request->decline[0]);
             } else {
                 return redirect(route('tasks.index'))->with(['status' => 1, 'message' => 'Nothing performed']);
             }
@@ -87,7 +89,9 @@ class TaskStatusController extends Controller
             ]);
 
             try {
-                return redirect(route('tasks.show', $request->task_id))->with(['status' => 1, 'message' => 'Successfully created']);
+                //return redirect(route('tasks.show', $request->task_id))->with(['status' => 1, 'message' => 'Successfully created']);
+                return redirect()->back()->with(['status' => 1, 'message' => 'Successfully created']);
+
             } catch (\Exception $e) {
                 return view('task::create')->with(['status' => 0, 'message' => 'Error']);
             }
