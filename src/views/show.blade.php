@@ -51,35 +51,37 @@
         <div class="card-content">
             <div class="card-data">
                 <div class="columns" style="background: #48c774;">
-                    <div class="column is-2">Task Type</div>
+
+                    <div class="column is-3">Task Type</div>
+
                     <div class="column is-1">:</div>
                     <div class="column">
                         {{ $task->task_type ?? NULL }}
                     </div>
                 </div>
                 <div class="columns">
-                    <div class="column is-2">Task Name</div>
+                    <div class="column is-3">Task Name</div>
                     <div class="column is-1">:</div>
                     <div class="column">
                         {{ $task->task_name ?? NULL }}
                     </div>
                 </div>
                 <div class="columns">
-                    <div class="column is-2">Task Code</div>
+                    <div class="column is-3">Task Code</div>
                     <div class="column is-1">:</div>
                     <div class="column">
                         {{ $task->task_code ?? NULL }}
                     </div>
                 </div>
                 <div class="columns">
-                    <div class="column is-2">Project Manager</div>
+                    <div class="column is-3">Project Manager</div>
                     <div class="column is-1">:</div>
                     <div class="column">
                         {{ \App\Models\User::where('id', $task->user_id)->first()->name }}
                     </div>
                 </div>
                 <div class="columns">
-                    <div class="column is-2">Site Head</div>
+                    <div class="column is-3">Site Head</div>
                     <div class="column is-1">:</div>
                     <div class="column">
                         {{ \App\Models\User::where('id', $task->site_head)->first()->name }}
@@ -87,95 +89,112 @@
                 </div>
 
                 <div class="columns">
-                    <div class="column is-2">Project Name</div>
+                    <div class="column is-3">Project Name</div>
                     <div class="column is-1">:</div>
                     <div class="column">
                         {{ \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first()->name }}
                     </div>
                 </div>
                 <div class="columns">
-                    <div class="column is-2">Task Created Time</div>
+                    <div class="column is-3">Task Created Time</div>
                     <div class="column is-1">:</div>
                     <div class="column">
                         {{ $task->created_at }}
                     </div>
                 </div>
                 <div class="columns">
-                    <div class="column is-2">Task Details</div>
+                    <div class="column is-3">Task Details</div>
                     <div class="column is-1">:</div>
                     <div class="column">
                         {{ $task->task_details ?? NULL }}
                     </div>
                 </div>
                 <div class="columns">
+                    <div class="column is-3">Task Created For</div>
+                    <div class="column is-1">:</div>
+                    <div class="column">
+                        {{ $task->task_for ?? NULL }}
+                    </div>
+                </div>
+                <div class="columns">
                     <div class="column is-12">
                         @php
-                            $task_sites = \Tritiyo\Task\Models\TaskSite::where('task_id', $task->id)->get();
+                            $task_sites = DB::select('SELECT site_id FROM `tasks_site` WHERE task_id = '. $task->id .' GROUP BY site_id');
+                            $task_resources = DB::select('SELECT resource_id FROM `tasks_site` WHERE task_id = '. $task->id .' GROUP BY resource_id');
                             $task_vehicle = \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task->id)->get();
                             $task_material = \Tritiyo\Task\Models\TaskMaterial::where('task_id', $task->id)->get();
                         @endphp
-
-                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                            <tr>
-                                <th colspan="4">Site and Resource Information</th>
-                            </tr>
-                            <tr>
-                                <th>ID</th>
-                                <th>Task ID</th>
-                                <th>Site Code</th>
-                                <th>Resource ID</th>
-                            </tr>
-                            @foreach($task_sites as $data)
+                        @if(!empty($task_sites))
+                            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                                 <tr>
-                                    <td>{{ $data->id }}</td>
-                                    <td>{{ $data->task_id }}</td>
-                                    <td>{{ \Tritiyo\Site\Models\Site::where('id', $data->site_id)->first()->site_code  }}</td>
-                                    <td>{{ \App\Models\User::where('id', $data->resource_id )->first()->name }}</td>
+                                    <th colspan="4">Site and Resource Information</th>
                                 </tr>
-                            @endforeach
-                        </table>
-
-
-                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                            <tr>
-                                <th colspan="4">Vehicle Information</th>
-                            </tr>
-                            <tr>
-                                <th>ID</th>
-                                <th>Task ID</th>
-                                <th>Vehicle</th>
-                                <th>Rent</th>
-                            </tr>
-                            @foreach($task_vehicle as $data)
                                 <tr>
-                                    <td>{{ $data->id }}</td>
-                                    <td>{{ $data->task_id }}</td>
-                                    <td>{{ \Tritiyo\Vehicle\Models\Vehicle::where('id', $data->vehicle_id)->first()->name  }}</td>
-                                    <td>{{ $data->vehicle_rent  }}</td>
+                                    <th>Task ID</th>
+                                    <th>Site Code</th>
+                                    <th>Resource ID</th>
                                 </tr>
-                            @endforeach
-                        </table>
 
-                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                            <tr>
-                                <th colspan="4">Material Information</th>
-                            </tr>
-                            <tr>
-                                <th>ID</th>
-                                <th>Task ID</th>
-                                <th>Material</th>
-                                <th>Quantity</th>
-                            </tr>
-                            @foreach($task_material as $data)
                                 <tr>
-                                    <td>{{ $data->id }}</td>
-                                    <td>{{ $data->task_id }}</td>
-                                    <td>{{ \Tritiyo\Material\Models\Material::where('id', $data->material_id)->first()->name  }}</td>
-                                    <td>{{ $data->material_qty  }}</td>
+                                    <td>{{ $task->id }}</td>
+                                    <td>
+                                        @foreach($task_sites as $data)
+                                            {{ \Tritiyo\Site\Models\Site::where('id', $data->site_id)->first()->site_code  }}
+                                            <br/>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($task_resources as $data)
+                                            {{ \App\Models\User::where('id', $data->resource_id )->first()->name }}
+                                            <br/>
+                                        @endforeach
+                                    </td>
                                 </tr>
-                            @endforeach
-                        </table>
 
+                            </table>
+                        @endif
+                        @if($task_vehicle->count() > 0)
+                            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                                <tr>
+                                    <th colspan="4">Vehicle Information</th>
+                                </tr>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Task ID</th>
+                                    <th>Vehicle</th>
+                                    <th>Rent</th>
+                                </tr>
+                                @foreach($task_vehicle as $data)
+                                    <tr>
+                                        <td>{{ $data->id }}</td>
+                                        <td>{{ $data->task_id }}</td>
+                                        <td>{{ \Tritiyo\Vehicle\Models\Vehicle::where('id', $data->vehicle_id)->first()->name  }}</td>
+                                        <td>{{ $data->vehicle_rent  }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        @endif
+                        @if($task_material->count() > 0)
+                            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                                <tr>
+                                    <th colspan="4">Material Information</th>
+                                </tr>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Task ID</th>
+                                    <th>Material</th>
+                                    <th>Quantity</th>
+                                </tr>
+                                @foreach($task_material as $data)
+                                    <tr>
+                                        <td>{{ $data->id }}</td>
+                                        <td>{{ $data->task_id }}</td>
+                                        <td>{{ \Tritiyo\Material\Models\Material::where('id', $data->material_id)->first()->name  }}</td>
+                                        <td>{{ $data->material_qty  }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -2,6 +2,10 @@
 
 namespace Tritiyo\Task\Controllers;
 
+<<<<<<< HEAD
+=======
+use Carbon\Carbon;
+>>>>>>> 249b63d... view file changed
 use Tritiyo\Task\Helpers\TaskHelper;
 use Tritiyo\Task\Models\Task;
 use Tritiyo\Task\Models\TaskSite;
@@ -58,7 +62,11 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+<<<<<<< HEAD
         dd($request->all());
+=======
+        //dd($request->all());
+>>>>>>> 249b63d... view file changed
         $validator = Validator::make($request->all(),
             [
                 'project_id' => 'required',
@@ -71,6 +79,16 @@ class TaskController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         } else {
+<<<<<<< HEAD
+=======
+            if ($request->task_type == 'emergency') {
+                $dt = Carbon::now();
+                $task_for = $dt->toDateString();
+            } else {
+                $dt = Carbon::tomorrow();
+                $task_for = $dt->toDateString();
+            }
+>>>>>>> 249b63d... view file changed
             // store
             $attributes = [
                 'user_id' => auth()->user()->id,
@@ -80,6 +98,10 @@ class TaskController extends Controller
                 'task_name' => $request->task_name,
                 'site_head' => $request->site_head,
                 'task_details' => $request->task_details,
+<<<<<<< HEAD
+=======
+                'task_for' => $task_for ?? NULL,
+>>>>>>> 249b63d... view file changed
             ];
 
             try {
@@ -156,7 +178,11 @@ class TaskController extends Controller
                 'message' => TaskHelper::getStatusMessage('task_assigned_to_head')
             ]);
             return redirect()->back()->with('message', 'Saved successfully');
+<<<<<<< HEAD
            
+=======
+
+>>>>>>> 249b63d... view file changed
         }
 
         if (auth()->user()->isApprover(auth()->user()->id)) {

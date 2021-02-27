@@ -23,6 +23,10 @@ class CreateTasksTable extends Migration
             $table->integer('site_head');
             $table->text('task_details')->nullable();
             $table->enum('task_assigned_to_head', ['Yes', 'No'])->nullable();
+<<<<<<< HEAD
+=======
+            $table->date('task_for')->nullable();
+>>>>>>> 249b63d... view file changed
             $table->string('is_active')->default('1');
             $table->timestamps();
         });
