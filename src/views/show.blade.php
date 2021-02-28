@@ -116,8 +116,6 @@
                         {{ $task->task_for ?? NULL }}
                     </div>
                 </div>
-
-                asdfasdfas
                 <div class="columns">
                     <div class="column is-12">
                         @php
