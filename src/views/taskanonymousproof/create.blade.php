@@ -30,37 +30,49 @@
 @section('column_left')
     <article class="panel is-primary" id="app">
 
-        <?php $task_id = request()->get('task_id');?>
+        <?php
+        $disabled = 'disabled="disabled"';
+        $task_id = request()->get('task_id');
+        ?>
 
-            @include('task::layouts.tab')
-
+        @include('task::layouts.tab')
 
 
         <div class="customContainer">
 
-                {{ Form::open(array('url' => route('tasks.update', $task_id), 'method' => 'PUT', 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
+            {{ Form::open(array('url' => route('tasks.update', $task_id), 'method' => 'PUT', 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
 
             <div class="columns">
                 <div class="column is-9">
                     <div class="field">
                         <label for="task_details" class="label">Task Anonymous Proof Details</label>
                         <div class="control">
-                            <textarea class="textarea" rows="5" placeholder="Enter Task Anonymous Proof Details..." name="anonymous_proof_details" cols="50" id="anonymous_proof_details">{{$task->anonymous_proof_details}}</textarea>
+                            @if(auth()->user()->isManager(auth()->user()->id))
+                                @php
+                                    $disabled = '';
+                                @endphp
+                            @endif
+                            <textarea class="textarea" rows="5" placeholder="Enter Task Anonymous Proof Details..."
+                                      name="anonymous_proof_details" cols="50"
+                                      id="anonymous_proof_details" {{ $disabled }}>{{$task->anonymous_proof_details}}</textarea>
                         </div>
                     </div>
                 </div>
             </div>
 
-
-            <div class="columns">
-                <div class="column">
-                    <div class="field is-grouped">
-                        <div class="control">
-                            <button class="button is-success is-small">Save Changes</button>
+            @if(auth()->user()->isManager(auth()->user()->id))
+                <div class="columns">
+                    <div class="column">
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button class="button is-success is-small">Save Changes</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @else
+
+            @endif
             {{ Form::close() }}
         </div>
     </article>

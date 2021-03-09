@@ -27,16 +27,16 @@
         ])
     </nav>
 </section>
+<?php
+$task_id = request()->get('task_id');
+$task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
+?>
+@if(empty($task))
+    {{ Redirect::to('/dashboard') }}
+@else
 @section('column_left')
     <article class="panel is-primary" id="app">
-
-        <?php
-        $task_id = request()->get('task_id');
-        $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
-        ?>
-
         @include('task::layouts.tab')
-
         <div class="customContainer">
             <?php  if (!empty($taskrequisitionbill) && $taskrequisitionbill) {
                 $routeUrl = route('taskrequisitionbill.update', $taskrequisitionbill->id);
@@ -63,12 +63,14 @@
 
                         </div>
                     </div>
+                    <?php $projects = \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first(); ?>
                     <div class="columns">
                         <div class="column is-2">
                             <div class="field">
                                 {{ Form::label('project_id', 'Project', array('class' => 'label')) }}
                                 <div class="control">
-                                    <?php $projects = \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first(); ?>
+
+
                                     <input type="hidden" name="project_id" class="input is-small"
                                            value="{{$task->project_id}}"/>
                                     <input type="text" class="input is-small" value="{{$projects->name}}" readonly/>
@@ -95,7 +97,8 @@
                                     $taskSite = Tritiyo\Task\Models\TaskSite::where('task_id', $task->id)->first()->site_id;
                                     $getSite = Tritiyo\Site\Models\Site::where('id', $taskSite)->first()->site_code;
                                     ?>
-                                    <input type="hidden" name="site_id" class="input is-small" value="{{$taskSite}}"/>
+                                    <input type="hidden" name="site_id" class="input is-small"
+                                           value="{{$taskSite}}"/>
                                     <input type="text" class="input is-small" value="{{$getSite}}" readonly/>
                                 </div>
                             </div>
@@ -128,7 +131,8 @@
                                             <?php $vehicleName = \Tritiyo\Vehicle\Models\Vehicle::where('id', $veh->vehicle_id)->first()->name;?>
                                             <input type="hidden" name="vehicle_id" class="input is-small"
                                                    value="{{$veh->vehicle_id}}">
-                                            <input type="text" name="" class="input is-small" value="{{$vehicleName}}"
+                                            <input type="text" name="" class="input is-small"
+                                                   value="{{$vehicleName}}"
                                                    readonly>
                                         </div>
                                     </div>
@@ -164,7 +168,8 @@
                                             <?php $materialName = \Tritiyo\Material\Models\Material::where('id', $mat->material_id)->first()->name;?>
                                             <input type="hidden" name="material_id" class="input is-small"
                                                    value="{{$mat->material_id}}">
-                                            <input type="text" name="" class="input is-small" value="{{$materialName}}"
+                                            <input type="text" name="" class="input is-small"
+                                                   value="{{$materialName}}"
                                                    readonly>
                                         </div>
                                     </div>
@@ -317,7 +322,8 @@
                                 </div>
                             </div>
                             <div class="column is-2">
-                                <input class="input is-small" name="purchase[0]['pa_amount']" type="number" min="0" step=".01"
+                                <input class="input is-small" name="purchase[0]['pa_amount']" type="number" min="0"
+                                       step=".01"
                                        placeholder="PA Amount" required/>
                             </div>
                             <div class="column">
@@ -349,6 +355,8 @@
     @endphp
     @include('task::task_status_sidebar')
 @endsection
+
+@endif
 @section('cusjs')
 
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -424,15 +432,15 @@
             var counter = 1;
             //Transport
             $("#addrowTa").on("click", function () {
-                var cols = '<div class="ta'+counter+'">';
-                 cols += $('#ta_form').html();
-                 cols += '</div>';
+                var cols = '<div class="ta' + counter + '">';
+                cols += $('#ta_form').html();
+                cols += '</div>';
                 $("div#ta_wrap").append(cols);
 
-                $(".ta"+counter+" .where_to_where").attr('name', "transport["+counter+"]['where_to_where']");
-                $(".ta"+counter+" .transport_type").attr('name', "transport["+counter+"]['transport_type']");
-                $(".ta"+counter+" .ta_amount").attr('name', "transport["+counter+"]['ta_amount']");
-                $(".ta"+counter+" .ta_note").attr('name', "transport["+counter+"]['ta_note']");
+                $(".ta" + counter + " .where_to_where").attr('name', "transport[" + counter + "]['where_to_where']");
+                $(".ta" + counter + " .transport_type").attr('name', "transport[" + counter + "]['transport_type']");
+                $(".ta" + counter + " .ta_amount").attr('name', "transport[" + counter + "]['ta_amount']");
+                $(".ta" + counter + " .ta_note").attr('name', "transport[" + counter + "]['ta_note']");
 
                 counter++;
             });
@@ -440,14 +448,14 @@
             //Purchase
             $("#addrowPa").on("click", function () {
                 var counter = 1;
-                var cols_pa = '<div class="pa'+counter+'">';
-                    cols_pa += $('#pa_form').html();
-                    cols_pa += '</div>';
+                var cols_pa = '<div class="pa' + counter + '">';
+                cols_pa += $('#pa_form').html();
+                cols_pa += '</div>';
 
                 $("div#pa_wrap").append(cols_pa);
 
-                $(".pa"+counter+" .pa_amount").attr('name', "purchase["+counter+"]['pa_amount']");
-                $(".pa"+counter+" .pa_note").attr('name', "purchase["+counter+"]['pa_note']");
+                $(".pa" + counter + " .pa_amount").attr('name', "purchase[" + counter + "]['pa_amount']");
+                $(".pa" + counter + " .pa_note").attr('name', "purchase[" + counter + "]['pa_note']");
 
                 counter++;
             });

@@ -10,79 +10,108 @@ class TaskHelper
     public static function taskMessageHandler()
     {
         $task_statuses = array(
+            'task_created' => array(
+                'key' => 'task_created',
+                'message' => 'Task created by manager'
+            ),
+            'task_assigned_to_head' => array(
+                'key' => 'task_assigned_to_head',
+                'message' => 'Task assigned to head'
+            ),
             'head_accepted' => array(
                 'key' => 'head_accepted',
                 'message' => 'Task accepted by site head'
             ),
-            2 => array(
+            'head_declined' => array(
+                'key' => 'head_declined',
+                'message' => 'Declined by site head'
+            ),
+            'proof_given' => array(
                 'key' => 'proof_given',
                 'message' => 'Task proof given by site head'
+            ),
+            'task_approver_edited' => array(
+                'key' => 'task_approver_edited',
+                'message' => 'Task edited by approver'
             ),
             'approver_approved' => array(
                 'key' => 'approver_approved',
                 'message' => 'Task approved by approver'
             ),
-            'requisition_placed' => array(
-                'key' => 'requisition_placed',
-                'message' => 'Requisition placed by manager',
-            ),
-            'cfo_requisition_approved' => array(
-                'key' => 'cfo_requisition_approved',
-                'message' => 'Requisition approved by CFO'
-            ),
-            'accountant_sent' => array(
-                'key' => 'accountant_sent',
-                'message' => 'Requisition approved by accountant'
-            ),
-            'bill_submitted_by_resource' => array(
-                'key' => 'bill_submitted_by_resource',
-                'message' => 'Bill submitted by resource'
-            ),
-            'manager_bill_approved' => array(
-                'key' => 'manager_bill_approved',
-                'message' => 'Bill approved by manager'
-            ),
-            'cfo_bill_approved' => array(
-                'key' => 'cfo_bill_approved',
-                'message' => 'Bill approved by CFO'
-            ),
-            'accountant_bill_approved' => array(
-                'key' => 'accountant_bill_approved',
-                'message' => 'Bill approved by accountant'
-            ),
-
-            'head_declined' => array(
-                'key' => 'head_declined',
-                'message' => 'Declined by site head'
-            ),
-
-            'task_approver_edited' => array(
-                'key' => 'task_approver_edited',
-                'message' => 'Task edited by approver'
-            ),
-
             'approver_declined' => array(
                 'key' => 'approver_declined',
                 'message' => 'Declined by approver'
             ),
-            'cfo_requisition_declined' => array(
-                'key' => 'cfo_requisition_declined',
-                'message' => 'Requisition declined by CFO'
+
+            // Newly Added... Not yet used
+            'requisition_prepared_by_manager' => array(
+                'key' => 'requisition_prepared',
+                'message' => 'Requisition prepared by manager',
             ),
-            'accountant_requisition_declined' => array(
-                'key' => 'accountant_requisition_declined',
-                'message' => 'Requisition declined by accountant'
+            'requisition_submitted_by_manager' => array(
+                'key' => 'requisition_submitted_by_manager',
+                'message' => 'Requisition submitted by manager',
+            ),
+            'requisition_edited_by_cfo' => array(
+                'key' => 'requisition_edited_by_cfo',
+                'message' => 'Requisition edited by CFO',
+            ),
+            'requisition_approved_by_cfo' => array(
+                'key' => 'requisition_approved_by_cfo',
+                'message' => 'Requisition approved by CFO',
+            ),
+            'requisition_declined_by_cfo' => array(
+                'key' => 'requisition_declined_by_cfo',
+                'message' => 'Requisition declined by CFO',
             ),
 
-            'task_assigned_to_head' => array(
-                'key' => 'task_assigned_to_head',
-                'message' => 'Task assigned to head'
+            'requisition_edited_by_accountant' => array(
+                'key' => 'requisition_edited_by_accountant',
+                'message' => 'Requisition edited by accountant',
             ),
-            'task_created' => array(
-                'key' => 'task_created',
-                'message' => 'Task created by manager'
+            'requisition_approved_by_accountant' => array(
+                'key' => 'requisition_approved_by_accountant',
+                'message' => 'Requisition approved by accountant',
+            ),
+            'requisition_declined_by_accountant' => array(
+                'key' => 'requisition_declined_by_accountant',
+                'message' => 'Requisition declined by accountant',
+            ),
+            // Bill status... not yet used
+            'bill_prepared_by_resource' => array(
+                'key' => 'bill_prepared_by_resource',
+                'message' => 'Bill prepared by resource',
+            ),
+            'bill_submitted_by_resource' => array(
+                'key' => 'bill_submitted_by_resource',
+                'message' => 'Bill submitted by resource',
+            ),
+            'bill_edited_by_manager' => array(
+                'key' => 'bill_edited_by_manager',
+                'message' => 'Bill edited by manager',
+            ),
+            'bill_approved_by_manager' => array(
+                'key' => 'bill_approved_by_manager',
+                'message' => 'Bill approved by manager',
             ),
 
+            'bill_edited_by_cfo' => array(
+                'key' => 'bill_edited_by_cfo',
+                'message' => 'Bill edited by CFO',
+            ),
+            'bill_approved_by_cfo' => array(
+                'key' => 'bill_approved_by_cfo',
+                'message' => 'Bill approved by CFO',
+            ),
+
+            'bill_edited_by_accountant' => array(
+                'key' => 'bill_edited_by_accountant',
+                'message' => 'Bill edited by accountant',
+            ),
+            'bill_approved_by_accountant' => array(
+                'key' => 'bill_approved_by_accountant',
+                'message' => 'Bill approved by accountant',
+            )
         );
 
         return $task_statuses;
@@ -171,16 +200,18 @@ class TaskHelper
     }
 
 
-    public static function buttonInputApproveDecline($approve, $decline){
+    public static function buttonInputApproveDecline($approve, $decline)
+    {
 
-        $html = '<input type="hidden" name="accept[]" value="'.$approve.'" class="button is-success"/>';
+        $html = '<input type="hidden" name="accept[]" value="' . $approve . '" class="button is-success"/>';
         $html .= '<input type="submit" name="accept[]" value="Approve" class="button is-success"/>';
-        $html .= '<input type="hidden" name="decline[]" value="'.$decline.'" class="button is-danger"/>';
+        $html .= '<input type="hidden" name="decline[]" value="' . $decline . '" class="button is-danger"/>';
         $html .= '<input type="submit" name="decline[]" value="Decline" class="button is-danger"/>';
         return $html;
     }
 
-    public static function arrayExist($arr, $name, $value){
+    public static function arrayExist($arr, $name, $value)
+    {
         $collection = $arr->contains($name, $value);
         return $collection;
     }
@@ -189,16 +220,48 @@ class TaskHelper
     /**
      * Modal Helper
      */
-    public static function modalImage($id, $link){
-        $html = '<div id="'.$id.'" class="modal">';
+    public static function modalImage($id, $link)
+    {
+        $html = '<div id="' . $id . '" class="modal">';
         $html .= '<div class="modal-background"></div>';
-        $html .=    '<div class="modal-content">';
+        $html .= '<div class="modal-content">';
         $html .= '<p class="image is-4by3">';
-        $html .=  '<img src="'.$link.'"  width="auto"/>';
-        $html .=  '</p>';
-        $html .=   '</div>';
-        $html .=   '<button class="modal-close is-large" aria-label="close"></button>';
-        $html .=   '</div>';
+        $html .= '<img src="' . $link . '"  width="auto"/>';
+        $html .= '</p>';
+        $html .= '</div>';
+        $html .= '<button class="modal-close is-large" aria-label="close"></button>';
+        $html .= '</div>';
+        return $html;
+    }
+
+    public static function actionHelper(array $options = array())
+    {
+        $default = [
+            'code' => null,
+            'task_id' => null,
+            'action_performed_by' => null,
+            'performed_for' => null,
+            'requisition_id' => null,
+            'message' => null
+        ];
+
+        $new = (object)array_merge($default, $options);
+
+        //$approve_key, $decline_key = false, $showOrNot = false
+
+
+        $html = '<form action="" method="post">';
+        $html .= csrf_field();
+        $html .= '<input type="hidden" name="accept[]" value="Yes"/>';
+        $html .= '<input type="hidden" name="accept[]" value="' . $approve_key . '"/>';
+        $html .= '<input type="submit" name="accept[]" value="Approve" class="button is-success"/>';
+
+        if ($showOrNot == true) {
+            $html .= '<input type="hidden" name="decline[]" value="No"/>';
+            $html .= '<input type="hidden" name="decline[]" value="' . $decline_key . '"/>';
+            $html .= '<input type="submit" name="decline[]" value="Decline" class="button is-danger"/>';
+        }
+        $html .= '</form>';
         return $html;
     }
 

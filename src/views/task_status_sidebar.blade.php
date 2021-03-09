@@ -1,12 +1,17 @@
 {{--    <article class="panel is-primary">--}}
 {{--        <div class="customContainer">--}}
 
-@if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id))
+@if(auth()->user()->isManager(auth()->user()->id))
     @include('task::taskaction.ready_for_assign_to_head')
 @endif
-@if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id))
+@if(auth()->user()->isApprover(auth()->user()->id))
     @include('task::taskaction.task_approver_accept_decline')
 @endif
+
+
+{{--{!! Tritiyo\Task\Helpers\TaskHelper::actionHelper('task_approver_edited', true, true)  !!}--}}
+
+
 <div class="card tile is-child">
 
     <header class="card-header">

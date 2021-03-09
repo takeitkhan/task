@@ -72,7 +72,7 @@ class TaskProofController extends Controller
             ]);
 
             $resource_proof_image = [];
-            foreach($request->resource_proof as $items) {
+            foreach ($request->resource_proof as $items) {
                 //dd($items);
                 $resource_proof = time() . $items->getClientOriginalName();
                 $resource_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
@@ -80,21 +80,21 @@ class TaskProofController extends Controller
             }
 
             $vehicle_proof_image = [];
-            foreach($request->vehicle_proof as $items) {
+            foreach ($request->vehicle_proof as $items) {
                 $vehicle_proof = time() . $items->getClientOriginalName();
                 $vehicle_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
                 $vehicle_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $vehicle_proof);
             }
 
             $material_proof_image = [];
-            foreach($request->material_proof as $items) {
+            foreach ($request->material_proof as $items) {
                 $material_proof = time() . $items->getClientOriginalName();
                 $material_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
                 $material_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $material_proof);
             }
 
             $anonymous_proof_image = [];
-            foreach($request->anonymous_proof as $items) {
+            foreach ($request->anonymous_proof as $items) {
                 $anonymous_proof = time() . $items->getClientOriginalName();
                 $anonymous_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
                 $anonymous_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $anonymous_proof);
@@ -114,12 +114,12 @@ class TaskProofController extends Controller
             $taskproof = $this->taskproof->create($attributes);
 
             TaskHelper::statusUpdate([
-                'code' => TaskHelper::getStatusKey(2),
+                'code' => TaskHelper::getStatusKey('proof_given'),
                 'task_id' => $request->task_id,
                 'action_performed_by' => auth()->user()->id,
                 'performed_for' => null,
                 'requisition_id' => null,
-                'message' => TaskHelper::getStatusMessage(2)
+                'message' => TaskHelper::getStatusMessage('proof_given')
             ]);
 
             if ($taskproof == true) {

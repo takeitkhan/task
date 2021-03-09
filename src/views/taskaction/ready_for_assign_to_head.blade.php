@@ -3,7 +3,7 @@
         <header class="card-header">
             <p class="card-header-title" style="background: lemonchiffon">
                 <span class="icon"><i class="fas fa-tasks default"></i></span>
-                Ready for assign to head
+                Action Panel
             </p>
         </header>
         <div class="card-content">
