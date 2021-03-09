@@ -74,12 +74,29 @@ class TaskRequisitionBillController extends Controller
                 'task_site' => \Tritiyo\Task\Models\TaskSite::where('task_id', $task_id)->get()->toArray(),
                 'task_vehicle' => \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task_id)->get()->toArray(),
                 'task_material' => \Tritiyo\Task\Models\TaskMaterial::where('task_id', $task_id)->get()->toArray(),
+                'task_regular_amount' => array(
+                    'da' => array(
+                        'da_amount' => $request->get('da_amount'),
+                        'da_notes' => $request->get('da_notes')
+                    ),
+                    'labour' => array(
+                        'labour_amount' => $request->get('labour_amount'),
+                        'labour_notes' => $request->get('labour_notes')
+                    ),
+                    'other' => array(
+                        'other_amount' => $request->get('other_amount'),
+                        'other_notes' => $request->get('other_notes')
+                    )
+                ),
+                'task_transport_breakdown' => $request->get('transport'),
+                'task_purchase_breakdown' => $request->get('purchase')
             ];
             $chunck = TaskRequisitionBill::updateOrCreate(
                 array('task_id' => $task_id),
                 array('requisition_prepared_by_manager' => json_encode($chunck))
             );
 
+            //dd($chunck);
 
             try {
                 //  $taskrequisitionbill = $this->tasksite->create($arr);
