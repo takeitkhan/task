@@ -11,6 +11,6 @@ class TaskProof extends Model
 
     protected $table = 'tasks_proof';
     protected $fillable = [
-        'task_id', 'proof_sent_by', 'resource_proof', 'vehicle_proof', 'material_proof', 'lat_proof', 'long_proof'
+        'task_id', 'proof_sent_by', 'resource_proof', 'vehicle_proof', 'material_proof', 'anonymous_proof', 'lat_proof', 'long_proof'
     ];
 }

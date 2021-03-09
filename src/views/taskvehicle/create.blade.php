@@ -35,12 +35,9 @@
         </a>
 
         <?php $task_id = request()->get('task_id');?>
-        <p class="panel-tabs">
-            <a href="{{ route('tasks.edit', $task_id) }}?task_id={{$task_id}}">Task Information</a>
-            <a href="{{ route('tasks.site.edit', $task_id) }}?task_id={{$task_id}}" class="">Site Information</a>
-            <a class="is-active">Vehicle Information</a>
-            <a href="{{route('taskmaterial.create')}}?task_id={{$task_id}}" class="">Material Information</a>
-        </p>
+
+            @include('task::layouts.tab')
+
 
 
         <div class="customContainer">
@@ -86,13 +83,12 @@
 
                             <div class="column is-2">
                                 {{ Form::label('vehicle_rent', 'Vehicle Rent', array('class' => 'label')) }}
-                                {{ Form::text('vehicle_rent[]', $veh->vehicle_rent, array('class' => 'input')) }}
+                                {{ Form::text('vehicle_rent[]', $veh->vehicle_rent, array('class' => 'input is-small')) }}
                             </div>
                             <div class="column is-6">
                                 {{ Form::label('vehicle_note', 'Note', array('class' => 'label')) }}
-                                {{ Form::text('vehicle_note[]', $veh->vehicle_note, array('class' => 'input')) }}
+                                {{ Form::text('vehicle_note[]', $veh->vehicle_note, array('class' => 'input is-small')) }}
                             </div>
-
                             <div class="column is-1">
                                 <label></label> <br/>
                                 <button class="button is-danger is-small ibtnDel">Delete</button>

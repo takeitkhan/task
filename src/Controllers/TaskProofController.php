@@ -62,29 +62,51 @@ class TaskProofController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
+        //dd($request->file('resource_proof'));
         if (isset($request->task_id)) {
 
             $request->validate([
-                'resource_proof' => 'required|image|mimes:jpeg,png,jpg,gif,svg', //|max:2048,
-                'vehicle_proof' => 'required|image|mimes:jpeg,png,jpg,gif,svg', //|max:2048,
-                'material_proof' => 'required|image|mimes:jpeg,png,jpg,gif,svg' //|max:2048,
+                'resource_proof' => 'required', //|max:2048,
+                'vehicle_proof' => 'required', //|max:2048,
+                'material_proof' => 'required' //|max:2048,
             ]);
 
-            $resource_proof = time() . $request->resource_proof->getClientOriginalName();
-            $vehicle_proof = time() . $request->vehicle_proof->getClientOriginalName();
-            $material_proof = time() . $request->material_proof->getClientOriginalName();
+            $resource_proof_image = [];
+            foreach($request->resource_proof as $items) {
+                //dd($items);
+                $resource_proof = time() . $items->getClientOriginalName();
+                $resource_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
+                $resource_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $resource_proof);
+            }
 
-            $resource_proof_data = $request->resource_proof->move(public_path('proofs/' . date('Y') . date('m')), $resource_proof);
-            $vehicle_proof_data = $request->vehicle_proof->move(public_path('proofs/' . date('Y') . date('m')), $vehicle_proof);
-            $material_proof_data = $request->material_proof->move(public_path('proofs/' . date('Y') . date('m')), $material_proof);
+            $vehicle_proof_image = [];
+            foreach($request->vehicle_proof as $items) {
+                $vehicle_proof = time() . $items->getClientOriginalName();
+                $vehicle_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
+                $vehicle_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $vehicle_proof);
+            }
+
+            $material_proof_image = [];
+            foreach($request->material_proof as $items) {
+                $material_proof = time() . $items->getClientOriginalName();
+                $material_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
+                $material_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $material_proof);
+            }
+
+            $anonymous_proof_image = [];
+            foreach($request->anonymous_proof as $items) {
+                $anonymous_proof = time() . $items->getClientOriginalName();
+                $anonymous_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
+                $anonymous_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $anonymous_proof);
+            }
 
             $attributes = [
                 'task_id' => $request->task_id,
                 'proof_sent_by' => auth()->user()->id,
-                'resource_proof' => date('Y') . date('m') . '/' . $resource_proof,
-                'vehicle_proof' => date('Y') . date('m') . '/' . $vehicle_proof,
-                'material_proof' => date('Y') . date('m') . '/' . $material_proof,
+                'resource_proof' => implode(' | ', $resource_proof_image),
+                'vehicle_proof' => implode(' | ', $vehicle_proof_image),
+                'material_proof' => implode(' | ', $material_proof_image),
+                'anonymous_proof' => implode(' | ', $anonymous_proof_image),
                 'lat_proof' => null,
                 'long_proof' => null
             ];
@@ -102,7 +124,7 @@ class TaskProofController extends Controller
 
             if ($taskproof == true) {
                 return back()
-                    ->with('success', 'You have successfully upload image.');
+                    ->with('message', 'You have successfully upload image.')->with('status', '1');
             }
         } else {
             return 'You have not posted any proof under this task.';

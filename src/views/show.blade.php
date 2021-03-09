@@ -233,6 +233,18 @@
         </header>
 
         <div class="card-content">
+            @php $taskStatus = \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->orderBy('id', 'DESC')->get() @endphp
+            <?php //dump($taskStatus);?>
+            @foreach($taskStatus as $task_status)
+                @php
+                if($task_status->code == 'head_declined' || $task_status->code == 'approver_declined' || $task_status->code == 'cfo_declined' || $task_status->code == 'accountant_declined'){
+                        $msgClass = 'danger';
+                } else {
+                        $msgClass = 'success';
+                }
+                @endphp
+                <div class="task_status {{$msgClass}}">{{$task_status->message}}</div>
+            @endforeach
         </div>
     </div>
 @endsection
@@ -242,6 +254,22 @@
             width: 100%;
             font-size: 15px;
             text-align: center;
+        }
+        .task_status {
+            padding: .75rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: .25rem;
+        }
+        .task_status.success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .task_status.danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
         }
     </style>
 @endsection

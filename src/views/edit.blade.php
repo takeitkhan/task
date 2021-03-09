@@ -33,21 +33,18 @@
         <a style="display:block; float: right;" class="button is-small is-danger">
             <span><i class="fas fa-plus"></i> {{$task->task_type}}</span>
         </a>
-        <p class="panel-tabs">
-            <a class="is-active">Task Information</a>
-            <a href="{{route('tasks.site.edit', $task->id)}}" class="">Site Information</a>
-            <a href="{{route('taskvehicle.create')}}?task_id={{$task->id}}" class="">Vehicle Information</a>
-            <a href="{{route('taskmaterial.create')}}?task_id={{$task->id}}" class="">Material Information</a>
-        </p>
+            @include('task::layouts.tab')
+
 
 
         <div class="customContainer">
             {{ Form::open(array('url' => route('tasks.update', $task->id), 'method' => 'PUT', 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
 
             {{ Form::hidden('task_type', $task->task_type ?? '') }}
-            {{ Form::hidden('task_assigned_to_head', $task->task_assigned_to_head ?? 'Yes') }}
+            {{ Form::hidden('task_assigned_to_head', $task->task_assigned_to_head != null ?? 'Yes') }}
 
             <div class="columns">
+
                 <div class="column is-3">
                     <div class="field">
                         {{ Form::label('project_id', 'Project', array('class' => 'label')) }}
@@ -70,7 +67,7 @@
                     <div class="field">
                         {{ Form::label('task_name', 'Task Name', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::text('task_name', $task->task_name ?? NULL, ['class' => 'input', 'placeholder' => 'Enter Task Name...']) }}
+                            {{ Form::text('task_name', $task->task_name ?? NULL, ['class' => 'input is-small', 'placeholder' => 'Enter Task Name...']) }}
                         </div>
                     </div>
                 </div>

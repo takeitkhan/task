@@ -160,7 +160,7 @@ class TaskSiteController extends Controller
             }
         }
         //dd($request->all());
-        return redirect()->route('tasks.site.edit', $request->task_id)->with('message', 'Successfully saved')->with('status', 1);
+        //return redirect()->route('tasks.site.edit', $request->task_id)->with('message', 'Successfully saved')->with('status', 1);
         try {
             //$tasksite = $this->task->update($tasksite->id, $attributes);
 

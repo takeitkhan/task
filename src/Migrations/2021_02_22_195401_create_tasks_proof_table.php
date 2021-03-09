@@ -20,6 +20,7 @@ class CreateTasksProofTable extends Migration
             $table->string('resource_proof')->nullable();
             $table->string('vehicle_proof')->nullable();
             $table->string('material_proof')->nullable();
+            $table->string('anonymous_proof')->nullable();
             $table->string('lat_proof')->nullable();
             $table->string('long_proof')->nullable();
             $table->timestamps();

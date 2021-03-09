@@ -35,12 +35,9 @@
         </a>
 
         <?php $task_id = request()->get('task_id');?>
-        <p class="panel-tabs">
-            <a href="{{ route('tasks.edit', $task_id) }}?task_id={{$task_id}}">Task Information</a>
-            <a href="{{ route('tasks.site.edit', $task_id) }}?task_id={{$task_id}}" class="">Site Information</a>
-            <a href="{{ route('taskvehicle.create') }}?task_id={{$task_id}}" class="">Vehicle Information</a>
-            <a href="" class="is-active">Material Information</a>
-        </p>
+
+            @include('task::layouts.tab')
+
 
 
         <div class="customContainer">
@@ -86,16 +83,16 @@
                             </div>
                             <div class="column is-2">
                                 {{ Form::label('material_qty', 'Material Qty', array('class' => 'label')) }}
-                                {{ Form::text('material_qty[]', $mat->material_qty, array('class' => 'input')) }}
+                                {{ Form::text('material_qty[]', $mat->material_qty, array('class' => 'input is-small')) }}
                             </div>
 
                             <div class="column is-2">
                                 {{ Form::label('material_amount', 'Amount', array('class' => 'label')) }}
-                                {{ Form::text('material_amount[]', $mat->material_amount, array('class' => 'input')) }}
+                                {{ Form::text('material_amount[]', $mat->material_amount, array('class' => 'input is-small')) }}
                             </div>
                             <div class="column is-5">
                                 {{ Form::label('material_note', 'Note', array('class' => 'label')) }}
-                                {{ Form::text('material_note[]', $mat->material_note, array('class' => 'input')) }}
+                                {{ Form::text('material_note[]', $mat->material_note, array('class' => 'input is-small')) }}
                             </div>
 
                             <div class="column is-1">

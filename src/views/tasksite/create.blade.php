@@ -36,15 +36,8 @@
         }
         //$taskId = !empty($task_id) ?? $task_id;
         ?>
-        <p class="panel-tabs">
-            <a href="{{ !empty($taskId) ? route('tasks.edit', $taskId) : route('tasks.edit', $task_id)}}" class="">Task
-                Information</a>
-            <a class="is-active">Site Information</a>
-            <a href="{{ !empty($taskId) ? route('taskvehicle.create').'?task_id='.$taskId : route('taskvehicle.create', $task_id).'?task_id='.$taskId }}"
-               class="">Vehicle Information</a>
-            <a href="{{ !empty($taskId) ? route('taskmaterial.create').'?task_id='.$taskId : route('taskmaterial.create', $task_id).'?task_id='.$taskId }}"
-               class="">Material Information</a>
-        </p>
+
+            @include('task::layouts.tab')
 
         <div class="customContainer">
             <?php

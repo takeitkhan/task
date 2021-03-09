@@ -1,11 +1,8 @@
 <?php
 
 namespace Tritiyo\Task\Controllers;
-
-<<<<<<< HEAD
-=======
 use Carbon\Carbon;
->>>>>>> 249b63d... view file changed
+
 use Tritiyo\Task\Helpers\TaskHelper;
 use Tritiyo\Task\Models\Task;
 use Tritiyo\Task\Models\TaskSite;
@@ -62,11 +59,8 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-<<<<<<< HEAD
-        dd($request->all());
-=======
+
         //dd($request->all());
->>>>>>> 249b63d... view file changed
         $validator = Validator::make($request->all(),
             [
                 'project_id' => 'required',
@@ -79,8 +73,7 @@ class TaskController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         } else {
-<<<<<<< HEAD
-=======
+
             if ($request->task_type == 'emergency') {
                 $dt = Carbon::now();
                 $task_for = $dt->toDateString();
@@ -88,7 +81,6 @@ class TaskController extends Controller
                 $dt = Carbon::tomorrow();
                 $task_for = $dt->toDateString();
             }
->>>>>>> 249b63d... view file changed
             // store
             $attributes = [
                 'user_id' => auth()->user()->id,
@@ -98,14 +90,22 @@ class TaskController extends Controller
                 'task_name' => $request->task_name,
                 'site_head' => $request->site_head,
                 'task_details' => $request->task_details,
-<<<<<<< HEAD
-=======
+
                 'task_for' => $task_for ?? NULL,
->>>>>>> 249b63d... view file changed
             ];
 
             try {
                 $task = $this->task->create($attributes);
+
+                TaskHelper::statusUpdate([
+                    'code' => TaskHelper::getStatusKey('task_created'),
+                    'task_id' => $task->id,
+                    'action_performed_by' => auth()->user()->id,
+                    'performed_for' => null,
+                    'requisition_id' => null,
+                    'message' => TaskHelper::getStatusMessage('task_created')
+                ]);
+
                 return view('task::create', ['task' => $task]);
                 //return redirect(route('tasks.index'))->with(['status' => 1, 'message' => 'Successfully created']);
             } catch (\Exception $e) {
@@ -161,8 +161,22 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
+        $getResource = TaskSite::select('resource_id')->where('task_id', $task->id)->get();
+        if (isset($getResource)){
+            $checkResource = TaskHelper::arrayExist($getResource, 'resource_id', $request->site_head);
+            if ($checkResource == true) {
+                return redirect()->back()->with('message', 'This person already assign as resource.please at first remove from resource')->with('status', 0);
+            }
+        }
 
-        if (auth()->user()->isManager(auth()->user()->id) && $request->task_assigned_to_head) {
+        if (auth()->user()->isManager(auth()->user()->id) && $request->anonymous_proof_details) {
+            $atts = Task::find($task->id);
+            $atts->anonymous_proof_details = $request->anonymous_proof_details ?? null;
+            $atts->save();
+            return redirect()->back()->with('message', 'Saved successfully')->with('status', 1);
+        }
+
+        if (auth()->user()->isManager(auth()->user()->id) && $request->task_assigned_to_head == 'Yes') {
 
             $atts = Task::find($task->id);
             $atts->task_assigned_to_head = $request->task_assigned_to_head;
@@ -177,12 +191,7 @@ class TaskController extends Controller
                 'requisition_id' => null,
                 'message' => TaskHelper::getStatusMessage('task_assigned_to_head')
             ]);
-            return redirect()->back()->with('message', 'Saved successfully');
-<<<<<<< HEAD
-           
-=======
-
->>>>>>> 249b63d... view file changed
+            return redirect()->back()->with('message', 'Saved successfully')->with('status', 1);
         }
 
         if (auth()->user()->isApprover(auth()->user()->id)) {
@@ -207,7 +216,7 @@ class TaskController extends Controller
             'task_details' => $request->task_details,
             'task_assigned_to_head' => $request->task_assigned_to_head,
         ];
-        return redirect()->back()->with('message', 'Edited Successfully');
+        //return redirect()->back()->with('message', 'Edited Successfully')->with('status', 1);
         //dd($attributes);
         try {
             $task = $this->task->update($task->id, $attributes);
@@ -247,6 +256,12 @@ class TaskController extends Controller
     public function taskVehicleStore(Request $request)
     {
         dd($request->all());
+    }
+
+    //Task Anonymous Proof Details
+    public function anonymousProof($id){
+        $task = Task::find($id);
+        return view('task::taskanonymousproof.create', compact('task'));
     }
 
 }
