@@ -11,7 +11,9 @@
 
                 @if($task->task_assigned_to_head == 'Yes')
                     <div class="statusSuccessMessage">
-                        {{ \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->where('code', 'task_assigned_to_head')->first()->message }}
+{{--                        $taskStatuss = \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->where('action_performed_by', auth()->user()->id)--}}
+{{--                        ->orderBy('id', 'desc')->first();--}}
+                        {{ \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->orderBy('id', 'desc')->first()->message }}
                     </div>
                 @else
                     {{ Form::open(array('url' => route('tasks.update', $task->id), 'method' => 'PUT', 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}

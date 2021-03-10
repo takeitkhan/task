@@ -54,7 +54,7 @@ class TaskRequisitionBillController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
+        //dd($request->get('transport'));
 
         $validator = Validator::make($request->all(),
             [
@@ -67,7 +67,7 @@ class TaskRequisitionBillController extends Controller
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
-        } else{
+        } else {
             // store
             $chunck = [
                 'task' => \Tritiyo\Task\Models\Task::where('id', $task_id)->get()->toArray(),
@@ -96,7 +96,15 @@ class TaskRequisitionBillController extends Controller
                 array('requisition_prepared_by_manager' => json_encode($chunck))
             );
 
-            //dd($chunck);
+            $status = TaskHelper::statusUpdate([
+                'code' => \Tritiyo\Task\Helpers\TaskHelper::getStatusKey('requisition_prepared_by_manager'),
+                'task_id' => $task_id,
+                'action_performed_by' => auth()->user()->id,
+                'performed_for' => null,
+                'requisition_id' => $chunck->id,
+                'message' => \Tritiyo\Task\Helpers\TaskHelper::getStatusMessage('requisition_prepared_by_manager')
+            ]);
+            //dd($status);
 
             try {
                 //  $taskrequisitionbill = $this->tasksite->create($arr);
@@ -114,7 +122,7 @@ class TaskRequisitionBillController extends Controller
      * @param \Tritiyo\Task\Models\Task $taskrequisitionbill
      * @return \Illuminate\Http\Response
      */
-    public function show(TaskSite $taskrequisitionbill)
+    public function show(TaskRequisitionBill $taskrequisitionbill)
     {
         return view('task::show', ['task' => $taskrequisitionbill]);
     }
@@ -151,7 +159,7 @@ class TaskRequisitionBillController extends Controller
             ]);
         }
         //dd($request->all());
-        if($request->vehicle_id){
+        if ($request->vehicle_id) {
             $t = TaskRequisitionBill::where('task_id', $request->task_id);
             $t->delete();
             foreach ($request->vehicle_id as $key => $row) {

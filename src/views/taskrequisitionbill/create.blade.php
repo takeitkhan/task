@@ -45,6 +45,17 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                 $routeUrl = route('taskrequisitionbill.store');
                 $method = 'post';
             } ?>
+            <?php
+            if (!empty($taskrequisitionbill) && $taskrequisitionbill){
+                $requistion_data = json_decode($taskrequisitionbill->requisition_prepared_by_manager);
+                $da = $requistion_data->task_regular_amount->da;
+                $labour = $requistion_data->task_regular_amount->labour;
+                $other = $requistion_data->task_regular_amount->other;
+                $task_transport_breakdown = $requistion_data->task_transport_breakdown;
+                $task_purchase_breakdown = $requistion_data->task_purchase_breakdown;
+            }
+            //->task_regular_amount ;
+            ?>
 
             {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
 
@@ -199,7 +210,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                             <div class="field">
                                 {{ Form::label('da_amount', 'DA Amount', array('class' => 'label')) }}
                                 <div class="control">
-                                    {{ Form::number('da_amount', NULL, ['class' => 'input is-small',  'placeholder' => 'Enter DA amount...', 'min' => '0']) }}
+                                    {{ Form::number('da_amount', !empty($da) ? $da->da_amount : '', ['class' => 'input is-small',  'placeholder' => 'Enter DA amount...', 'min' => '0']) }}
                                 </div>
                             </div>
                         </div>
@@ -207,7 +218,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                             <div class="field">
                                 {{ Form::label('da_notes', 'DA Note', array('class' => 'label')) }}
                                 <div class="control">
-                                    {{ Form::text('da_notes', NULL, ['class' => 'input is-small' , 'placeholder' => 'Enter DA notes...']) }}
+                                    {{ Form::text('da_notes', !empty($da) ? $da->da_notes : '', ['class' => 'input is-small' , 'placeholder' => 'Enter DA notes...']) }}
                                 </div>
                             </div>
                         </div>
@@ -217,7 +228,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                             <div class="field">
                                 {{ Form::label('labour_amount', 'Labour Amount', array('class' => 'label')) }}
                                 <div class="control">
-                                    {{ Form::number('labour_amount', NULL, ['required', 'class' => 'input is-small', 'placeholder' => 'Enter labour amount...', 'v-model' => 'labour_amount']) }}
+                                    {{ Form::number('labour_amount', !empty($labour) ? $labour->labour_amount : '', ['required', 'class' => 'input is-small', 'placeholder' => 'Enter labour amount...', 'v-model' => 'labour_amount']) }}
                                 </div>
                             </div>
                         </div>
@@ -225,7 +236,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                             <div class="field">
                                 {{ Form::label('labour_notes', 'Labour Note', array('class' => 'label')) }}
                                 <div class="control">
-                                    {{ Form::text('labour_notes', NULL, ['required', 'class' => 'input is-small', 'placeholder' => 'Enter DA notes...']) }}
+                                    {{ Form::text('labour_notes', !empty($labour) ? $labour->labour_notes : '', ['required', 'class' => 'input is-small', 'placeholder' => 'Enter DA notes...']) }}
                                 </div>
                             </div>
                         </div>
@@ -237,7 +248,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                             <div class="field">
                                 {{ Form::label('other_amount', 'Other Amount', array('class' => 'label')) }}
                                 <div class="control">
-                                    {{ Form::number('other_amount', NULL, ['required', 'class' => 'input is-small', 'placeholder' => 'Enter other amount...', 'v-model' => 'other_amount']) }}
+                                    {{ Form::number('other_amount', !empty($other) ? $other->other_amount : '', ['required', 'class' => 'input is-small', 'placeholder' => 'Enter other amount...', 'v-model' => 'other_amount']) }}
                                 </div>
                             </div>
                         </div>
@@ -245,7 +256,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                             <div class="field">
                                 {{ Form::label('other_notes', 'Other Note', array('class' => 'label')) }}
                                 <div class="control">
-                                    {{ Form::text('other_notes', NULL, ['required', 'class' => 'input is-small', 'placeholder' => 'Enter other notes...']) }}
+                                    {{ Form::text('other_notes', !empty($other) ? $other->other_notes : '', ['required', 'class' => 'input is-small', 'placeholder' => 'Enter other notes...']) }}
                                 </div>
                             </div>
                         </div>
@@ -260,6 +271,48 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                         </div>
                     </div>
                     <div id="ta_wrap">
+                        @if(!empty($task_transport_breakdown))
+                            @foreach($task_transport_breakdown as $key => $item)
+                                <div class="columns">
+                                    <div class="column is-1">
+                                        <div class="block" style="margin-top: 3px;">
+                                            <span style="cursor: pointer;" class="tag is-danger ibtnDelTa">
+                                            Del <button class="delete is-small"></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="column is-3">
+                                        <input type="text" name="transport[{{$key}}][where_to_where]"
+                                               class="where_to_where input is-small" value="{{$item->where_to_where}}"/>
+                                    </div>
+                                    <div class="column is-2">
+                                        <div class="control">
+                                            <div class="select is-small">
+                                                <?php
+                                                $transports = [
+                                                    'Bus', 'Rickshaw', 'CNG', 'Taxi', 'Auto', 'Tempo', 'Van', 'Train', 'Boat', 'Other'
+                                                ];
+                                                ?>
+                                                <select name="transport[{{$key}}][transport_type]">
+                                                    <option>Select Transport Type</option>
+                                                    @foreach($transports as $transport)
+                                                        <option value="{{ $transport }}" {{$item->transport_type == $transport ? 'selected' : ''}}>{{ $transport }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="column is-2">
+                                        <input class="input is-small" name="transport[{{$key}}][ta_amount]" type="number" min="0"
+                                               step=".01" value="{{$item->ta_amount}}"/>
+                                    </div>
+                                    <div class="column">
+                                        <input class="input is-small" name="transport[{{$key}}][ta_note]" type="text"
+                                               value="{{$item->ta_note}}"/>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
                         <div class="columns">
                             <div class="column is-1">
                                 <div class="block" style="margin-top: 3px;">
@@ -270,7 +323,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                 </div>
                             </div>
                             <div class="column is-3">
-                                <input type="text" name="transport[0]['where_to_where']"
+                                <input type="text" name="transport[0][where_to_where]"
                                        class="where_to_where input is-small"
                                        placeholder="Where to Where" required/>
                             </div>
@@ -282,7 +335,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                             'Bus', 'Rickshaw', 'CNG', 'Taxi', 'Auto', 'Tempo', 'Van', 'Train', 'Boat', 'Other'
                                         ];
                                         ?>
-                                        <select name="transport[0]['transport_type']">
+                                        <select name="transport[0][transport_type]">
                                             <option>Select Transport Type</option>
                                             @foreach($transports as $transport)
                                                 <option value="{{ $transport }}">{{ $transport }}</option>
@@ -292,11 +345,11 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                 </div>
                             </div>
                             <div class="column is-2">
-                                <input class="input is-small" name="transport[0]['ta_amount']" type="number" min="0"
+                                <input class="input is-small" name="transport[0][ta_amount]" type="number" min="0"
                                        step=".01" placeholder="TA Amount" required/>
                             </div>
                             <div class="column">
-                                <input class="input is-small" name="transport[0]['ta_note']" type="text"
+                                <input class="input is-small" name="transport[0][ta_note]" type="text"
                                        placeholder="TA Note" required/>
                             </div>
                         </div>
@@ -312,6 +365,28 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                         </div>
                     </div>
                     <div id="pa_wrap">
+                        @if(!empty($task_purchase_breakdown))
+                            @foreach($task_purchase_breakdown as $item)
+                                <div class="columns">
+                                    <div class="column is-1">
+                                        <div class="block" style="margin-top: 3px;">
+                                        <span style="cursor: pointer;" class="tag is-danger ibtnDelPa">
+                                            Del <button class="delete is-small"></button>
+                                        </span>
+                                        </div>
+                                    </div>
+                                    <div class="column is-2">
+                                        <input class="input is-small" name="purchase[0][pa_amount]" type="number" min="0"
+                                               step=".01"
+                                               value="{{$item->pa_amount}}"/>
+                                    </div>
+                                    <div class="column">
+                                        <input class="input is-small" name="purchase[0][pa_note]" type="text"
+                                               value="{{$item->pa_note}}"/>
+                                </div>
+                            </div>
+                            @endforeach
+                       @endif
                         <div class="columns">
                             <div class="column is-1">
                                 <div class="block" style="margin-top: 3px;">
@@ -322,12 +397,12 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                 </div>
                             </div>
                             <div class="column is-2">
-                                <input class="input is-small" name="purchase[0]['pa_amount']" type="number" min="0"
+                                <input class="input is-small" name="purchase[0][pa_amount]" type="number" min="0"
                                        step=".01"
                                        placeholder="PA Amount" required/>
                             </div>
                             <div class="column">
-                                <input class="input is-small" name="purchase[0]['pa_note']" type="text"
+                                <input class="input is-small" name="purchase[0][pa_note]" type="text"
                                        placeholder="PA Note" required/>
                             </div>
                         </div>
@@ -437,10 +512,10 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                 cols += '</div>';
                 $("div#ta_wrap").append(cols);
 
-                $(".ta" + counter + " .where_to_where").attr('name', "transport[" + counter + "]['where_to_where']");
-                $(".ta" + counter + " .transport_type").attr('name', "transport[" + counter + "]['transport_type']");
-                $(".ta" + counter + " .ta_amount").attr('name', "transport[" + counter + "]['ta_amount']");
-                $(".ta" + counter + " .ta_note").attr('name', "transport[" + counter + "]['ta_note']");
+                $(".ta" + counter + " .where_to_where").attr('name', "transport[" + counter + "][where_to_where]");
+                $(".ta" + counter + " .transport_type").attr('name', "transport[" + counter + "][transport_type]");
+                $(".ta" + counter + " .ta_amount").attr('name', "transport[" + counter + "][ta_amount]");
+                $(".ta" + counter + " .ta_note").attr('name', "transport[" + counter + "][ta_note]");
 
                 counter++;
             });
@@ -454,8 +529,8 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
 
                 $("div#pa_wrap").append(cols_pa);
 
-                $(".pa" + counter + " .pa_amount").attr('name', "purchase[" + counter + "]['pa_amount']");
-                $(".pa" + counter + " .pa_note").attr('name', "purchase[" + counter + "]['pa_note']");
+                $(".pa" + counter + " .pa_amount").attr('name', "purchase[" + counter + "][pa_amount]");
+                $(".pa" + counter + " .pa_note").attr('name', "purchase[" + counter + "][pa_note]");
 
                 counter++;
             });
