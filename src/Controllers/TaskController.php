@@ -134,15 +134,6 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        $latest = \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->where('code', 'approver_approved')->orderBy('id', 'desc')->first();
-        $requisition = \Tritiyo\Task\Models\TaskRequisitionBill::select('id')->where('task_id', $task->id)->first();
-        if ($latest) {
-            if($requisition){
-                return redirect(url('taskrequisitionbill/'.$requisition->id.'/edit/?task_id=' . $task->id . '&information=requisitionbillInformation'));
-            }else {
-                return redirect(url('taskrequisitionbill/create?task_id=' . $task->id . '&information=requisitionbillInformation'));
-            }
-        }
 
         if (auth()->user()->isApprover(auth()->user()->id)) {
             $chunck = array(

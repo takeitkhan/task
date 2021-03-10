@@ -45,7 +45,7 @@ class TaskHelper
 
             // Newly Added... Not yet used
             'requisition_prepared_by_manager' => array(
-                'key' => 'requisition_prepared',
+                'key' => 'requisition_prepared_by_manager',
                 'message' => 'Requisition prepared by manager',
             ),
             'requisition_submitted_by_manager' => array(
@@ -203,10 +203,10 @@ class TaskHelper
     public static function buttonInputApproveDecline($approve, $decline)
     {
 
-        $html = '<input type="hidden" name="accept[]" value="' . $approve . '" class="button is-success"/>';
-        $html .= '<input type="submit" name="accept[]" value="Approve" class="button is-success"/>';
-        $html .= '<input type="hidden" name="decline[]" value="' . $decline . '" class="button is-danger"/>';
-        $html .= '<input type="submit" name="decline[]" value="Decline" class="button is-danger"/>';
+        $html = '<input type="hidden" name="accept[approve_code]" value="' . $approve . '" class="button is-success"/>';
+        $html .= '<input type="submit" name="accept[approve]" value="Approve" class="button is-success"/>';
+        $html .= '<input type="hidden" name="decline[decline_code]" value="' . $decline . '" class="button is-danger"/>';
+        $html .= '<input type="submit" name="decline[decline]" value="Decline" class="button is-danger"/>';
         return $html;
     }
 

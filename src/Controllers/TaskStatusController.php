@@ -2,6 +2,7 @@
 
 namespace Tritiyo\Task\Controllers;
 
+use Tritiyo\Task\Models\TaskRequisitionBill;
 use Tritiyo\Task\Models\TaskStatus;
 use Tritiyo\Task\Helpers\TaskHelper;
 use Tritiyo\Task\Repositories\TaskStatus\TaskStatusInterface;
@@ -54,7 +55,7 @@ class TaskStatusController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
+//        dd($request->all());
         $validator = Validator::make($request->all(),
             [
                 'task_id' => 'required'
@@ -67,30 +68,44 @@ class TaskStatusController extends Controller
                 ->withInput();
         } else {
             //$taskMsgHandler = $request->task_message_handler;
-            
-            if (!empty($request->accept[1]) && $request->accept[1] == 'Approve') {
-                $key = TaskHelper::getStatusKey($request->accept[0]);
-                $message = TaskHelper::getStatusMessage($request->accept[0]);
-            } else if ($request->decline[1] == 'Decline') {
-                $key = TaskHelper::getStatusKey($request->decline[0]);
-                $message = TaskHelper::getStatusMessage($request->decline[0]);
+
+            if (!empty($request->accept['approve']) || !empty($request->accept['submit']) && $request->accept['approve'] == 'Approve') {
+                $status = !empty($request->accept['status']) ? $request->accept['status'] : null;
+                $key = TaskHelper::getStatusKey($request->accept['approve_code']);
+                $message = TaskHelper::getStatusMessage($request->accept['approve_code']);
+            } elseif (!empty($request->decline['decline']) || !empty($request->decline['submit']) && $request->decline['decline'] == 'Decline') {
+                $status = !empty($request->decline['status']) ? $request->decline['status']: null;
+                $key = TaskHelper::getStatusKey($request->decline['decline_code']);
+                $message = TaskHelper::getStatusMessage($request->decline['decline_code']);
             } else {
                 return redirect(route('tasks.index'))->with(['status' => 1, 'message' => 'Nothing performed']);
             }
-
 
             TaskHelper::statusUpdate([
                 'code' => $key,
                 'task_id' => $request->task_id,
                 'action_performed_by' => auth()->user()->id,
                 'performed_for' => null,
-                'requisition_id' => null,
+                'requisition_id' => $request->requisition_id,
                 'message' => $message
             ]);
 
+
+            //Requistion Bill Table Data Update
+            if (!empty($status) && !empty($request->requisition_id)) {
+                \Tritiyo\Task\Helpers\RequisitionBillHelper::RequisitionBillstatusUpdateOrInsert([
+                    'code' => $key,
+                    'columnName' => $request->accept['approve_code'],
+                    'task_id' => $request->task_id,
+                    'requisition_id' => $request->requisition_id,
+                    'message' => $status
+                ]);
+            }
+
+
             try {
                 //return redirect(route('tasks.show', $request->task_id))->with(['status' => 1, 'message' => 'Successfully created']);
-                return redirect()->back()->with(['status' => 1, 'message' => 'Successfully created']);
+                return redirect()->back()->with(['status' => 1, 'message' => 'Successfully Applied']);
 
             } catch (\Exception $e) {
                 return view('task::create')->with(['status' => 0, 'message' => 'Error']);

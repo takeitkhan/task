@@ -36,14 +36,10 @@
                 <span><i class="fas fa-plus"></i> Emergency Task</span>
             </a>
         @endif
-        <p class="panel-tabs">
-            <a class="is-active">Task Information</a>
-            @if(!empty($task) && $task->id)
-                <a href="{{ route('tasksites.create') }}?task_id={{$task->id}}" class="">Site Information</a>
-                <a href="{{route('taskvehicle.create')}}?task_id={{$task->id}}" class="">Vehicle Information</a>
-                <a href="{{route('taskmaterial.create')}}?task_id={{$task->id}}" class="">Material Information</a>
-            @endif
-        </p>
+
+        @if(!empty($task) && $task->id)
+            @include('task::layouts.tab')
+        @endif
 
 
         <div class="customContainer">
@@ -85,7 +81,7 @@
                     <div class="field">
                         {{ Form::label('task_name', 'Task Name', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::text('task_name', $task->task_name ?? NULL, ['class' => 'input', 'placeholder' => 'Enter Task Name...']) }}
+                            {{ Form::text('task_name', $task->task_name ?? NULL, ['class' => 'input is-small', 'placeholder' => 'Enter Task Name...']) }}
                         </div>
                     </div>
                 </div>

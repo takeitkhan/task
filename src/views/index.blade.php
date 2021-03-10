@@ -38,6 +38,11 @@
     </nav>
 </section>
 {{-- ||--}}
+<?php
+function userAccess($arg){
+    return auth()->user()->$arg(auth()->user()->id);
+}
+?>
 @section('column_left')
     <div class="columns is-multiline">
         @if(!empty($tasks))
@@ -61,6 +66,35 @@
                 @foreach($tasks->where('user_id', auth()->user()->id) as $task)
                     @include('task::tasklist.index_template')
                 @endforeach
+            {{--   Cfo--}}
+            @elseif(auth()->user()->isCFO(auth()->user()->id))
+                @php
+                    $getCFOTask =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
+                                    ->where('tasks_requisition_bill.requisition_submitted_by_manager', 'Yes')
+                                    ->get();
+                    //dd($getCFOTask);
+                @endphp
+
+                @foreach($getCFOTask as $task)
+                    @include('task::tasklist.index_template')
+                @endforeach
+
+            {{--  Accountant          --}}
+            @elseif(auth()->user()->isAccountant(auth()->user()->id))
+                @php
+                    $getAccountantTask =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
+                                    ->where('tasks_requisition_bill.requisition_approved_by_cfo', 'Yes')
+                                    ->get();
+                    //dd($getCFOTask);
+                @endphp
+
+                @foreach($getAccountantTask as $task)
+                    @include('task::tasklist.index_template')
+                @endforeach
+
+
+
+            {{--   End         --}}
             @endif
 
         @endif

@@ -2,11 +2,14 @@
 {{--        <div class="customContainer">--}}
 
 @if(auth()->user()->isManager(auth()->user()->id))
-    @include('task::taskaction.ready_for_assign_to_head')
+{{--    @include('task::taskaction.ready_for_assign_to_head')--}}
 @endif
 @if(auth()->user()->isApprover(auth()->user()->id))
-    @include('task::taskaction.task_approver_accept_decline')
+{{--    @include('task::taskaction.task_approver_accept_decline')--}}
 @endif
+
+
+@include('task::taskaction.accept_decline')
 
 
 {{--{!! Tritiyo\Task\Helpers\TaskHelper::actionHelper('task_approver_edited', true, true)  !!}--}}

@@ -8,14 +8,14 @@ use Tritiyo\Task\Controllers\TaskProofController;
 use Tritiyo\Task\Controllers\TaskStatusController;
 use Tritiyo\Task\Controllers\TaskRequisitionBillController;
 
-Route::group(['middleware' => ['web', 'role:1,2,3,8']], function () {
+Route::group(['middleware' => ['web', 'role:1,2,3,4,5,8']], function () {
     //TaskStatus
     Route::resources([
         'taskstatus' => TaskStatusController::class,
     ]);
 });
 
-Route::group(['middleware' => ['web', 'role:1,2,3,8']], function () {
+Route::group(['middleware' => ['web', 'role:1,2,3,4,5,8']], function () {
     Route::any('tasks/search', [TaskController::class, 'search'])->name('tasks.search');
     Route::resources([
         'tasks' => TaskController::class,
@@ -23,7 +23,7 @@ Route::group(['middleware' => ['web', 'role:1,2,3,8']], function () {
     Route::get('tasks/anonymousproof/{id}', [TaskController::class, 'anonymousProof'])->name('tasks.anonymousproof.edit');
 });
 
-Route::group(['middleware' => ['web', 'role:1,3,8']], function () {
+Route::group(['middleware' => ['web', 'role:1,3,4,5,8']], function () {
     Route::resources([
         'tasksites' => TaskSiteController::class,
     ]);

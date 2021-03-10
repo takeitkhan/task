@@ -43,15 +43,26 @@
                             <span class="icon is-small"><i class="fas fa-eye"></i></span>
                         </a>
 
-                        @if (auth()->user()->isManager(auth()->user()->id)  || auth()->user()->isApprover(auth()->user()->id) || auth()->user()->isAdmin(auth()->user()->id))
-                            <a href="{{ route('tasks.edit', $task->id) }}"
-                               class="level-item"
-                               title="View all transaction">
-                                                    <span class="icon is-info is-small"><i
-                                                            class="fas fa-edit"></i></span>
+                        <?php
+                        $latest = \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->where('code', 'approver_approved')->orderBy('id', 'desc')->first();
+                        $requisition = \Tritiyo\Task\Models\TaskRequisitionBill::select('id')->where('task_id', $task->id)->first();
+                        if ($latest) {
+                            if($requisition){
+                                $taskEditUrl = url('taskrequisitionbill/'.$requisition->id.'/edit/?task_id=' . $task->id . '&information=requisitionbillInformation');
+                            }else {
+                                $taskEditUrl = url('taskrequisitionbill/create?task_id=' . $task->id . '&information=requisitionbillInformation');
+                            }
+                        } else{
+                            $taskEditUrl = route('tasks.edit', $task->id);
+                        }
+                        ?>
+                        <!-- userAccess() assign to  index.blade   -->
+                        @if (userAccess('isManager') || userAccess('isApprover') || userAccess('isCFO') || userAccess('isAccountant') || userAccess('isAdmin'))
+                            <a href="{{ $taskEditUrl }}" class="level-item"  title="View all transaction">
+                                <span class="icon is-info is-small"><i  class="fas fa-edit"></i></span>
                             </a>
 
-                            {{--                            {!! delete_data('tasks.destroy',  $task->id) !!}--}}
+                            {{--  {!! delete_data('tasks.destroy',  $task->id) !!}--}}
                         @endif
                     </div>
                 </nav>

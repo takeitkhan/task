@@ -17,19 +17,19 @@ class CreateTasksRequisitionBillTable extends Migration
             $table->id();
             $table->integer('task_id');
             $table->json('requisition_prepared_by_manager');
-            $table->integer('requisition_submitted_by_manager');
+            $table->enum('requisition_submitted_by_manager', ['Yes']);
             $table->json('requisition_edited_by_cfo');
             $table->enum('requisition_approved_by_cfo', ['Yes', 'No']);
             $table->json('requisition_edited_by_accountant');
             $table->enum('requisition_approved_by_accountant', ['Yes', 'No']);
             $table->json('bill_prepared_by_resource');
-            $table->integer('bill_submitted_by_resource');
+            $table->enum('bill_submitted_by_resource', ['Yes']);
             $table->json('bill_edited_by_manager');
-            $table->integer('bill_approved_by_manager');
+            $table->enum('bill_approved_by_manager', ['Yes']);
             $table->json('bill_edited_by_cfo');
-            $table->integer('bill_approved_by_cfo');
+            $table->enum('bill_approved_by_cfo', ['Yes']);
             $table->json('bill_edited_by_accountant');
-            $table->integer('bill_approved_by_accountant');
+            $table->enum('bill_approved_by_accountant', ['Yes']);
             $table->timestamps();
         });
     }
