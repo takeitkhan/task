@@ -44,7 +44,7 @@ $requisitionbillInformation = 'requisitionbillInformation';
     $collection = Tritiyo\Task\Helpers\TaskHelper::arrayExist($taskStsApproverApproved, 'code', 'approver_approved');
     ?>
     @if($collection == true)
-        @if( auth()->user()->isCFO(auth()->user()->id) || auth()->user()->isManager(auth()->user()->id || auth()->user()->isAccountant(auth()->user()->id)))
+        @if( auth()->user()->isCFO(auth()->user()->id) || auth()->user()->isManager(auth()->user()->id) || auth()->user()->isAccountant(auth()->user()->id))
             <a class="{{request()->get('information') == $requisitionbillInformation ? 'is-active' : ''}}"
                href="{{$requisitionUrl}}?task_id={{$task_id}}&information={{$requisitionbillInformation}}" class="">Requisition
                 Information</a>

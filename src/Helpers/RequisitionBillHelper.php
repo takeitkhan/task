@@ -33,11 +33,11 @@ class RequisitionBillHelper
             // This Js used all form input
             $html = '<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>';
             $html .= "<script>";
-            $html .= "$('form#requisition_form input').attr('readonly', true);";
+            $html .= "$('form#requisition_form input').attr('disabled', true);";
             $html .= "$('form#requisition_form button').addClass('is-hidden');";
             $html .= "$('form#add_route button').addClass('is-hidden');";
-            $html .= "$('form#add_route input').attr('readonly', true);";
-            $html .= "$('form#add_route textarea').attr('readonly', true);";
+            $html .= "$('form#add_route input').attr('disabled', true);";
+            $html .= "$('form#add_route textarea').attr('disabled', true);";
             $html .= "</script>";
         } else {
             $html = '<form action="' . route('taskstatus.store') . '" method="post">';

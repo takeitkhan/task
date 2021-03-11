@@ -2,10 +2,10 @@
 {{--        <div class="customContainer">--}}
 
 @if(auth()->user()->isManager(auth()->user()->id))
-{{--    @include('task::taskaction.ready_for_assign_to_head')--}}
+    {{--    @include('task::taskaction.ready_for_assign_to_head')--}}
 @endif
 @if(auth()->user()->isApprover(auth()->user()->id))
-{{--    @include('task::taskaction.task_approver_accept_decline')--}}
+    {{--    @include('task::taskaction.task_approver_accept_decline')--}}
 @endif
 
 
@@ -14,8 +14,7 @@
 
 {{--{!! Tritiyo\Task\Helpers\TaskHelper::actionHelper('task_approver_edited', true, true)  !!}--}}
 
-
-<div class="card tile is-child">
+<div class="card tile is-child quick_view">
 
     <header class="card-header">
         <p class="card-header-title">
@@ -26,72 +25,39 @@
 
     <div class="card-content">
         <div class="card-data">
-
-            <div class="columns" style="background: #48c774;">
-
-                <div class="column is-3">Task Type</div>
-                <div class="column is-1">:</div>
-                <div class="column">
-                    {{ $task->task_type ?? NULL }}
-                </div>
-            </div>
-            <div class="columns">
-                <div class="column is-3">Task Name</div>
-                <div class="column is-1">:</div>
-                <div class="column">
-                    {{ $task->task_name ?? NULL }}
-                </div>
-            </div>
-            <div class="columns">
-                <div class="column is-3">Task Code</div>
-                <div class="column is-1">:</div>
-                <div class="column">
-                    {{ $task->task_code ?? NULL }}
-                </div>
-            </div>
-            <div class="columns">
-                <div class="column is-3">Project Manager</div>
-                <div class="column is-1">:</div>
-                <div class="column">
-                    {{ \App\Models\User::where('id', $task->user_id)->first()->name }}
-                </div>
-            </div>
-            <div class="columns">
-                <div class="column is-3">Site Head</div>
-                <div class="column is-1">:</div>
-                <div class="column">
-                    {{ \App\Models\User::where('id', $task->site_head)->first()->name }}
-                </div>
-            </div>
-
-            <div class="columns">
-                <div class="column is-3">Project Name</div>
-                <div class="column is-1">:</div>
-                <div class="column">
-                    {{ \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first()->name }}
-                </div>
-            </div>
-            <div class="columns">
-                <div class="column is-3">Task Created Time</div>
-                <div class="column is-1">:</div>
-                <div class="column">
-                    {{ $task->created_at }}
-                </div>
-            </div>
-            <div class="columns">
-                <div class="column is-3">Task Details</div>
-                <div class="column is-1">:</div>
-                <div class="column">
-                    {{ $task->task_details ?? NULL }}
-                </div>
-            </div>
-            <div class="columns">
-                <div class="column is-3">Task Created For</div>
-                <div class="column is-1">:</div>
-                <div class="column">
-                    {{ $task->task_for ?? NULL }}
-                </div>
-            </div>
+            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                <tr>
+                    <th colspan="4">Task General Information</th>
+                </tr>
+                <tr>
+                    <td><strong>Task Type</strong></td>
+                    <td><span style="background: #48c774; padding: 3px;">{{ $task->task_type ?? NULL }}</span></td>
+                    <td><strong>Task Name</strong></td>
+                    <td>{{ $task->task_name ?? NULL }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Task Code</strong></td>
+                    <td colspan="3">{{ $task->task_code ?? NULL }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Task Created Time</strong></td>
+                    <td>{{ $task->created_at }}</td>
+                    <td><strong>Task Created For</strong></td>
+                    <td>{{ $task->task_for ?? NULL }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Project Name</strong></td>
+                    <td>{{ \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first()->name }}</td>
+                    <td><strong>Project Manager</strong></td>
+                    <td>{{ \App\Models\User::where('id', $task->user_id)->first()->name }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4"><strong>Task Details</strong></td>
+                </tr>
+                <tr>
+                    <td colspan="4">{{ $task->task_details ?? NULL }}</td>
+                </tr>
+            </table>
             <div class="columns">
                 <div class="column is-12">
                     @php
@@ -194,3 +160,20 @@
         @include('task::taskaction.task_proof_images')
     @endif
 @endif
+
+
+@section('cusjs')
+    <style type="text/css">
+        .tile.is-child.quick_view {
+            margin-top: 15px !important;
+        }
+
+        .quick_view, .quick_view table {
+            font-size: 11px;
+        }
+
+        .quick_view table th {
+            color: darkblue;
+        }
+    </style>
+@endsection
