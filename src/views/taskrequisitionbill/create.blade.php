@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title')
-    Include Requisition Bill information of task
+    Include requisition information of this task
 @endsection
 
 <section class="hero is-white borderBtmLight">
@@ -49,30 +49,30 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
             } ?>
             <?php
 
-            if (!empty($taskrequisitionbill) && $taskrequisitionbill){
+            if (!empty($taskrequisitionbill) && $taskrequisitionbill) {
                 //MAnager Data when Login
-                if(auth()->user()->isManager(auth()->user()->id)){
-                    $rData =  $taskrequisitionbill->requisition_prepared_by_manager;
+                if (auth()->user()->isManager(auth()->user()->id)) {
+                    $rData = $taskrequisitionbill->requisition_prepared_by_manager;
                 }
                 //CFO Data When Login
-                if(auth()->user()->isCFO(auth()->user()->id)){
-                    if(!empty($taskrequisitionbill->requisition_edited_by_cfo)){
+                if (auth()->user()->isCFO(auth()->user()->id)) {
+                    if (!empty($taskrequisitionbill->requisition_edited_by_cfo)) {
                         $rData = $taskrequisitionbill->requisition_edited_by_cfo;
                     } else {
-                       $rData =  $taskrequisitionbill->requisition_prepared_by_manager;
+                        $rData = $taskrequisitionbill->requisition_prepared_by_manager;
                     }
                 }
 
                 //Accountant DAta When Login
-                if(auth()->user()->isAccountant(auth()->user()->id)){
-                    if(!empty($taskrequisitionbill->	requisition_edited_by_accountant)){
-                        $rData = $taskrequisitionbill->	requisition_edited_by_accountant;
+                if (auth()->user()->isAccountant(auth()->user()->id)) {
+                    if (!empty($taskrequisitionbill->requisition_edited_by_accountant)) {
+                        $rData = $taskrequisitionbill->requisition_edited_by_accountant;
                     } else {
-                        $rData =  $taskrequisitionbill->requisition_edited_by_cfo;
+                        $rData = $taskrequisitionbill->requisition_edited_by_cfo;
                     }
                 }
 
-                if(!empty($rData)){
+                if (!empty($rData)) {
                     $requistion_data = json_decode($rData);
                     $da = $requistion_data->task_regular_amount->da;
                     $labour = $requistion_data->task_regular_amount->labour;
@@ -92,6 +92,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
             @if(!empty($taskId))
                 {{ Form::hidden('tassk_id', $taskId ?? '') }}
             @endif
+
 
 
             <div class="columns">
@@ -294,10 +295,10 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                         <div class="column">
                             <strong>Transport Allowances Breakdown</strong>
                             @if(!empty($task_transport_breakdown))
-                            <a style="float: right">
+                                <a style="float: right">
                                             <span style="cursor: pointer;" class="tag is-normal is-success"
                                                   id="addrowTa">Add &nbsp; <strong>+</strong></span>
-                            </a>
+                                </a>
                             @endif
                         </div>
                         <div class="block">
@@ -310,9 +311,9 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                 <div class="columns">
                                     <div class="column is-1">
                                         <div class="block" style="margin-top: 3px;">
-{{--                                            <span style="cursor: pointer;" class="tag is-danger ibtnDelTa">--}}
-{{--                                            Del <button class="delete is-small"></button>--}}
-{{--                                            </span>--}}
+                                            {{--                                            <span style="cursor: pointer;" class="tag is-danger ibtnDelTa">--}}
+                                            {{--                                            Del <button class="delete is-small"></button>--}}
+                                            {{--                                            </span>--}}
                                         </div>
                                     </div>
                                     <div class="column is-3">
@@ -330,63 +331,66 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                                 <select name="transport[{{$ta_count = $key}}][transport_type]">
                                                     <option value="">Select Transport Type</option>
                                                     @foreach($transports as $transport)
-                                                        <option value="{{ $transport }}" {{$item->transport_type == $transport ? 'selected' : ''}}>{{ $transport }}</option>
+                                                        <option
+                                                            value="{{ $transport }}" {{$item->transport_type == $transport ? 'selected' : ''}}>{{ $transport }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="column is-2">
-                                        <input class="input is-small" name="transport[{{$ta_count = $key}}][ta_amount]" type="number" min="0"
+                                        <input class="input is-small" name="transport[{{$ta_count = $key}}][ta_amount]"
+                                               type="number" min="0"
                                                step=".01" value="{{$item->ta_amount}}"/>
                                     </div>
                                     <div class="column">
-                                        <input class="input is-small" name="transport[{{$ta_count = $key}}][ta_note]" type="text"
+                                        <input class="input is-small" name="transport[{{$ta_count = $key}}][ta_note]"
+                                               type="text"
                                                value="{{$item->ta_note}}"/>
                                     </div>
                                 </div>
                             @endforeach
                         @else
-                        <div class="columns">
-                            <div class="column is-1">
-                                <div class="block" style="margin-top: 3px;">
-                                    <a style="display: block">
+                            <div class="columns">
+                                <div class="column is-1">
+                                    <div class="block" style="margin-top: 3px;">
+                                        <a style="display: block">
                                             <span style="cursor: pointer;" class="tag is-success"
                                                   id="addrowTa">Add &nbsp; <strong>+</strong></span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="column is-3">
-                                <input type="text" name="transport[0][where_to_where]"
-                                       class="where_to_where input is-small"
-                                       placeholder="Where to Where" />
-                            </div>
-                            <div class="column is-2">
-                                <div class="control">
-                                    <div class="select is-small">
-                                        <?php
-                                        $transports = [
-                                            'Bus', 'Rickshaw', 'CNG', 'Taxi', 'Auto', 'Tempo', 'Van', 'Train', 'Boat', 'Other'
-                                        ];
-                                        ?>
-                                        <select name="transport[0][transport_type]">
-                                            <option>Select Transport Type</option>
-                                            @foreach($transports as $transport)
-                                                <option value="{{ $transport }}">{{ $transport }}</option>
-                                            @endforeach
-                                        </select>
+                                        </a>
                                     </div>
                                 </div>
+                                <div class="column is-3">
+                                    <input type="text" name="transport[0][where_to_where]"
+                                           class="where_to_where input is-small"
+                                           placeholder="Where to Where"/>
+                                </div>
+                                <div class="column is-2">
+                                    <div class="control">
+                                        <div class="select is-small">
+                                            <?php
+                                            $transports = [
+                                                'Bus', 'Rickshaw', 'CNG', 'Taxi', 'Auto', 'Tempo', 'Van', 'Train', 'Boat', 'Other'
+                                            ];
+                                            ?>
+                                            <select name="transport[0][transport_type]">
+                                                <option>Select Transport Type</option>
+                                                @foreach($transports as $transport)
+                                                    <option value="{{ $transport }}">{{ $transport }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-2">
+                                    <input class="input is-small" name="transport[0][ta_amount]" type="number" min="0"
+                                           step=".01" placeholder="TA Amount"/>
+                                </div>
+                                <div class="column">
+                                    <input class="input is-small" name="transport[0][ta_note]" type="text"
+                                           placeholder="TA Note"/>
+                                </div>
                             </div>
-                            <div class="column is-2">
-                                <input class="input is-small" name="transport[0][ta_amount]" type="number" min="0"
-                                       step=".01" placeholder="TA Amount" />
-                            </div>
-                            <div class="column">
-                                <input class="input is-small" name="transport[0][ta_note]" type="text"
-                                       placeholder="TA Note" />
-                            </div>
-                        </div>
                         @endif
                     </div>
                     <!-- End Transport -->
@@ -396,10 +400,10 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                         <div class="column">
                             <strong>Purchase Breakdown</strong>
                             @if(!empty($task_purchase_breakdown))
-                            <a style="float: right">
+                                <a style="float: right">
                                             <span style="cursor: pointer;" class="tag is-success"
                                                   id="addrowPa">Add &nbsp; <strong>+</strong></span>
-                            </a>
+                                </a>
                             @endif
                         </div>
                         <div class="block">
@@ -412,42 +416,44 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                 <div class="columns">
                                     <div class="column is-1">
                                         <div class="block" style="margin-top: 3px;">
-{{--                                        <span style="cursor: pointer;" class="tag is-danger ibtnDelPa">--}}
-{{--                                            Del <button class="delete is-small"></button>--}}
-{{--                                        </span>--}}
+                                            {{--                                        <span style="cursor: pointer;" class="tag is-danger ibtnDelPa">--}}
+                                            {{--                                            Del <button class="delete is-small"></button>--}}
+                                            {{--                                        </span>--}}
                                         </div>
                                     </div>
                                     <div class="column is-2">
-                                        <input class="input is-small" name="purchase[{{$pa_count = $key}}][pa_amount]" type="number" min="0"
+                                        <input class="input is-small" name="purchase[{{$pa_count = $key}}][pa_amount]"
+                                               type="number" min="0"
                                                step=".01"
                                                value="{{$item->pa_amount}}"/>
                                     </div>
                                     <div class="column">
-                                        <input class="input is-small" name="purchase[{{$pa_count = $key}}][pa_note]" type="text"
+                                        <input class="input is-small" name="purchase[{{$pa_count = $key}}][pa_note]"
+                                               type="text"
                                                value="{{$item->pa_note}}"/>
+                                    </div>
                                 </div>
-                            </div>
                             @endforeach
                         @else
-                        <div class="columns">
-                            <div class="column is-1">
-                                <div class="block" style="margin-top: 3px;">
-                                    <a style="display: block">
+                            <div class="columns">
+                                <div class="column is-1">
+                                    <div class="block" style="margin-top: 3px;">
+                                        <a style="display: block">
                                             <span style="cursor: pointer;" class="tag is-success"
                                                   id="addrowPa">Add &nbsp; <strong>+</strong></span>
-                                    </a>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="column is-2">
+                                    <input class="input is-small" name="purchase[0][pa_amount]" type="number" min="0"
+                                           step=".01"
+                                           placeholder="PA Amount"/>
+                                </div>
+                                <div class="column">
+                                    <input class="input is-small" name="purchase[0][pa_note]" type="text"
+                                           placeholder="PA Note"/>
                                 </div>
                             </div>
-                            <div class="column is-2">
-                                <input class="input is-small" name="purchase[0][pa_amount]" type="number" min="0"
-                                       step=".01"
-                                       placeholder="PA Amount" />
-                            </div>
-                            <div class="column">
-                                <input class="input is-small" name="purchase[0][pa_note]" type="text"
-                                       placeholder="PA Note" />
-                            </div>
-                        </div>
                         @endif
                     </div>
                     <!-- End Purchase -->
@@ -494,7 +500,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
             <div class="column is-3">
                 <input type="text" name=""
                        class="input is-small where_to_where"
-                       placeholder="Where to Where" />
+                       placeholder="Where to Where"/>
             </div>
             <div class="column is-2">
                 <div class="control">
@@ -515,11 +521,11 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
             </div>
             <div class="column is-2">
                 <input class="input is-small ta_amount" name="" type="number" min="0" step=".01"
-                       placeholder="TA Amount" />
+                       placeholder="TA Amount"/>
             </div>
             <div class="column">
                 <input class="input is-small ta_note" name="" type="text"
-                       placeholder="TA Note" />
+                       placeholder="TA Note"/>
             </div>
         </div>
     </script>
@@ -535,11 +541,11 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
             </div>
             <div class="column is-2">
                 <input class="input is-small pa_amount" name="" type="number" min="0" step=".01"
-                       placeholder="PA Amount" />
+                       placeholder="PA Amount"/>
             </div>
             <div class="column">
                 <input class="input is-small pa_note" name="" type="text"
-                       placeholder="PA Note" />
+                       placeholder="PA Note"/>
             </div>
         </div>
     </script>

@@ -218,7 +218,6 @@
         .table.is-fullwidth {
             width: 100%;
             font-size: 15px;
-            text-align: center;
         }
 
         .task_status {
