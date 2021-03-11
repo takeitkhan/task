@@ -169,7 +169,7 @@
         }
 
         .quick_view, .quick_view table {
-            font-size: 11px;
+            font-size: 12px;
         }
 
         .quick_view table th {

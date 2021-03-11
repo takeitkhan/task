@@ -50,74 +50,39 @@
 
         <div class="card-content">
             <div class="card-data">
-                <div class="columns" style="background: #48c774;">
-
-                    <div class="column is-3">Task Type</div>
-
-                    <div class="column is-1">:</div>
-                    <div class="column">
-                        {{ $task->task_type ?? NULL }}
-                    </div>
-                </div>
-                <div class="columns">
-                    <div class="column is-3">Task Name</div>
-                    <div class="column is-1">:</div>
-                    <div class="column">
-                        {{ $task->task_name ?? NULL }}
-                    </div>
-                </div>
-                <div class="columns">
-                    <div class="column is-3">Task Code</div>
-                    <div class="column is-1">:</div>
-                    <div class="column">
-                        {{ $task->task_code ?? NULL }}
-                    </div>
-                </div>
-                <div class="columns">
-                    <div class="column is-3">Project Manager</div>
-                    <div class="column is-1">:</div>
-                    <div class="column">
-                        {{ \App\Models\User::where('id', $task->user_id)->first()->name }}
-                    </div>
-                </div>
-                <div class="columns">
-                    <div class="column is-3">Site Head</div>
-                    <div class="column is-1">:</div>
-                    <div class="column">
-                        {{ \App\Models\User::where('id', $task->site_head)->first()->name }}
-                    </div>
-                </div>
-
-                <div class="columns">
-                    <div class="column is-3">Project Name</div>
-                    <div class="column is-1">:</div>
-                    <div class="column">
-                        {{ \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first()->name }}
-                    </div>
-                </div>
-                <div class="columns">
-                    <div class="column is-3">Task Created Time</div>
-                    <div class="column is-1">:</div>
-                    <div class="column">
-                        {{ $task->created_at }}
-                    </div>
-                </div>
-                <div class="columns">
-                    <div class="column is-3">Task Details</div>
-                    <div class="column is-1">:</div>
-                    <div class="column">
-                        {{ $task->task_details ?? NULL }}
-                    </div>
-                </div>
-                <div class="columns">
-                    <div class="column is-3">Task Created For</div>
-                    <div class="column is-1">:</div>
-                    <div class="column">
-                        {{ $task->task_for ?? NULL }}
-                    </div>
-                </div>
-
-                asdfasdfas
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <tr>
+                        <th colspan="4">Task General Information</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Task Type</strong></td>
+                        <td><span style="background: #48c774; padding: 3px;">{{ $task->task_type ?? NULL }}</span></td>
+                        <td><strong>Task Name</strong></td>
+                        <td>{{ $task->task_name ?? NULL }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Task Code</strong></td>
+                        <td colspan="3">{{ $task->task_code ?? NULL }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Task Created Time</strong></td>
+                        <td>{{ $task->created_at }}</td>
+                        <td><strong>Task Created For</strong></td>
+                        <td>{{ $task->task_for ?? NULL }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Project Name</strong></td>
+                        <td>{{ \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first()->name }}</td>
+                        <td><strong>Project Manager</strong></td>
+                        <td>{{ \App\Models\User::where('id', $task->user_id)->first()->name }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><strong>Task Details</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">{{ $task->task_details ?? NULL }}</td>
+                    </tr>
+                </table>
                 <div class="columns">
                     <div class="column is-12">
                         @php
@@ -237,11 +202,11 @@
             <?php //dump($taskStatus);?>
             @foreach($taskStatus as $task_status)
                 @php
-                if($task_status->code == 'head_declined' || $task_status->code == 'approver_declined' || $task_status->code == 'cfo_declined' || $task_status->code == 'accountant_declined'){
-                        $msgClass = 'danger';
-                } else {
-                        $msgClass = 'success';
-                }
+                    if($task_status->code == 'head_declined' || $task_status->code == 'approver_declined' || $task_status->code == 'cfo_declined' || $task_status->code == 'accountant_declined'){
+                            $msgClass = 'danger';
+                    } else {
+                            $msgClass = 'success';
+                    }
                 @endphp
                 <div class="task_status {{$msgClass}}">{{$task_status->message}}</div>
             @endforeach
@@ -255,17 +220,21 @@
             font-size: 15px;
             text-align: center;
         }
+
         .task_status {
-            padding: .75rem 1.25rem;
-            margin-bottom: 1rem;
+            padding: .30rem .50rem;
+            margin-bottom: .30rem;
             border: 1px solid transparent;
             border-radius: .25rem;
+            font-size: 11px;
         }
+
         .task_status.success {
             color: #155724;
             background-color: #d4edda;
             border-color: #c3e6cb;
         }
+
         .task_status.danger {
             color: #721c24;
             background-color: #f8d7da;
