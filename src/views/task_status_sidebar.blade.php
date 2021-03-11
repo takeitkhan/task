@@ -162,18 +162,17 @@
 @endif
 
 
-@section('cusjs')
-    <style type="text/css">
-        .tile.is-child.quick_view {
-            margin-top: 15px !important;
-        }
+<style type="text/css">
+    .tile.is-child.quick_view {
+        margin-top: 15px !important;
+    }
 
-        .quick_view, .quick_view table {
-            font-size: 12px;
-        }
+    .quick_view, .quick_view table {
+        font-size: 12px;
+    }
 
-        .quick_view table th {
-            color: darkblue;
-        }
-    </style>
-@endsection
+    .quick_view table th {
+        color: darkblue;
+    }
+</style>
+

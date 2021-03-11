@@ -4,7 +4,7 @@
 <fieldset class="pb-5">
     <div class="mb-3">
         <label>Vehicle Information</label>
-        @if(count($task_vehicle) > 0)
+        @if(isset($task_vehicle) && count($task_vehicle) > 0)
             <a style="float: right; display: block">
                 <span style="cursor: pointer;" class="tag is-success" id="add_vehicle_row">
                     Add Breakdown &nbsp; <strong>+</strong>
@@ -13,7 +13,7 @@
         @endif
     </div>
     @php $veh_count = 0 @endphp
-    @if(count($task_vehicle)  > 0)
+    @if(isset($task_vehicle) && count($task_vehicle)  > 0)
         @foreach($task_vehicle as $key => $veh)
             <div id="myVehicle">
                 <div class="columns s{{$key}}">

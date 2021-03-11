@@ -4,14 +4,14 @@
 <fieldset class="pb-5">
     <div class="mb-3">
         <label>Material Information</label>
-        @if(count($task_material) > 0)
+        @if(isset($task_material) && count($task_material) > 0)
             <a style="float: right; display: block">
                 <span style="cursor: pointer;" class="tag is-success"  id="add_material_row">Add Breakdown &nbsp; <strong>+</strong></span>
             </a>
         @endif
     </div>
     @php $mat_count = 0 @endphp
-    @if(count($task_material) > 0)
+    @if(isset($task_material) && count($task_material) > 0)
         @foreach($task_material as $key => $mat)
             <div id="myMaterial">
                 <div class="columns s{{$key}}">
