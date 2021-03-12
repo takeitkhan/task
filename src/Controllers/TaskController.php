@@ -107,7 +107,8 @@ class TaskController extends Controller
                     'message' => TaskHelper::getStatusMessage('task_created')
                 ]);
 
-                return view('task::create', ['task' => $task]);
+                //return view('task::edit', ['task' => $task]);
+                return redirect(route('tasks.edit', $task->id).'?task_id=' . $task->id . '&information=taskinformation')->with(['status' => 1, 'message' => 'Successfully created']);
                 //return redirect(route('tasks.index'))->with(['status' => 1, 'message' => 'Successfully created']);
             } catch (\Exception $e) {
                 return view('task::create')->with(['status' => 0, 'message' => 'Error']);

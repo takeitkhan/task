@@ -69,11 +69,11 @@ class TaskStatusController extends Controller
         } else {
             //$taskMsgHandler = $request->task_message_handler;
 
-            if (!empty($request->accept['submit']) && !empty($request->accept['approve'])  && $request->accept['approve'] == 'Approve') {
+            if (!empty($request->accept['submit']) || !empty($request->accept['approve'])  && $request->accept['approve'] == 'Approve') {
                 $status = !empty($request->accept['status']) ? $request->accept['status'] : null;
                 $key = TaskHelper::getStatusKey($request->accept['approve_code']);
                 $message = TaskHelper::getStatusMessage($request->accept['approve_code']);
-            } elseif (!empty($request->decline['submit']) && !empty($request->decline['decline']) && $request->decline['decline'] == 'Decline') {
+            } elseif (!empty($request->decline['submit']) || !empty($request->decline['decline']) && $request->decline['decline'] == 'Decline') {
                 $status = !empty($request->decline['status']) ? $request->decline['status']: null;
                 $key = TaskHelper::getStatusKey($request->decline['decline_code']);
                 $message = TaskHelper::getStatusMessage($request->decline['decline_code']);

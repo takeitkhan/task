@@ -25,7 +25,7 @@
                             <div class="control">
                                 <select name="material[{{$mat_count = $key}}][material_id]" id="material_select" class="input is-small"
                                         required>
-                                    <option value="">Select Material</option>
+                                    <option></option>
                                     @foreach($materials as $material)
                                         <option
                                             value="{{$material->id}}" {{ $mat->material_id == $material->id ? 'selected' : '' }} >{{$material->name}}</option>
@@ -36,12 +36,12 @@
                     </div>
                     <div class="column is-2">
                         {{ Form::label('material_qty', 'Material Qty', array('class' => 'label')) }}
-                        <input name="material[{{$mat_count = $key}}][material_qty]" type="text" value="{{$mat->material_qty}}" class="input is-small" required>
+                        <input name="material[{{$mat_count = $key}}][material_qty]" type="number" value="{{$mat->material_qty}}" class="input is-small" required>
                     </div>
 
                     <div class="column is-2">
                         {{ Form::label('material_amount', 'Amount', array('class' => 'label')) }}
-                        <input name="material[{{$mat_count = $key}}][material_amount]" type="text" value="{{$mat->material_amount}}" class="input is-small">
+                        <input name="material[{{$mat_count = $key}}][material_amount]" type="number" value="{{$mat->material_amount}}" class="input is-small">
                     </div>
                     <div class="column is-5">
                         {{ Form::label('material_note', 'Note', array('class' => 'label')) }}
@@ -60,6 +60,7 @@
                 <div class="column is-2">
                     <label for="material_id" class="label">Material</label>
                     <select name="material[0][material_id]" id="material_select" class="input is-small" required>
+                        <option></option>
                         @foreach($materials as $material)
                             <option value="{{$material->id}}">{{$material->name }}</option>
                         @endforeach
@@ -67,11 +68,11 @@
                 </div>
                 <div class="column is-2">
                     <label for="material_qty" class="label">Material Qty</label>
-                    <input name="material[0][material_qty]" type="text" value="" class="input is-small" required>
+                    <input name="material[0][material_qty]" type="number" value="" class="input is-small" required>
                 </div>
                 <div class="column is-2">
                     <label for="material_amount" class="label">Material Amount</label>
-                    <input name="material[0][material_amount]" type="text" value="" class="input is-small">
+                    <input name="material[0][material_amount]" type="number" value="" class="input is-small">
                 </div>
                 <div class="column is-5">
                     <label for="material_note" class="label">Note</label>
@@ -95,17 +96,18 @@
         cols += '<label for="material_id" class="label">Material</label>';
         cols += '<select name="material['+ mat_counter +'][material_id]" id="material_select" class="input is-small" required>';
         cols += '<?php foreach($materials as $material){?>';
+        cols += '<option></option>'
         cols += '<option value="<?php echo $material->id;?>"><?php echo $material->name;?></option>';
         cols += '<?php } ?>';
         cols += '<select>';
         cols += '</div>';
-        cols += '<div class="column is-2">';
+        cols += '<div class="column is-2">';number
         cols += '<label for="material_qty" class="label">Material Qty</label>';
-        cols += '<input name="material['+ mat_counter +'][material_qty]" type="text" value="" class="input is-small" required>';
+        cols += '<input name="material['+ mat_counter +'][material_qty]" type="number" value="" class="input is-small" required>';
         cols += '</div>';
         cols += '<div class="column is-2">';
         cols += '<label for="material_amount" class="label">Material Amount</label>';
-        cols += '<input name="material['+ mat_counter +'][material_amount]" type="text" value="" class="input is-small">';
+        cols += '<input name="material['+ mat_counter +'][material_amount]" type="number" value="" class="input is-small">';
         cols += '</div>';
         cols += '<div class="column is-5">';
         cols += '<label for="material_note" class="label">Note</label>';
@@ -124,14 +126,13 @@
         mat_counter -= 1
     });
 
-    $('#material_select').select2({
-        placeholder: "Select Material",
-        allowClear: true
-    });
 
     //Select 2
     function materialSelectRefresh() {
-        $('select#material_select').select2({});
+        $('select#material_select').select2({
+            placeholder: "Select Material",
+            allowClear: true
+        });
     }
 
     materialSelectRefresh()

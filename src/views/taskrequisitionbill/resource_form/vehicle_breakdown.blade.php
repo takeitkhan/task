@@ -27,7 +27,7 @@
                             <div class="control">
                                 <select name="vehicle[{{$veh_count = $key}}][vehicle_id]" id="vehicle_select"
                                         class="input is-small" required>
-                                    <option value="">Select Vehicle</option>
+                                    <option></option>
                                     @foreach($vehicles as $vehicle)
                                         <option
                                             value="{{$vehicle->id}}" {{ $veh->vehicle_id == $vehicle->id ? 'selected' : '' }} >{{$vehicle->name}}</option>
@@ -39,7 +39,7 @@
 
                     <div class="column is-2">
                         {{ Form::label('vehicle_rent', 'Vehicle Rent', array('class' => 'label')) }}
-                        <input name="vehicle[{{$veh_count = $key}}][vehicle_rent]" type="text" value="{{$veh->vehicle_rent}}" class="input is-small" required>
+                        <input name="vehicle[{{$veh_count = $key}}][vehicle_rent]" type="number" value="{{$veh->vehicle_rent}}" class="input is-small" required>
                     </div>
                     <div class="column is-6">
                         {{ Form::label('vehicle_note', 'Note', array('class' => 'label')) }}
@@ -58,6 +58,7 @@
                 <div class="column is-3">
                     <label for="vehicle_id" class="label">Vehicle</label>
                     <select name="vehicle[0][vehicle_id]" id="vehicle_select" class="input is-small" required>
+                            <option></option>
                         @foreach($vehicles as $vehicle)
                             <option value="{{$vehicle->id}}">{{$vehicle->name }}</option>
                         @endforeach
@@ -65,7 +66,7 @@
                 </div>
                 <div class="column is-2">
                     <label for="vehicle_rent" class="label">Vehicle Rent</label>
-                    <input name="vehicle[0][vehicle_rent]" type="text" value="" class="input is-small" required>
+                    <input name="vehicle[0][vehicle_rent]" type="number" value="" class="input is-small" required>
                 </div>
                 <div class="column is-6">
                     <label for="vehicle_note" class="label">Note</label>
@@ -87,6 +88,7 @@
             cols += '<div class="column is-3">';
             cols += '<label for="vehicle_id" class="label">Vehicle</label>';
             cols += '<select name="vehicle['+veh_counter+'][vehicle_id]" id="vehicle_select" class="input is-small" required>';
+            cols += '<option></option>';
             cols += '<?php foreach($vehicles as $vehicle){?>';
             cols += '<option value="<?php echo $vehicle->id;?>"><?php echo $vehicle->name;?></option>';
             cols += '<?php } ?>';
@@ -94,7 +96,7 @@
             cols += '</div>';
             cols += '<div class="column is-2">';
             cols += '<label for="vehicle_rent" class="label">Vehicle Rent</label>';
-            cols += '<input name="vehicle['+veh_counter+'][vehicle_rent]" type="text" value="" class="input is-small" required>';
+            cols += '<input name="vehicle['+veh_counter+'][vehicle_rent]" type="number" value="" class="input is-small" required>';
             cols += '</div>';
             cols += '<div class="column is-6">';
             cols += '<label for="vehicle_note" class="label">Note</label>';
@@ -112,15 +114,13 @@
             veh_counter -= 1
         });
 
-        $('#vehicle_select').select2({
-            placeholder: "Select Vehicle",
-            allowClear: true
-        });
 
         //Select 2
         function vehicleSelectRefresh() {
-            $('select#vehicle_select').select2({});
+            $('select#vehicle_select').select2({
+                placeholder: "Select Vehicle",
+                allowClear: true
+            });
         }
-
         vehicleSelectRefresh()
     </script>

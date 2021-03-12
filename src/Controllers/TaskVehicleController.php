@@ -121,6 +121,7 @@ class TaskVehicleController extends Controller
      */
     public function update(Request $request)
     {
+        //dd($request->all());
 
         if (auth()->user()->isApprover(auth()->user()->id)) {
             TaskHelper::statusUpdateOrInsert([
@@ -133,17 +134,19 @@ class TaskVehicleController extends Controller
             ]);
         }
         //dd($request->all());
-        if($request->vehicle_id){
+        if($request->task_id){
             $t = TaskVehicle::where('task_id', $request->task_id);
             $t->delete();
-            foreach ($request->vehicle_id as $key => $row) {
-                $attributes = [
-                    'task_id' => $request->task_id,
-                    'vehicle_id' => $request->vehicle_id[$key],
-                    'vehicle_rent' => $request->vehicle_rent[$key],
-                    'vehicle_note' => $request->vehicle_note[$key],
-                ];
-                $taskvehicle = $this->taskvehicle->create($attributes);
+            if(!empty($request->vehicle_id)){
+                foreach ($request->vehicle_id as $key => $row) {
+                    $attributes = [
+                        'task_id' => $request->task_id,
+                        'vehicle_id' => $request->vehicle_id[$key],
+                        'vehicle_rent' => $request->vehicle_rent[$key],
+                        'vehicle_note' => $request->vehicle_note[$key],
+                    ];
+                    $taskvehicle = $this->taskvehicle->create($attributes);
+                }
             }
         }
         //dd($request->all());

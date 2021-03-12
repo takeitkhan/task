@@ -71,7 +71,22 @@
                     <div class="field">
                         {{ Form::label('site_head', 'Site Head', array('class' => 'label')) }}
                         <div class="control">
-                            <?php $siteHead = \App\Models\User::where('role', 2)->pluck('name', 'id')->prepend('Select Site Head', ''); ?>
+                            <?php //$siteHead = \App\Models\User::where('role', 2)->pluck('name', 'id')->prepend('Select Site Head', ''); ?>
+                            <?php
+                            //dd(date('Y-m-d'));
+                            $today = date('Y-m-d');
+                            $siteHead = \App\Models\User::
+                            leftjoin('tasks', 'tasks.site_head', '!=', 'users.id')
+                                ->leftjoin('tasks_site', 'tasks_site.resource_id', '!=', 'users.id')
+                                ->where('users.role', 2)
+                                //->whereRaw("DATE_FORMAT(`tasks`.`created_at`, \'%Y-%m-%d\') = " . $today.')
+                                //->whereRaw(date_format('tasks.created_at', 'Y-m-d') . '=' . $today)
+                                ->whereDate('tasks.created_at', $today)
+                                //->toSql();
+                                ->pluck('users.name', 'users.id')
+                                ->prepend('Select Site Head', '');
+                            //dd($siteHead);
+                            ?>
                             {{ Form::select('site_head', $siteHead, $task->site_head ?? NULL, ['class' => 'input', 'id' => 'sitehead_select']) }}
                         </div>
                     </div>

@@ -13,7 +13,12 @@
 
 
 {{--{!! Tritiyo\Task\Helpers\TaskHelper::actionHelper('task_approver_edited', true, true)  !!}--}}
-
+@php
+    $task_sites = DB::select('SELECT site_id FROM `tasks_site` WHERE task_id = '. $task->id .' GROUP BY site_id');
+    $task_resources = DB::select('SELECT resource_id FROM `tasks_site` WHERE task_id = '. $task->id .' GROUP BY resource_id');
+    $task_vehicle = \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task->id)->get();
+    $task_material = \Tritiyo\Task\Models\TaskMaterial::where('task_id', $task->id)->get();
+@endphp
 <div class="card tile is-child quick_view">
 
     <header class="card-header">
@@ -57,88 +62,63 @@
                 <tr>
                     <td colspan="4">{{ $task->task_details ?? NULL }}</td>
                 </tr>
+                @if(!empty($task_sites))
+                    <tr>
+                        <td colspan="4"><strong>Site and resource information</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            @foreach($task_sites as $data)
+                                {{ \Tritiyo\Site\Models\Site::where('id', $data->site_id)->first()->site_code  }}
+                                <br/>
+                            @endforeach
+                        </td>
+                        <td colspan="2">
+                            @foreach($task_resources as $data)
+                                {{ \App\Models\User::where('id', $data->resource_id )->first()->name }}
+                                <br/>
+                            @endforeach
+                        </td>
+                    </tr>
+                @endif
+                @if($task_vehicle->count() > 0 || $task_material->count() > 0)
+                    <tr>
+                        <td colspan="2"><strong>Vehicle information</strong></td>
+                        <td colspan="2"><strong>Material information</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Rent</td>
+                                </tr>
+                                @foreach($task_vehicle as $data)
+                                    <tr>
+                                        <td>{{ \Tritiyo\Vehicle\Models\Vehicle::where('id', $data->vehicle_id)->first()->name  }}</td>
+                                        <td>{{ $data->vehicle_rent  }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        </td>
+                        <td colspan="2">
+                            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                                <tr>
+                                    <td>Material</td>
+                                    <td>Amount</td>
+                                </tr>
+                                @foreach($task_material as $data)
+                                    <tr>
+                                        <td>{{ \Tritiyo\Material\Models\Material::where('id', $data->material_id)->first()->name  }}</td>
+                                        <td>{{ $data->material_qty  }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        </td>
+                    </tr>
+
+                @endif
             </table>
-            <div class="columns">
-                <div class="column is-12">
-                    @php
-                        $task_sites = DB::select('SELECT site_id FROM `tasks_site` WHERE task_id = '. $task->id .' GROUP BY site_id');
-                        $task_resources = DB::select('SELECT resource_id FROM `tasks_site` WHERE task_id = '. $task->id .' GROUP BY resource_id');
-                        $task_vehicle = \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task->id)->get();
-                        $task_material = \Tritiyo\Task\Models\TaskMaterial::where('task_id', $task->id)->get();
-                    @endphp
-                    @if(!empty($task_sites))
-                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                            <tr>
-                                <th colspan="4">Site and Resource Information</th>
-                            </tr>
-                            <tr>
-                                <th>Task ID</th>
-                                <th>Site Code</th>
-                                <th>Resource ID</th>
-                            </tr>
-
-                            <tr>
-                                <td>{{ $task->id }}</td>
-                                <td>
-                                    @foreach($task_sites as $data)
-                                        {{ \Tritiyo\Site\Models\Site::where('id', $data->site_id)->first()->site_code  }}
-                                        <br/>
-                                    @endforeach
-                                </td>
-                                <td>
-                                    @foreach($task_resources as $data)
-                                        {{ \App\Models\User::where('id', $data->resource_id )->first()->name }}
-                                        <br/>
-                                    @endforeach
-                                </td>
-                            </tr>
-
-                        </table>
-                    @endif
-                    @if($task_vehicle->count() > 0)
-                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                            <tr>
-                                <th colspan="4">Vehicle Information</th>
-                            </tr>
-                            <tr>
-                                <th>ID</th>
-                                <th>Task ID</th>
-                                <th>Vehicle</th>
-                                <th>Rent</th>
-                            </tr>
-                            @foreach($task_vehicle as $data)
-                                <tr>
-                                    <td>{{ $data->id }}</td>
-                                    <td>{{ $data->task_id }}</td>
-                                    <td>{{ \Tritiyo\Vehicle\Models\Vehicle::where('id', $data->vehicle_id)->first()->name  }}</td>
-                                    <td>{{ $data->vehicle_rent  }}</td>
-                                </tr>
-                            @endforeach
-                        </table>
-                    @endif
-                    @if($task_material->count() > 0)
-                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                            <tr>
-                                <th colspan="4">Material Information</th>
-                            </tr>
-                            <tr>
-                                <th>ID</th>
-                                <th>Task ID</th>
-                                <th>Material</th>
-                                <th>Quantity</th>
-                            </tr>
-                            @foreach($task_material as $data)
-                                <tr>
-                                    <td>{{ $data->id }}</td>
-                                    <td>{{ $data->task_id }}</td>
-                                    <td>{{ \Tritiyo\Material\Models\Material::where('id', $data->material_id)->first()->name  }}</td>
-                                    <td>{{ $data->material_qty  }}</td>
-                                </tr>
-                            @endforeach
-                        </table>
-                    @endif
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -149,7 +129,7 @@
     $proofs = \Tritiyo\Task\Models\TaskProof::where('task_id', $task->id)->first();
 @endphp
 
-@if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id))
+@if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id) || auth()->user()->isCFO(auth()->user()->id) || auth()->user()->isAccountant(auth()->user()->id))
     @include('task::taskaction.task_proof_images')
 @else
     @if(empty($taskStatus) || $taskStatus->code == 'declined' && auth()->user()->isResource(auth()->user()->id))

@@ -134,18 +134,20 @@ class TaskMaterialController extends Controller
                 'message' => TaskHelper::getStatusMessage('task_approver_edited')
             ]);
         }
-        if($request->material_id){
+        if($request->task_id){
             $t = TaskMaterial::where('task_id', $request->task_id);
             $t->delete();
-            foreach ($request->material_id as $key => $row) {
-                $attributes = [
-                    'task_id' => $request->task_id,
-                    'material_id' => $request->material_id[$key],
-                    'material_qty' => $request->material_qty[$key],
-                    'material_amount' => $request->material_amount[$key],
-                    'material_note' => $request->material_note[$key],
-                ];
-                $taskmaterial = $this->taskmaterial->create($attributes);
+            if(!empty($request->material_id)) {
+                foreach ($request->material_id as $key => $row) {
+                    $attributes = [
+                        'task_id' => $request->task_id,
+                        'material_id' => $request->material_id[$key],
+                        'material_qty' => $request->material_qty[$key],
+                        'material_amount' => $request->material_amount[$key],
+                        'material_note' => $request->material_note[$key],
+                    ];
+                    $taskmaterial = $this->taskmaterial->create($attributes);
+                }
             }
         }
         //dd($request->all());

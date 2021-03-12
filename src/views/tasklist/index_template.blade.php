@@ -10,7 +10,7 @@
                 $taskEditUrl = url('taskrequisitionbill/create?task_id=' . $task->id . '&information=requisitionbillInformation');
             }
         } else {
-            $taskEditUrl = route('tasks.edit', $task->id);
+            $taskEditUrl = route('tasks.edit', $task->id).'?task_id=' . $task->id . '&information=taskinformation';
         }
         ?>
         <div style="position: absolute; right: 5px; top: 5px;">

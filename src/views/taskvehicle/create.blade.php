@@ -60,7 +60,7 @@
 
             @php
                 $vehicles = \Tritiyo\Vehicle\Models\Vehicle::get();
-                $getTaskVehicle = \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task_id)->get()
+                $getTaskVehicle = \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task_id)->get();
             @endphp
             @if(count( $getTaskVehicle) > 0)
                 @foreach( $getTaskVehicle as $veh)
@@ -70,11 +70,9 @@
                                 <div class="field">
                                     {{ Form::label('vehicle_id', 'Vehicle', array('class' => 'label')) }}
                                     <div class="control">
-                                        <select name="vehicle_id[]" id="vehicle_select" class="input" required>
-                                            <option value="">Select Vehicle</option>
+                                        <select name="vehicle_id[]" id="vehicle_select" class="input is-small" required>
                                             @foreach($vehicles as $vehicle)
-                                                <option
-                                                    value="{{$vehicle->id}}" {{ $veh->vehicle_id == $vehicle->id ? 'selected' : '' }} >{{$vehicle->name}}</option>
+                                                <option value="{{$vehicle->id}}" {{ $veh->vehicle_id == $vehicle->id ? 'selected' : '' }} >{{$vehicle->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -83,7 +81,7 @@
 
                             <div class="column is-2">
                                 {{ Form::label('vehicle_rent', 'Vehicle Rent', array('class' => 'label')) }}
-                                {{ Form::text('vehicle_rent[]', $veh->vehicle_rent, array('class' => 'input is-small')) }}
+                                {{ Form::number('vehicle_rent[]', $veh->vehicle_rent, array('class' => 'input is-small')) }}
                             </div>
                             <div class="column is-6">
                                 {{ Form::label('vehicle_note', 'Note', array('class' => 'label')) }}
@@ -91,7 +89,7 @@
                             </div>
                             <div class="column is-1">
                                 <label></label> <br/>
-                                <button class="button is-danger is-small ibtnDel">Delete</button>
+                                <a><span class="tag is-danger is-small ibtnDel">Delete</span></a>
                             </div>
 
                         </div>
@@ -102,7 +100,8 @@
                     <div class="columns">
                         <div class="column is-2">
                             <label for="vehicle_id" class="label">Vehicle</label>
-                            <select name="vehicle_id[]" id="vehicle_select" class="input" required>
+                            <select name="vehicle_id[]" id="vehicle_select" class="input is-small" required>
+                                    <option></option>
                                 @foreach($vehicles as $vehicle)
                                     <option value="{{$vehicle->id}}">{{$vehicle->name }}</option>
                                 @endforeach
@@ -110,15 +109,15 @@
                         </div>
                         <div class="column is-2">
                             <label for="vehicle_rent" class="label">Vehicle Rent</label>
-                            <input name="vehicle_rent[]" type="text" value="" class="input" required>
+                            <input name="vehicle_rent[]" type="number" value="" class="input is-small" required>
                         </div>
                         <div class="column is-6">
                             <label for="vehicle_note" class="label">Note</label>
-                            <input name="vehicle_note[]" type="text" value="" class="input" required>
+                            <input name="vehicle_note[]" type="text" value="" class="input is-small" required>
                         </div>
                         <div class="column is-1">
                             <label></label> <br/>
-                            <button class="button is-danger is-small ibtnDel">Delete</button>
+                            <a><span class="tag is-danger is-small ibtnDel">Delete</span></a>
                         </div>
                     </div>
                 </div>
@@ -146,36 +145,6 @@
     @include('task::task_status_sidebar')
 @endsection
 @section('cusjs')
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script type="text/javascript">
-        Vue.prototype.$axios = axios
-        new Vue({
-            el: '#app',
-            data: {
-                breakdowns: [{}],
-            },
-            methods: {
-                deleteRow(index, breakdown) {
-                    var idx = this.breakdowns.indexOf(breakdown);
-                    console.log(idx, index);
-                    if (idx > -1) {
-                        this.breakdowns.splice(idx, 1);
-                    }
-                },
-                addNewRow() {
-                    this.breakdowns.push({});
-                },
-                getInputName(index, dataName) {
-                    console, log(index);
-                    return "breakdowns[" + index + "][" + dataName + "]";
-                },
-            }
-        });
-    </script>
-
-
-
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
     <script>
@@ -188,6 +157,7 @@
                 cols += '<div class="column is-2">';
                 cols += '<label for="vehicle_id" class="label">Vehicle</label>';
                 cols += '<select name="vehicle_id[]" id="vehicle_select" class="input" required>';
+                cols += '<option></option>';
                 cols += '<?php foreach($vehicles as $vehicle){?>';
                 cols += '<option value="<?php echo $vehicle->id;?>"><?php echo $vehicle->name;?></option>';
                 cols += '<?php } ?>';
@@ -195,18 +165,18 @@
                 cols += '</div>';
                 cols += '<div class="column is-2">';
                 cols += '<label for="vehicle_rent" class="label">Vehicle Rent</label>';
-                cols += '<input name="vehicle_rent[]" type="text" value="" class="input" required>';
+                cols += '<input name="vehicle_rent[]" type="number" value="" class="input is-small" required>';
                 cols += '</div>';
                 cols += '<div class="column is-6">';
                 cols += '<label for="vehicle_note" class="label">Note</label>';
-                cols += '<input name="vehicle_note[]" type="text" value="" class="input" required>';
+                cols += '<input name="vehicle_note[]" type="text" value="" class="input is-small" required>';
                 cols +=  '</div>';
                 cols += '<div class="column is-1">';
-                cols += '<br/><button class="button is-danger is-small ibtnDel">Delete</button>';
+                cols += '<br/><a><span class="tag is-danger is-small ibtnDel">Delete</span></a>';
                 cols += '</div>';
                 cols += '</div>';
                 $("div#myTable").append(cols);
-                selectRefresh();
+                vehicleSelectRefresh();
                 counter++;
             });
 
@@ -219,23 +189,23 @@
 
     </script>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+
+{{--    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>--}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
+
     <script>
-        $('#vehicle_select').select2({
-            placeholder: "Select Vehicle",
-            allowClear: true
-        });
-
         //Select 2
-        function selectRefresh() {
-            $('select#vehicle_select').select2({});
+        function vehicleSelectRefresh() {
+            $('select#vehicle_select').select2({
+                placeholder: "Select vehicle",
+                allowClear: true,
+            });
         }
-
-        selectRefresh()
+        vehicleSelectRefresh();
     </script>
+
 
 
 

@@ -83,12 +83,12 @@
                             </div>
                             <div class="column is-2">
                                 {{ Form::label('material_qty', 'Material Qty', array('class' => 'label')) }}
-                                {{ Form::text('material_qty[]', $mat->material_qty, array('class' => 'input is-small')) }}
+                                {{ Form::number('material_qty[]', $mat->material_qty, array('class' => 'input is-small')) }}
                             </div>
 
                             <div class="column is-2">
                                 {{ Form::label('material_amount', 'Amount', array('class' => 'label')) }}
-                                {{ Form::text('material_amount[]', $mat->material_amount, array('class' => 'input is-small')) }}
+                                {{ Form::number('material_amount[]', $mat->material_amount, array('class' => 'input is-small')) }}
                             </div>
                             <div class="column is-5">
                                 {{ Form::label('material_note', 'Note', array('class' => 'label')) }}
@@ -97,7 +97,7 @@
 
                             <div class="column is-1">
                                 <label></label> <br/>
-                                <button class="button is-danger is-small ibtnDel">Delete</button>
+                                <a><span class="tag is-danger is-small ibtnDel">Delete</span></a>
                             </div>
 
                         </div>
@@ -108,7 +108,8 @@
                     <div class="columns">
                         <div class="column is-2">
                             <label for="material_id" class="label">Material</label>
-                            <select name="material_id[]" id="material_select" class="input" required>
+                            <select name="material_id[]" id="material_select" class="input is-small" required>
+                                <option></option>
                                 @foreach($materials as $material)
                                     <option value="{{$material->id}}">{{$material->name }}</option>
                                 @endforeach
@@ -116,19 +117,19 @@
                         </div>
                         <div class="column is-2">
                             <label for="material_qty" class="label">Material Qty</label>
-                            <input name="material_qty[]" type="text" value="" class="input" required>
+                            <input name="material_qty[]" type="number" value="" class="input is-small" required>
                         </div>
                         <div class="column is-2">
                             <label for="material_amount" class="label">Material Amount</label>
-                            <input name="material_amount[]" type="text" value="" class="input">
+                            <input name="material_amount[]" type="number" value="" class="input is-small">
                         </div>
                         <div class="column is-5">
                             <label for="material_note" class="label">Note</label>
-                            <input name="material_note[]" type="text" value="" class="input">
+                            <input name="material_note[]" type="text" value="" class="input is-small">
                         </div>
                         <div class="column is-1">
                             <label></label> <br/>
-                            <button class="button is-danger is-small ibtnDel">Delete</button>
+                            <a><span class="tag is-danger is-small ibtnDel">Delete</span></a>
                         </div>
                     </div>
                 </div>
@@ -202,6 +203,7 @@
                 cols += '<div class="column is-2">';
                 cols += '<label for="material_id" class="label">Material</label>';
                 cols += '<select name="material_id[]" id="material_select" class="input" required>';
+                cols += '<option></option>';
                 cols += '<?php foreach($materials as $material){?>';
                 cols += '<option value="<?php echo $material->id;?>"><?php echo $material->name;?></option>';
                 cols += '<?php } ?>';
@@ -209,23 +211,23 @@
                 cols += '</div>';
                 cols += '<div class="column is-2">';
                 cols += '<label for="material_qty" class="label">Material Qty</label>';
-                cols += '<input name="material_qty[]" type="text" value="" class="input" required>';
+                cols += '<input name="material_qty[]" type="number" value="" class="input is-small" required>';
                 cols += '</div>';
                 cols +=  '<div class="column is-2">';
                 cols +=  '<label for="material_amount" class="label">Material Amount</label>';
-                cols +=  '<input name="material_amount[]" type="text" value="" class="input">';
+                cols +=  '<input name="material_amount[]" type="number" value="" class="input is-small">';
                 cols +=  '</div>';
                 cols +=  '<div class="column is-5">';
                 cols +=  '<label for="material_note" class="label">Note</label>';
-                cols +=  '<input name="material_note[]" type="text" value="" class="input">';
+                cols +=  '<input name="material_note[]" type="text" value="" class="input is-small">';
                 cols +=  '</div>';
                 cols += '<div class="column is-1">';
-                cols += '<br/><button class="button is-danger is-small ibtnDel">Delete</button>';
+                cols += '<br/><a><span class="tag is-danger is-small ibtnDel">Delete</span></a>';
                 cols += '</div>';
                 cols += '</div>';
 
                 $("div#myTable").append(cols);
-                selectRefresh()
+                materialSelectRefresh()
                 counter++;
             });
 
@@ -238,22 +240,20 @@
 
     </script>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+{{--    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>--}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
     <script>
-        $('#material_select').select2({
-            placeholder: "Select Material",
-            allowClear: true
-        });
 
         //Select 2
-        function selectRefresh() {
-            $('select#material_select').select2({});
+        function materialSelectRefresh() {
+            $('select#material_select').select2({
+                placeholder: "Select Material",
+                allowClear: true
+            });
         }
-
-        selectRefresh()
+        materialSelectRefresh()
     </script>
 
 
