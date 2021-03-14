@@ -24,7 +24,7 @@ class TaskEloquent implements TaskInterface
         return $this->model
                ->orderBy('id', 'desc')
                //->take(100)
-               ->paginate(10);
+               ->paginate('18');
     }
 
     public function getDataByFilter(array $options = [])
@@ -119,7 +119,7 @@ class TaskEloquent implements TaskInterface
      * @param array $att
      */
     public function create(array $att)
-    {   
+    {
         return $this->model->create($att);
     }
 

@@ -222,11 +222,11 @@ class TaskHelper
      */
     public static function modalImage($id, $link)
     {
-        $html = '<div id="' . $id . '" class="modal">';
+        $html = '<div id="'.$id.'" class="modal">';
         $html .= '<div class="modal-background"></div>';
         $html .= '<div class="modal-content">';
         $html .= '<p class="image is-4by3">';
-        $html .= '<img src="' . $link . '"  width="auto"/>';
+        $html .= '<img src="'. $link .'"  width="auto"/>';
         $html .= '</p>';
         $html .= '</div>';
         $html .= '<button class="modal-close is-large" aria-label="close"></button>';

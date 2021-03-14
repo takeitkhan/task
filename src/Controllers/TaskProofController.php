@@ -71,6 +71,7 @@ class TaskProofController extends Controller
                 'material_proof' => 'required' //|max:2048,
             ]);
 
+            //dd($request->anonymous_proof);
             $resource_proof_image = [];
             foreach ($request->resource_proof as $items) {
                 //dd($items);
@@ -99,6 +100,7 @@ class TaskProofController extends Controller
                 $anonymous_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
                 $anonymous_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $anonymous_proof);
             }
+            //dd($anonymous_proof_image);
 
             $attributes = [
                 'task_id' => $request->task_id,

@@ -250,6 +250,7 @@ $taskrequisitionbill = Tritiyo\Task\Models\TaskRequisitionBill::where('task_id',
         $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
     @endphp
         @include('task::taskrequisitionbill.bill_accept_decline')
+
 @endsection
 
 @endif

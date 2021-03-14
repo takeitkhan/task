@@ -66,12 +66,13 @@ function userAccess($arg){
                 @foreach($tasks->where('user_id', auth()->user()->id) as $task)
                     @include('task::tasklist.index_template')
                 @endforeach
+
             {{--   Cfo--}}
             @elseif(auth()->user()->isCFO(auth()->user()->id))
                 @php
                     $getCFOTask =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
                                     ->where('tasks_requisition_bill.requisition_submitted_by_manager', 'Yes')
-                                    ->get();
+                                    ->paginate('18');
                     //dd($getCFOTask);
                 @endphp
 
@@ -79,12 +80,16 @@ function userAccess($arg){
                     @include('task::tasklist.index_template')
                 @endforeach
 
+                <div class="pagination_wrap pagination is-centered">
+                    {{$getCFOTask->links('pagination::bootstrap-4')}}
+                </div>
+
             {{--  Accountant          --}}
             @elseif(auth()->user()->isAccountant(auth()->user()->id))
                 @php
                     $getAccountantTask =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
                                     ->where('tasks_requisition_bill.requisition_approved_by_cfo', 'Yes')
-                                    ->get();
+                                    ->paginate('18');
                     //dd($getCFOTask);
                 @endphp
 
@@ -92,11 +97,18 @@ function userAccess($arg){
                     @include('task::tasklist.index_template')
                 @endforeach
 
+                <div class="pagination_wrap pagination is-centered">
+                    {{$getAccountantTask->links('pagination::bootstrap-4')}}
+                </div>
+
 
 
             {{--   End         --}}
             @endif
-
         @endif
     </div>
+    <div class="pagination_wrap pagination is-centered">
+        {{$tasks->links('pagination::bootstrap-4')}}
+    </div>
+
 @endsection
