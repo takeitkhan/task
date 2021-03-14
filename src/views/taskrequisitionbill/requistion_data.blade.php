@@ -1,9 +1,11 @@
 <?php
 global $taskID;
 $taskID = $task->id;
+global $getData;
+$getData = \Tritiyo\Task\Models\TaskRequisitionBill::where('task_id', $taskID)->get();
 function requisitiomData($column, $person){
     global $taskID;
-    $getData = \Tritiyo\Task\Models\TaskRequisitionBill::where('task_id', $taskID)->get();
+    global $getData;
     $rd = new \Tritiyo\Task\Helpers\RequisitionData($column, $taskID);
     $arr = $rd->getSiteHead();
 
@@ -19,7 +21,8 @@ function requisitiomData($column, $person){
     ob_start();
     $totalAmount = 0;
 ?>
-    @if(isset($vehicle))
+
+    @if(is_array($vehicle))
     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <tr>
             <th colspan="3">Vehicle Information</th>
@@ -53,7 +56,7 @@ function requisitiomData($column, $person){
         </tr>
     </table>
     @endif
-    @if(isset($material))
+    @if(is_array($material))
     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <tr class="">
             <th colspan="4">Material Information</th>
@@ -90,7 +93,7 @@ function requisitiomData($column, $person){
         </tr>
     </table>
     @endif
-    @if(isset($regular))
+    @if(is_array($regular))
     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
     <tr class="">
         <th width="20%">Regular </th>
@@ -123,7 +126,7 @@ function requisitiomData($column, $person){
 
 </table>
     @endif
-    @if(isset($transport))
+    @if(is_array($transport))
     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <tr class="">
             <th colspan="4">Transport Information</th>
@@ -160,7 +163,7 @@ function requisitiomData($column, $person){
         </tr>
     </table>
     @endif
-    @if(isset($purchase))
+    @if(is_array($purchase))
     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <tr class="">
             <th colspan="4">Purchase Information</th>
@@ -196,11 +199,10 @@ function requisitiomData($column, $person){
     @endif
     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <tr>
-            <th width="70%">{{$person}} submited in total</th>
+            <th width="70%">{{$person}} edited in total</th>
             <th width="30%"><?php echo $totalAmount;?></th>
         </tr>
     </table>
-
 <?php
     $content = ob_get_contents();
     ob_end_clean();
@@ -208,113 +210,113 @@ function requisitiomData($column, $person){
     }
 ?>
 
+@if(count($getData) > 0)
+    @if (auth()->user()->isResource(auth()->user()->id))
 
-@if (auth()->user()->isResource(auth()->user()->id))
+    @else
 
-@else
+    <div class="card tile is-child quick_view">
+        <header class="card-header">
+            <p class="card-header-title">
+                <span class="icon"><i class="fas fa-tasks default"></i></span>
+                Requisition Data
+            </p>
+        </header>
+        <div class="card-content">
+            <div class="card-data">
+                <div class="tabs is-centered is-boxed is-small" id="requisition_tabs">
+                    <ul>
+                        <li class="is-active" data-requisition="1">
+                            <a>
+                                <span>Manager Submitted</span>
+                            </a>
+                        </li>
+                        <li data-requisition="2">
+                            <a>
+                                <span>CFO Edited</span>
+                            </a>
+                        </li>
+                        <li data-requisition="3">
+                            <a>
+                                <span>Accountant Disbursed</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="requisition-tab-content">
 
-<div class="card tile is-child quick_view">
-    <header class="card-header">
-        <p class="card-header-title">
-            <span class="icon"><i class="fas fa-tasks default"></i></span>
-            Requisition Data
-        </p>
-    </header>
-    <div class="card-content">
-        <div class="card-data">
-            <div class="tabs is-centered is-boxed is-small" id="requisition_tabs">
-                <ul>
-                    <li class="is-active" data-requisition="1">
-                        <a>
-                            <span>Manager Submitted</span>
-                        </a>
-                    </li>
-                    <li data-requisition="2">
-                        <a>
-                            <span>CFO Edited</span>
-                        </a>
-                    </li>
-                    <li data-requisition="3">
-                        <a>
-                            <span>Accountant Disbursed</span>
-                        </a>
-                    </li>
-                </ul>
+                    <div class="is-active" data-rcontent="1">
+                      <?php echo requisitiomData('requisition_prepared_by_manager', 'Manager');?>
+                    </div>
+
+                    <div data-rcontent="2">
+                        <?php echo requisitiomData('requisition_edited_by_cfo', 'CFO');?>
+                    </div>
+                    <div data-rcontent="3">
+                        <?php echo requisitiomData('requisition_edited_by_accountant', 'Accountant');?>
+                    </div>
+                </div>
+
             </div>
-            <div id="requisition-tab-content">
-
-                <div class="is-active" data-rcontent="1">
-                  <?php echo requisitiomData('requisition_prepared_by_manager', 'Manager');?>
-                </div>
-
-                <div data-rcontent="2">
-                    <?php echo requisitiomData('requisition_edited_by_cfo', 'CFO');?>
-                </div>
-                <div data-rcontent="3">
-                    <?php echo requisitiomData('requisition_edited_by_accountant', 'Accountant');?>
-                </div>
-            </div>
-
         </div>
     </div>
-</div>
 
+    @endif
+
+    <div class="card tile is-child quick_view">
+        <header class="card-header">
+            <p class="card-header-title">
+                <span class="icon"><i class="fas fa-tasks default"></i></span>
+                 Bill Data
+            </p>
+        </header>
+        <div class="card-content">
+            <div class="card-data">
+                <div class="tabs is-centered is-boxed is-small" id="bill_tabs">
+                    <ul>
+                        <li class="is-active" data-bill="1">
+                            <a>
+                                <span>Resource Submitted</span>
+                            </a>
+                        </li>
+                        <li data-bill="2">
+                            <a>
+                                <span>Manager Edited</span>
+                            </a>
+                        </li>
+                        <li data-bill="3">
+                            <a>
+                                <span>CFO Edited</span>
+                            </a>
+                        </li>
+                        <li data-bill="4">
+                            <a>
+                                <span>Accountant Disbursed</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="bill-tab-content">
+
+                    <div class="is-active" data-bcontent="1">
+                        <?php echo requisitiomData('bill_prepared_by_resource', 'Resource');?>
+                    </div>
+
+                    <div data-bcontent="2">
+                        <?php echo requisitiomData('bill_edited_by_manager', 'Manager');?>
+                    </div>
+                    <div data-bcontent="3">
+                        <?php echo requisitiomData('bill_edited_by_cfo', 'CFO');?>
+                    </div>
+                    <div data-bcontent="4">
+                        <?php echo requisitiomData('bill_edited_by_accountant', 'Accountant');?>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 @endif
-
-<div class="card tile is-child quick_view">
-    <header class="card-header">
-        <p class="card-header-title">
-            <span class="icon"><i class="fas fa-tasks default"></i></span>
-             Bill Data
-        </p>
-    </header>
-    <div class="card-content">
-        <div class="card-data">
-            <div class="tabs is-centered is-boxed is-small" id="bill_tabs">
-                <ul>
-                    <li class="is-active" data-bill="1">
-                        <a>
-                            <span>Resource Submitted</span>
-                        </a>
-                    </li>
-                    <li data-bill="2">
-                        <a>
-                            <span>Manager Edited</span>
-                        </a>
-                    </li>
-                    <li data-bill="3">
-                        <a>
-                            <span>CFO Edited</span>
-                        </a>
-                    </li>
-                    <li data-bill="4">
-                        <a>
-                            <span>Accountant Disbursed</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div id="bill-tab-content">
-
-                <div class="is-active" data-bcontent="1">
-                    <?php echo requisitiomData('bill_prepared_by_resource', 'Resource');?>
-                </div>
-
-                <div data-bcontent="2">
-                    <?php echo requisitiomData('bill_edited_by_manager', 'Manager');?>
-                </div>
-                <div data-bcontent="3">
-                    <?php echo requisitiomData('bill_edited_by_cfo', 'CFO');?>
-                </div>
-                <div data-bcontent="4">
-                    <?php echo requisitiomData('bill_edited_by_accountant', 'Accountant');?>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
 
 
 

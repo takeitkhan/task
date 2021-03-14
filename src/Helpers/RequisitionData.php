@@ -26,22 +26,31 @@ class RequisitionData
 
     public function getSiteHead()
     {
-        $chunk = TaskRequisitionBill::select($this->column)->where('task_id', $this->task_id)->first()->toArray();
-        if (!empty($chunk)) {
-            $extracted = (object)json_decode($chunk[$this->column]);
-            return $extracted->task[0]->site_head;
-        } else {
+        $v = TaskRequisitionBill::select($this->column)->where('task_id', $this->task_id)->first();
+        if(!empty($v)) {
+            $chunk = $v->toArray();
+            if (!empty($chunk)) {
+                $extracted = (object)json_decode($chunk[$this->column]);
+                return $extracted->task[0]->site_head;
+            } else {
+                return false;
+            }
+        }else{
             return false;
         }
     }
 
     public function getVehicleData()
     {
-
-        $chunk = TaskRequisitionBill::select($this->column)->where('task_id', $this->task_id)->first()->toArray();
-        if (!empty($chunk)) {
-            $extracted = (object)json_decode($chunk[$this->column]);
-            return $extracted->task_vehicle;
+        $v = TaskRequisitionBill::select($this->column)->where('task_id', $this->task_id)->first();
+        if(!empty($v)) {
+            $chunk = $v->toArray();
+            if (!empty($chunk)) {
+                $extracted = (object)json_decode($chunk[$this->column]);
+                return $extracted->task_vehicle;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -61,10 +70,15 @@ class RequisitionData
 
     public function getRegularData()
     {
-        $chunk = TaskRequisitionBill::select($this->column)->where('task_id', $this->task_id)->first()->toArray();
-        if (!empty($chunk)) {
-            $extracted = (object)json_decode($chunk[$this->column]);
-            return (array)$extracted->task_regular_amount;
+        $v = TaskRequisitionBill::select($this->column)->where('task_id', $this->task_id)->first();
+        if(!empty($v)) {
+            $chunk = $v->toArray();
+            if (!empty($chunk)) {
+                $extracted = (object)json_decode($chunk[$this->column]);
+                return (array)$extracted->task_regular_amount;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -77,11 +91,16 @@ class RequisitionData
 
     public function getMaterialData()
     {
-        $chunk = TaskRequisitionBill::select($this->column)->where('task_id', $this->task_id)->first()->toArray();
-        if (!empty($chunk)) {
-            $extracted = (object)json_decode($chunk[$this->column]);
-            return $extracted->task_material;
-        } else {
+        $v = TaskRequisitionBill::select($this->column)->where('task_id', $this->task_id)->first();
+        if(!empty($v)) {
+            $chunk = $v->toArray();
+            if (!empty($chunk)) {
+                $extracted = (object)json_decode($chunk[$this->column]);
+                return $extracted->task_material;
+            } else {
+                return false;
+            }
+        }else {
             return false;
         }
     }
@@ -94,11 +113,16 @@ class RequisitionData
 
     public function getTransportData()
     {
-        $chunk = TaskRequisitionBill::select($this->column)->where('task_id', $this->task_id)->first()->toArray();
-        if (!empty($chunk)) {
-            $extracted = (object)json_decode($chunk[$this->column]);
-            return $extracted->task_transport_breakdown;
-        } else {
+        $v = TaskRequisitionBill::select($this->column)->where('task_id', $this->task_id)->first();
+        if(!empty($v)) {
+            $chunk = $v->toArray();
+            if (!empty($chunk)) {
+                $extracted = (object)json_decode($chunk[$this->column]);
+                return $extracted->task_transport_breakdown;
+            } else {
+                return false;
+            }
+        }else {
             return false;
         }
     }
@@ -110,11 +134,16 @@ class RequisitionData
 
     public function getPurchaseData()
     {
-        $chunk = TaskRequisitionBill::select($this->column)->where('task_id', $this->task_id)->first()->toArray();
-        if (!empty($chunk)) {
-            $extracted = (object)json_decode($chunk[$this->column]);
-            return $extracted->task_purchase_breakdown;
-        } else {
+        $v = TaskRequisitionBill::select($this->column)->where('task_id', $this->task_id)->first();
+        if(!empty($v)) {
+            $chunk = $v->toArray();
+            if (!empty($chunk)) {
+                $extracted = (object)json_decode($chunk[$this->column]);
+                return $extracted->task_purchase_breakdown;
+            } else {
+                return false;
+            }
+        }else {
             return false;
         }
     }
