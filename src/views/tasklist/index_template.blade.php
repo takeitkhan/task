@@ -10,7 +10,7 @@
                 $taskEditUrl = url('taskrequisitionbill/create?task_id=' . $task->id . '&information=requisitionbillInformation');
             }
         } else {
-            $taskEditUrl = route('tasks.edit', $task->id).'?task_id=' . $task->id . '&information=taskinformation';
+            $taskEditUrl = route('tasks.edit', $task->id) . '?task_id=' . $task->id . '&information=taskinformation';
         }
         ?>
         <div style="position: absolute; right: 5px; top: 5px;">
@@ -38,6 +38,13 @@
                         {{  $project->name }}
                     </small>
                     <br/>
+                    <small>
+                        <strong>Site Head: </strong>
+                        {{ \App\Models\User::where('id', $task->site_head)->first()->name }}
+                        ({{ $task->site_head ?? NULL }})
+                    </small>
+                    <br/>
+
 
                     @php
                         $task_status = \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->orderBy('created_at', 'desc')->first();
