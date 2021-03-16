@@ -1,6 +1,6 @@
 <div class="card tile is-child">
     <header class="card-header">
-        <p class="card-header-title" style="background: lemonchiffon">
+        <p class="card-header-title p-1" style="">
             <span class="icon"><i class="fas fa-tasks default"></i></span>
             Action Panel
         </p>

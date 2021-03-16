@@ -1,4 +1,3 @@
-
 {{--{!! Tritiyo\Task\Helpers\TaskHelper::actionHelper('task_approver_edited', true, true)  !!}--}}
 @php
     $task_sites = DB::select('SELECT site_id FROM `tasks_site` WHERE task_id = '. $task->id .' GROUP BY site_id');
@@ -6,31 +5,29 @@
     $task_vehicle = \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task->id)->get();
     $task_material = \Tritiyo\Task\Models\TaskMaterial::where('task_id', $task->id)->get();
 @endphp
-<div class="card tile is-child quick_view">
+<div class="card tile is-child xquick_view pt-0">
 
     <header class="card-header">
         <p class="card-header-title">
             <span class="icon"><i class="fas fa-tasks default"></i></span>
-            Main Task Data
+                Task General Information
         </p>
     </header>
 
     <div class="card-content">
         <div class="card-data">
             <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                <tr>
-                    <th colspan="4">Task General Information</th>
-                </tr>
+
                 <tr>
                     <td><strong>Task Type</strong></td>
-                    <td><span style="background: #48c774; padding: 3px;">{{ $task->task_type ?? NULL }}</span></td>
+                    <td><span class="tag is-info">{{ ucwords($task->task_type) ?? NULL }}</span></td>
                     <td><strong>Task Name</strong></td>
                     <td>{{ $task->task_name ?? NULL }}</td>
                 </tr>
                 <tr>
                     <td><strong>Site Head</strong></td>
                     <td>
-                        <span style="background: #48c774; padding: 3px;">
+                        <span class="has-text-info">
                             {{ \App\Models\User::where('id', $task->site_head)->first()->name }} ({{ $task->site_head ?? NULL }})
                         </span>
                     </td>
@@ -45,7 +42,11 @@
                 </tr>
                 <tr>
                     <td><strong>Project Name</strong></td>
-                    <td>{{ \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first()->name }}</td>
+                    <td>
+                        <a href="{{ route('projects.show', $task->project_id) }}" target="_blank">
+                            {{ \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first()->name }}
+                        </a>
+                    </td>
                     <td><strong>Project Manager</strong></td>
                     <td>{{ \App\Models\User::where('id', $task->user_id)->first()->name }}</td>
                 </tr>
@@ -62,7 +63,9 @@
                     <tr>
                         <td colspan="2">
                             @foreach($task_sites as $data)
-                                {{ \Tritiyo\Site\Models\Site::where('id', $data->site_id)->first()->site_code  }}
+                                <a href="{{ route('sites.show', $data->site_id) }}" target="_blank">
+                                    {{ \Tritiyo\Site\Models\Site::where('id', $data->site_id)->first()->site_code  }}
+                                </a>
                                 <br/>
                             @endforeach
                         </td>
@@ -101,12 +104,12 @@
                                     <td>Amount</td>
                                 </tr>
                                 @if(is_array($task_material))
-                                @foreach($task_material as $data)
-                                    <tr>
-                                        <td>{{ \Tritiyo\Material\Models\Material::where('id', $data->material_id)->first()->name  }}</td>
-                                        <td>{{ $data->material_qty  }}</td>
-                                    </tr>
-                                @endforeach
+                                    @foreach($task_material as $data)
+                                        <tr>
+                                            <td>{{ \Tritiyo\Material\Models\Material::where('id', $data->material_id)->first()->name  }}</td>
+                                            <td>{{ $data->material_qty  }}</td>
+                                        </tr>
+                                    @endforeach
                                 @endif
                             </table>
                         </td>

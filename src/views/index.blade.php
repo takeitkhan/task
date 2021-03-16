@@ -46,8 +46,8 @@ function userAccess($arg)
 }
 ?>
 @section('column_left')
-    <div class="columns is-multiline">
-        @if(!empty($tasks))
+    @if(!empty($tasks))
+        <div class="columns is-multiline">
             @if(auth()->user()->isResource(auth()->user()->id))
                 @foreach($tasks->where('task_assigned_to_head', 'Yes') as $task)
                     @if($task->user_id == auth()->user()->id || $task->site_head == auth()->user()->id)
@@ -102,15 +102,8 @@ function userAccess($arg)
                 <div class="pagination_wrap pagination is-centered">
                     {{$getAccountantTask->links('pagination::bootstrap-4')}}
                 </div>
-
-
-
                 {{--   End         --}}
             @endif
-        @endif
-    </div>
-    <div class="pagination_wrap pagination is-centered">
-        {{$tasks->links('pagination::bootstrap-4')}}
-    </div>
-
+        </div>
+    @endif
 @endsection

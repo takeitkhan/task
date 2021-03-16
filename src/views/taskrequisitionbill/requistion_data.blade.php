@@ -25,7 +25,7 @@ function requisitiomData($column, $person){
     @if(is_array($vehicle))
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <tr>
-            <th colspan="3">Vehicle Information</th>
+            <th class="th-bg" colspan="3">Vehicle Information</th>
         </tr>
         <tr>
             <th width="15%">Vehicle</th>
@@ -59,7 +59,7 @@ function requisitiomData($column, $person){
     @if(is_array($material))
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <tr class="">
-            <th colspan="4">Material Information</th>
+            <th class="th-bg" colspan="4">Material Information</th>
         </tr>
         <tr>
             <th width="15%">Material</th>
@@ -95,8 +95,11 @@ function requisitiomData($column, $person){
     @endif
     @if(is_array($regular))
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+        <tr class="">
+            <th class="th-bg" colspan="4">Regular Information</th>
+        </tr>
     <tr class="">
-        <th width="20%">Regular </th>
+        <th width="20%"># </th>
         <th width="50%">Note </th>
         <th width="30%">Amount </th>
     </tr>
@@ -116,7 +119,7 @@ function requisitiomData($column, $person){
         <td>{{$regular['other']->other_amount}}</td>
     </tr>
 
-    <tr>
+    <tr class="th-bg">
         <td colspan="2">Total</td>
         <td>{{$regularAmount = $regular['da']->da_amount + $regular['labour']->labour_amount + $regular['other']->other_amount}}</td>
         <?php $totalAmount += $regularAmount;?>
@@ -129,13 +132,13 @@ function requisitiomData($column, $person){
     @if(is_array($transport))
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <tr class="">
-            <th colspan="4">Transport Information</th>
+            <th class="th-bg" colspan="4">Transport Information</th>
         </tr>
         <tr>
-            <th width="15%">Where To Where</th>
-            <th width="5%">Transport Type</th>
-            <th>Note</th>
-            <th width="30%">Transport Amount</th>
+            <th width="25%">Where To Where</th>
+            <th width="20%">Transport Type</th>
+            <th width="30%">Note</th>
+            <th width="25%">Transport Amount</th>
         </tr>
 
         @php
@@ -166,7 +169,7 @@ function requisitiomData($column, $person){
     @if(is_array($purchase))
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <tr class="">
-            <th colspan="4">Purchase Information</th>
+            <th class="th-bg" colspan="4">Purchase Information</th>
         </tr>
         <tr>
             <th width="70%">Note</th>
@@ -198,7 +201,7 @@ function requisitiomData($column, $person){
     </table>
     @endif
     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-        <tr>
+        <tr class="tr-bg">
             <th width="70%">{{$person}} edited in total</th>
             <th width="30%"><?php echo $totalAmount;?></th>
         </tr>

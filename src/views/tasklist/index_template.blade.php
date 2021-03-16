@@ -15,7 +15,7 @@
         ?>
         <div style="position: absolute; right: 5px; top: 5px;">
             @if(!empty($requisition->requisition_approved_by_accountant) && $requisition->requisition_approved_by_accountant == 'Yes')
-                <a href="{{ route('tasks.add_bill', $task->id) }}" class="button is-small is-success">
+                <a href="{{ route('tasks.add_bill', $task->id) }}" class="button is-small is-tag is-link is-light is-rounded">
                     <i class="fas fa-plus"></i>&nbsp;Bill
                 </a>
             @endif

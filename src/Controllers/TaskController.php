@@ -199,7 +199,7 @@ class TaskController extends Controller
             return redirect()->back()->with('message', 'Saved successfully')->with('status', 1);
         }
 
-        if (auth()->user()->isManager(auth()->user()->id)  &&  $request->task_assigned_to_head == 'Yes') {
+        if (auth()->user()->isManager(auth()->user()->id) && $request->task_assigned_to_head == 'Yes') {
 
             $atts = Task::find($task->id);
             $atts->task_assigned_to_head = $request->task_assigned_to_head;

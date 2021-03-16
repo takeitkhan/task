@@ -4,7 +4,7 @@
 @if($taskproofs->count() > 0)
     <div class="card tile is-child quick_view">
         <header class="card-header">
-            <p class="card-header-title" style="background: lemonchiffon">
+            <p class="card-header-title">
                 <span class="icon"><i class="fas fa-tasks default"></i></span>
                 Proof Images Panel
             </p>
