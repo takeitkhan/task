@@ -94,7 +94,6 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
             @endif
 
 
-
             <div class="columns">
                 <div class="column is-12">
                     <div class="columns">
@@ -161,32 +160,34 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                             <a href="{{route('taskvehicle.create')}}?task_id={{$task_id}}&information=vehicleinformation"
                                class="is-link is-size-7 is-small"> Edit </a>
                         </label>
-                        @foreach( $getTaskVehicle as $veh)
-                            <div class="columns">
-                                <div class="column is-3">
-                                    <div class="field">
-                                        {{ Form::label('vehicle_id', 'Vehicle', array('class' => 'label')) }}
-                                        <div class="control">
-                                            <?php $vehicleName = \Tritiyo\Vehicle\Models\Vehicle::where('id', $veh->vehicle_id)->first()->name;?>
-                                            <input type="hidden" name="vehicle_id" class="input is-small"
-                                                   value="{{$veh->vehicle_id}}">
-                                            <input type="text" name="" class="input is-small"
-                                                   value="{{$vehicleName}}"
-                                                   readonly>
+                        @if(is_array($getTaskVehicle->toArray()))
+                            @foreach( $getTaskVehicle as $veh)
+                                <div class="columns">
+                                    <div class="column is-3">
+                                        <div class="field">
+                                            {{ Form::label('vehicle_id', 'Vehicle', array('class' => 'label')) }}
+                                            <div class="control">
+                                                <?php $vehicleName = \Tritiyo\Vehicle\Models\Vehicle::where('id', $veh->vehicle_id)->first()->name;?>
+                                                <input type="hidden" name="vehicle_id" class="input is-small"
+                                                       value="{{$veh->vehicle_id}}">
+                                                <input type="text" name="" class="input is-small"
+                                                       value="{{$vehicleName}}"
+                                                       readonly>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="column is-3">
-                                    {{ Form::label('vehicle_rent', 'Vehicle Rent', array('class' => 'label')) }}
-                                    {{ Form::text('vehicle_rent[]', $veh->vehicle_rent, array('class' => 'input is-small', 'readonly' => true)) }}
+                                    <div class="column is-3">
+                                        {{ Form::label('vehicle_rent', 'Vehicle Rent', array('class' => 'label')) }}
+                                        {{ Form::text('vehicle_rent[]', $veh->vehicle_rent, array('class' => 'input is-small', 'readonly' => true)) }}
+                                    </div>
+                                    <div class="column is-6">
+                                        {{ Form::label('vehicle_note', 'Note', array('class' => 'label')) }}
+                                        {{ Form::text('vehicle_note[]', $veh->vehicle_note, array('class' => 'input is-small', 'readonly' => true)) }}
+                                    </div>
                                 </div>
-                                <div class="column is-6">
-                                    {{ Form::label('vehicle_note', 'Note', array('class' => 'label')) }}
-                                    {{ Form::text('vehicle_note[]', $veh->vehicle_note, array('class' => 'input is-small', 'readonly' => true)) }}
-                                </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        @endif
                     </fieldset>
                     <!-- End Vehicle -->
 
@@ -198,38 +199,38 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                             <a href="{{route('taskmaterial.create')}}?task_id={{$task_id}}&information=materialInformation"
                                class="is-link is-size-7 is-small"> Edit </a>
                         </label>
-                        @if(is_array($getTaskMaterial))
+                        @if(is_array($getTaskMaterial->toArray()))
                             @foreach( $getTaskMaterial as $mat)
-                            <div class="columns">
-                                <div class="column is-3">
-                                    <div class="field">
-                                        {{ Form::label('material_id', 'Material', array('class' => 'label')) }}
-                                        <div class="control">
-                                            <?php $materialName = \Tritiyo\Material\Models\Material::where('id', $mat->material_id)->first()->name;?>
-                                            <input type="hidden" name="material_id" class="input is-small"
-                                                   value="{{$mat->material_id}}">
-                                            <input type="text" name="" class="input is-small"
-                                                   value="{{$materialName}}"
-                                                   readonly>
+                                <div class="columns">
+                                    <div class="column is-3">
+                                        <div class="field">
+                                            {{ Form::label('material_id', 'Material', array('class' => 'label')) }}
+                                            <div class="control">
+                                                <?php $materialName = \Tritiyo\Material\Models\Material::where('id', $mat->material_id)->first()->name;?>
+                                                <input type="hidden" name="material_id" class="input is-small"
+                                                       value="{{$mat->material_id}}">
+                                                <input type="text" name="" class="input is-small"
+                                                       value="{{$materialName}}"
+                                                       readonly>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="column is-2">
-                                    {{ Form::label('material_qty', 'Material Qty', array('class' => 'label')) }}
-                                    {{ Form::text('material_qty[]', $mat->material_qty, array('class' => 'input is-small', 'readonly' => true)) }}
-                                </div>
+                                    <div class="column is-2">
+                                        {{ Form::label('material_qty', 'Material Qty', array('class' => 'label')) }}
+                                        {{ Form::text('material_qty[]', $mat->material_qty, array('class' => 'input is-small', 'readonly' => true)) }}
+                                    </div>
 
-                                <div class="column is-2">
-                                    {{ Form::label('material_amount', 'Amount', array('class' => 'label')) }}
-                                    {{ Form::text('material_amount[]', $mat->material_amount, array('class' => 'input is-small', 'readonly' => true)) }}
+                                    <div class="column is-2">
+                                        {{ Form::label('material_amount', 'Amount', array('class' => 'label')) }}
+                                        {{ Form::text('material_amount[]', $mat->material_amount, array('class' => 'input is-small', 'readonly' => true)) }}
+                                    </div>
+                                    <div class="column is-5">
+                                        {{ Form::label('material_note', 'Note', array('class' => 'label')) }}
+                                        {{ Form::text('material_note[]', $mat->material_note, array('class' => 'input is-small', 'readonly' => true)) }}
+                                    </div>
                                 </div>
-                                <div class="column is-5">
-                                    {{ Form::label('material_note', 'Note', array('class' => 'label')) }}
-                                    {{ Form::text('material_note[]', $mat->material_note, array('class' => 'input is-small', 'readonly' => true)) }}
-                                </div>
-                            </div>
-                        @endforeach
+                            @endforeach
                         @endif
                     </fieldset>
 

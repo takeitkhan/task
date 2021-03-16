@@ -157,13 +157,12 @@ $taskrequisitionbill = Tritiyo\Task\Models\TaskRequisitionBill::where('task_id',
                     </div>
 
                     <!-- Vehicle -->
-                @include('task::taskrequisitionbill.resource_form.vehicle_breakdown')
-                <!-- End Vehicle -->
+                    @include('task::taskrequisitionbill.resource_form.vehicle_breakdown')
+                    <!-- End Vehicle -->
 
                     <!-- Material -->
                 @include('task::taskrequisitionbill.resource_form.material_breakdown')
-                <!-- End Material -->
-
+                    <!-- End Material -->
 
                     <div class="columns">
                         <div class="column">
@@ -243,6 +242,7 @@ $taskrequisitionbill = Tritiyo\Task\Models\TaskRequisitionBill::where('task_id',
             {{ Form::close() }}
         </div>
     </article>
+
 @endsection
 
 @section('column_right')
@@ -250,12 +250,11 @@ $taskrequisitionbill = Tritiyo\Task\Models\TaskRequisitionBill::where('task_id',
         $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
     @endphp
         @include('task::taskrequisitionbill.bill_accept_decline')
-        @include('task::taskrequisitionbill.requistion_data')
+{{--         @include('task::taskrequisitionbill.requistion_data')--}}
 @endsection
 
 @endif
 @section('cusjs')
-
 
 
 @endsection

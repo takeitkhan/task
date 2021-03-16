@@ -1,12 +1,3 @@
-
-@if( auth()->user()->isManager(auth()->user()->id) && $task->override_status == 'No')
-<article class="message is-danger">
-    <div class="message-body">
-        Unable to edit data after click finish editing. So recheck all information with carefully.
-    </div>
-</article>
-@endif
-
 <div class="card tile is-child">
     <header class="card-header">
         <p class="card-header-title" style="background: lemonchiffon">
@@ -20,8 +11,10 @@
                 <div class="column">
                     @if(auth()->user()->isManager(auth()->user()->id) && $task->override_status == 'No')
                         {{ Form::open(array('url' => route('tasks.update', $task->id), 'method' => 'PUT', 'value' => 'PATCH', 'id' => 'add_route', 'class' => 'task_table', 'files' => true, 'autocomplete' => 'off')) }}
-                            <input type="hidden" name="finish_editing" value="Yes" />
-                            <button  onclick="return confirm('Are you sure?')" type="submit" class="button is-info">Finish editing and send to approver</button>
+                        <input type="hidden" name="finish_editing" value="Yes"/>
+                        <button onclick="return confirm('Are you sure?')" type="submit" class="button is-info">
+                            Finish editing and send to approver
+                        </button>
                         {{ Form::close() }}
                     @endif
 
@@ -31,7 +24,7 @@
 
 
                     @if(auth()->user()->isApprover(auth()->user()->id))
-                            @include('task::taskaction.task_approver_accept_decline')
+                        @include('task::taskaction.task_approver_accept_decline')
                     @endif
 
 
@@ -117,11 +110,21 @@
 
                 </div>
                 <div class="column">
-
                     <div class="statusSuccessMessage">
                         {{ \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->orderBy('id', 'desc')->first()->message }}
                     </div>
-
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column">
+                    @if( auth()->user()->isManager(auth()->user()->id) && $task->override_status == 'No')
+                        <article class="message is-danger">
+                            <div class="message-body">
+                                ফিনিশ এডিটিং বাটন চাপার পর আপনি কখনোই আর পরিবর্তন করতে পারবেন না। তাই ভালো ভাবে দেখে
+                                এরপর ফিনিশ বাটন চাপুন।
+                            </div>
+                        </article>
+                    @endif
                 </div>
             </div>
 

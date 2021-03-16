@@ -67,7 +67,7 @@ class TaskMaterialController extends Controller
             return redirect('tasks.create')
                 ->withErrors($validator)
                 ->withInput();
-        } elseif($request->material_id) {
+        } elseif ($request->material_id) {
             // store
 
             foreach ($request->material_id as $key => $row) {
@@ -126,8 +126,10 @@ class TaskMaterialController extends Controller
          * if manager edited any data during requisition after approver data
          * action delete this approver approved status from tasksstatus table
          */
-        $task_id = $request->task_id;
-        TaskHelper::ManagerOverrideData($task_id);
+        if (auth()->user()->isManager(auth()->user()->id)) {
+            $task_id = $request->task_id;
+            TaskHelper::ManagerOverrideData($task_id);
+        }
         //End
         //dd($request->all());
 
@@ -141,10 +143,10 @@ class TaskMaterialController extends Controller
                 'message' => TaskHelper::getStatusMessage('task_approver_edited')
             ]);
         }
-        if($request->task_id){
+        if ($request->task_id) {
             $t = TaskMaterial::where('task_id', $request->task_id);
             $t->delete();
-            if(!empty($request->material_id)) {
+            if (!empty($request->material_id)) {
                 foreach ($request->material_id as $key => $row) {
                     $attributes = [
                         'task_id' => $request->task_id,

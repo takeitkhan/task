@@ -31,9 +31,9 @@
 @section('column_left')
 
     <article class="panel is-primary">
-        <a style="display:block; float: right;" class="button is-small is-danger">
-            <span><i class="fas fa-plus"></i> {{$task->task_type}}</span>
-        </a>
+{{--        <a style="display:block; float: right;" class="button is-small is-danger">--}}
+{{--            <span><i class="fas fa-plus"></i> {{$task->task_type}}</span>--}}
+{{--        </a>--}}
         @include('task::layouts.tab')
 
 

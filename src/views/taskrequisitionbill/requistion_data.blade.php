@@ -322,7 +322,6 @@ function requisitiomData($column, $person){
 
 
 @section('headjs')
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
     <style type="text/css">
         .tile.is-child.quick_view {
@@ -356,6 +355,7 @@ function requisitiomData($column, $person){
     </style>
 
 @endsection
+
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
         $.noConflict();

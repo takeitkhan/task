@@ -67,7 +67,7 @@ class TaskVehicleController extends Controller
             return redirect('tasks.create')
                 ->withErrors($validator)
                 ->withInput();
-        } elseif($request->vehicle_id) {
+        } elseif ($request->vehicle_id) {
             // store
 
             foreach ($request->vehicle_id as $key => $row) {
@@ -126,8 +126,11 @@ class TaskVehicleController extends Controller
          * if manager edited any data during requisition after approver data
          * action delete this approver approved status from tasksstatus table
          */
-        $task_id = $request->task_id;
-        TaskHelper::ManagerOverrideData($task_id);
+
+        if (auth()->user()->isManager(auth()->user()->id)) {
+            $task_id = $request->task_id;
+            TaskHelper::ManagerOverrideData($task_id);
+        }
         //End
 
         if (auth()->user()->isApprover(auth()->user()->id)) {
@@ -141,10 +144,10 @@ class TaskVehicleController extends Controller
             ]);
         }
         //dd($request->all());
-        if($request->task_id){
+        if ($request->task_id) {
             $t = TaskVehicle::where('task_id', $request->task_id);
             $t->delete();
-            if(!empty($request->vehicle_id)){
+            if (!empty($request->vehicle_id)) {
                 foreach ($request->vehicle_id as $key => $row) {
                     $attributes = [
                         'task_id' => $request->task_id,

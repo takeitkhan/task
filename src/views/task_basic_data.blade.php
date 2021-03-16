@@ -28,6 +28,12 @@
                     <td>{{ $task->task_name ?? NULL }}</td>
                 </tr>
                 <tr>
+                    <td><strong>Site Head</strong></td>
+                    <td>
+                        <span style="background: #48c774; padding: 3px;">
+                            {{ \App\Models\User::where('id', $task->site_head)->first()->name }} ({{ $task->site_head ?? NULL }})
+                        </span>
+                    </td>
                     <td><strong>Task Code</strong></td>
                     <td colspan="3">{{ $task->task_code ?? NULL }}</td>
                 </tr>

@@ -2,12 +2,19 @@
 @section('title')
     Create Task
 @endsection
+@php
+    if(request()->get('type') == 'emergency') {
+    $title = 'you are creating an emergency task';
+    } else {
+    $title = 'you are creating a general task';
+    }
 
+@endphp
 <section class="hero is-white borderBtmLight">
     <nav class="level">
         @include('component.title_set', [
             'spTitle' => 'Create Task',
-            'spSubTitle' => 'create a single task',
+            'spSubTitle' => $title,
             'spShowTitleSet' => true
         ])
 

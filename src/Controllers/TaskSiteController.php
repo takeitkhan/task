@@ -140,9 +140,10 @@ class TaskSiteController extends Controller
          * if manager edited any data during requisition after approver data
          * action delete this approver approved status from tasksstatus table
          */
-        $task_id = $request->task_id;
-        //dd($task_id);
-        TaskHelper::ManagerOverrideData($task_id);
+        if (auth()->user()->isManager(auth()->user()->id)) {
+            $task_id = $request->task_id;
+            TaskHelper::ManagerOverrideData($task_id);
+        }
         //End
 
         if (auth()->user()->isApprover(auth()->user()->id)) {

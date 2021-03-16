@@ -6,7 +6,8 @@
         <label>Material Information</label>
         @if(isset($task_material) && count($task_material) > 0)
             <a style="float: right; display: block">
-                <span style="cursor: pointer;" class="tag is-success"  id="add_material_row">Add Breakdown &nbsp; <strong>+</strong></span>
+                <span style="cursor: pointer;" class="tag is-success"
+                      id="add_material_row">Add Breakdown &nbsp; <strong>+</strong></span>
             </a>
         @endif
     </div>
@@ -14,7 +15,7 @@
     @if(isset($task_material) && count($task_material) > 0)
         @foreach($task_material as $key => $mat)
             <div id="myMaterial">
-                <div class="columns s{{$key}}">
+                <div class="columns m{{$key}}">
                     <div class="column is-1">
                         <label></label> <br/>
                         <a><span class="tag is-danger is-small ibtnDel">Delete</span></a>
@@ -23,7 +24,8 @@
                         <div class="field">
                             {{ Form::label('material_id', 'Material', array('class' => 'label')) }}
                             <div class="control">
-                                <select name="material[{{$mat_count = $key}}][material_id]" id="material_select" class="input is-small"
+                                <select name="material[{{$mat_count = $key}}][material_id]" id="material_select"
+                                        class="input is-small"
                                         required>
                                     <option></option>
                                     @foreach($materials as $material)
@@ -36,16 +38,19 @@
                     </div>
                     <div class="column is-2">
                         {{ Form::label('material_qty', 'Material Qty', array('class' => 'label')) }}
-                        <input name="material[{{$mat_count = $key}}][material_qty]" type="number" value="{{$mat->material_qty}}" class="input is-small" required>
+                        <input name="material[{{$mat_count = $key}}][material_qty]" type="number"
+                               value="{{$mat->material_qty}}" class="input is-small" required>
                     </div>
 
                     <div class="column is-2">
                         {{ Form::label('material_amount', 'Amount', array('class' => 'label')) }}
-                        <input name="material[{{$mat_count = $key}}][material_amount]" type="number" value="{{$mat->material_amount}}" class="input is-small">
+                        <input name="material[{{$mat_count = $key}}][material_amount]" type="number"
+                               value="{{$mat->material_amount}}" class="input is-small">
                     </div>
                     <div class="column is-5">
                         {{ Form::label('material_note', 'Note', array('class' => 'label')) }}
-                        <input name="material[{{$mat_count = $key}}][material_note]" type="text" value="{{$mat->material_note}}" class="input is-small">
+                        <input name="material[{{$mat_count = $key}}][material_note]" type="text"
+                               value="{{$mat->material_note}}" class="input is-small">
                     </div>
                 </div>
             </div>
@@ -83,49 +88,50 @@
     @endif
 </fieldset>
 
-
 <script>
     var mat_counter = "{{$mat_count + 1}}";
 
     $("#add_material_row").on("click", function () {
-        var cols = '<div class="columns r' + mat_counter + '">';
+        //console.log(mat_counter)
+        var cols = '<div class="columns m' + mat_counter + '">';
         cols += '<div class="column is-1">';
         cols += '<br/><a><span class="tag is-danger is-small ibtnDel">Delete</span></a>';
         cols += '</div>';
         cols += '<div class="column is-2">';
         cols += '<label for="material_id" class="label">Material</label>';
-        cols += '<select name="material['+ mat_counter +'][material_id]" id="material_select" class="input is-small" required>';
+        cols += '<select name="material[' + mat_counter + '][material_id]" id="material_select" class="input is-small" required>';
         cols += '<?php foreach($materials as $material){?>';
         cols += '<option></option>'
         cols += '<option value="<?php echo $material->id;?>"><?php echo $material->name;?></option>';
         cols += '<?php } ?>';
         cols += '<select>';
         cols += '</div>';
-        cols += '<div class="column is-2">';number
+        cols += '<div class="column is-2">';
         cols += '<label for="material_qty" class="label">Material Qty</label>';
-        cols += '<input name="material['+ mat_counter +'][material_qty]" type="number" value="" class="input is-small" required>';
+        cols += '<input name="material[' + mat_counter + '][material_qty]" type="number" value="" class="input is-small" required>';
         cols += '</div>';
         cols += '<div class="column is-2">';
         cols += '<label for="material_amount" class="label">Material Amount</label>';
-        cols += '<input name="material['+ mat_counter +'][material_amount]" type="number" value="" class="input is-small">';
+        cols += '<input name="material[' + mat_counter + '][material_amount]" type="number" value="" class="input is-small">';
         cols += '</div>';
         cols += '<div class="column is-5">';
         cols += '<label for="material_note" class="label">Note</label>';
-        cols += '<input name="material['+ mat_counter +'][material_note]" type="text" value="" class="input is-small">';
+        cols += '<input name="material[' + mat_counter + '][material_note]" type="text" value="" class="input is-small">';
         cols += '</div>';
         cols += '</div>';
 
         $("div#myMaterial").append(cols);
-        materialSelectRefresh()
         mat_counter++;
+        materialSelectRefresh();
     });
-
 
     $("div#myMaterial").on("click", ".ibtnDel", function (event) {
         $(this).closest("div.columns").remove();
         mat_counter -= 1
     });
+</script>
 
+<script>
 
     //Select 2
     function materialSelectRefresh() {
@@ -134,7 +140,6 @@
             allowClear: true
         });
     }
-
-    materialSelectRefresh()
-
+    materialSelectRefresh();
 </script>
+
