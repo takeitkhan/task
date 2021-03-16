@@ -2,12 +2,12 @@
 global $taskID;
 $taskID = $task->id;
 global $getData;
-$getData = \Tritiyo\Task\Models\TaskRequisitionBill::where('task_id', $taskID)->get();
+$getData = \Tritiyo\Task\Models\TaskRequisitionBill::where('task_id', $taskID)->get()->toArray();
 function requisitiomData($column, $person){
     global $taskID;
     global $getData;
     $rd = new \Tritiyo\Task\Helpers\RequisitionData($column, $taskID);
-    $arr = $rd->getSiteHead();
+    //$arr = $rd->getSiteHead();
 
     $vehicle = $rd->getVehicleData();
     $material = $rd->getMaterialData();
@@ -21,9 +21,9 @@ function requisitiomData($column, $person){
     ob_start();
     $totalAmount = 0;
 ?>
-
+<?php //dd($vehicle);?>
     @if(is_array($vehicle))
-    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <tr>
             <th colspan="3">Vehicle Information</th>
         </tr>
@@ -57,7 +57,7 @@ function requisitiomData($column, $person){
     </table>
     @endif
     @if(is_array($material))
-    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <tr class="">
             <th colspan="4">Material Information</th>
         </tr>
@@ -94,7 +94,7 @@ function requisitiomData($column, $person){
     </table>
     @endif
     @if(is_array($regular))
-    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
     <tr class="">
         <th width="20%">Regular </th>
         <th width="50%">Note </th>
@@ -127,7 +127,7 @@ function requisitiomData($column, $person){
 </table>
     @endif
     @if(is_array($transport))
-    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <tr class="">
             <th colspan="4">Transport Information</th>
         </tr>
@@ -164,7 +164,7 @@ function requisitiomData($column, $person){
     </table>
     @endif
     @if(is_array($purchase))
-    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
         <tr class="">
             <th colspan="4">Purchase Information</th>
         </tr>
@@ -209,13 +209,13 @@ function requisitiomData($column, $person){
     return $content;
     }
 ?>
-
-@if(count($getData) > 0)
+<?php //dd($getData) ;?>
+@if(is_array($getData))
     @if (auth()->user()->isResource(auth()->user()->id))
 
     @else
 
-    <div class="card tile is-child quick_view">
+        <div class="card tile is-child quick_view">
         <header class="card-header">
             <p class="card-header-title">
                 <span class="icon"><i class="fas fa-tasks default"></i></span>

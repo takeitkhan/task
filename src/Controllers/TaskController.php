@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Tritiyo\Task\Helpers\TaskHelper;
 use Tritiyo\Task\Models\Task;
 use Tritiyo\Task\Models\TaskSite;
+use Tritiyo\Task\Models\TaskStatus;
 use Tritiyo\Task\Models\TaskVehicle;
 use Tritiyo\Task\Models\TaskMaterial;
 use Tritiyo\Task\Repositories\TaskInterface;
@@ -108,7 +109,7 @@ class TaskController extends Controller
                 ]);
 
                 //return view('task::edit', ['task' => $task]);
-                return redirect(route('tasks.edit', $task->id).'?task_id=' . $task->id . '&information=taskinformation')->with(['status' => 1, 'message' => 'Successfully created']);
+                return redirect(route('tasks.edit', $task->id) . '?task_id=' . $task->id . '&information=taskinformation')->with(['status' => 1, 'message' => 'Successfully created']);
                 //return redirect(route('tasks.index'))->with(['status' => 1, 'message' => 'Successfully created']);
             } catch (\Exception $e) {
                 return view('task::create')->with(['status' => 0, 'message' => 'Error']);
@@ -164,6 +165,25 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
+        $task_id = $task->id;
+
+        if (auth()->user()->isManager(auth()->user()->id)) {
+            if ($request->finish_editing == 'Yes') {
+                $put = Task::find($task_id);
+                $put->override_status = 'Yes';
+                $put->save();
+                return redirect()->back()->with('message', 'semd to approver successfully')->with('status', 1);
+            } else {
+                /**
+                 * if manager edited any data during requisition after approver data
+                 * action delete this approver approved status from tasksstatus table
+                 */
+                TaskHelper::ManagerOverrideData($task_id);
+            }
+        }
+
+        //End
+
         $getResource = TaskSite::select('resource_id')->where('task_id', $task->id)->get();
         if (isset($getResource)) {
             $checkResource = TaskHelper::arrayExist($getResource, 'resource_id', $request->site_head);
@@ -179,12 +199,11 @@ class TaskController extends Controller
             return redirect()->back()->with('message', 'Saved successfully')->with('status', 1);
         }
 
-        if (auth()->user()->isManager(auth()->user()->id) && $request->task_assigned_to_head == 'Yes') {
+        if (auth()->user()->isManager(auth()->user()->id)  &&  $request->task_assigned_to_head == 'Yes') {
 
             $atts = Task::find($task->id);
             $atts->task_assigned_to_head = $request->task_assigned_to_head;
             $atts->save();
-
 
             TaskHelper::statusUpdate([
                 'code' => TaskHelper::getStatusKey('task_assigned_to_head'),

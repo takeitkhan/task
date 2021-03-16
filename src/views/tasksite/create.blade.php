@@ -52,7 +52,7 @@
                 $method = 'post';
             }
             ?>
-            {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
+            {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'class' => 'task_site_table',  'files' => true, 'autocomplete' => 'off')) }}
 
             @if($task_id)
                 {{ Form::hidden('task_id', $task_id ?? '') }}

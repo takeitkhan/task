@@ -27,6 +27,7 @@
             'spAddUrl' => $addbtn,
             'spAllData' => route('tasks.index'),
             'spSearchData' => route('tasks.search'),
+            'spTitle' => 'Tasks',
         ])
 
         @include('component.filter_set', [

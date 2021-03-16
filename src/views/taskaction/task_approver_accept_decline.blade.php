@@ -23,7 +23,7 @@
             <?php echo Tritiyo\Task\Helpers\TaskHelper::buttonInputApproveDecline('approver_approved', 'approver_declined');?>
 
         @elseif(!empty($taskStatuss)  && $taskStatuss->code == 'approver_approved')
-{{--            <button class="button is-success">Task Approved</button>--}}
+{{--        <button class="button is-success">Task Approved</button>--}}
         <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
          <script>
             $('form#requisition_form input').attr('disabled', true);
@@ -34,10 +34,13 @@
         </script>
 
         @elseif(!empty($taskStatuss)  && $taskStatuss->code == 'approver_declined')
+
         <button class="button is-danger">Task Declined</button>
 
         @else
-            <?php echo Tritiyo\Task\Helpers\TaskHelper::buttonInputApproveDecline('approver_approved', 'approver_declined');?>
+            @if( $task->override_status == 'Yes' || $task->override_status == Null)
+                <?php echo Tritiyo\Task\Helpers\TaskHelper::buttonInputApproveDecline('approver_approved', 'approver_declined');?>
+            @endif
         @endif
 
         {{ Form::close() }}

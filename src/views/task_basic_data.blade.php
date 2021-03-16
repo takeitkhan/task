@@ -94,12 +94,14 @@
                                     <td>Material</td>
                                     <td>Amount</td>
                                 </tr>
+                                @if(is_array($task_material))
                                 @foreach($task_material as $data)
                                     <tr>
                                         <td>{{ \Tritiyo\Material\Models\Material::where('id', $data->material_id)->first()->name  }}</td>
                                         <td>{{ $data->material_qty  }}</td>
                                     </tr>
                                 @endforeach
+                                @endif
                             </table>
                         </td>
                     </tr>

@@ -3,6 +3,7 @@
 namespace Tritiyo\Task\Controllers;
 
 use Tritiyo\Task\Helpers\TaskHelper;
+use Tritiyo\Task\Models\Task;
 use Tritiyo\Task\Models\TaskSite;
 use Tritiyo\Task\Repositories\TaskSiteInterface;
 use App\Http\Controllers\Controller;
@@ -135,6 +136,15 @@ class TaskSiteController extends Controller
      */
     public function update(Request $request)
     {
+        /**
+         * if manager edited any data during requisition after approver data
+         * action delete this approver approved status from tasksstatus table
+         */
+        $task_id = $request->task_id;
+        //dd($task_id);
+        TaskHelper::ManagerOverrideData($task_id);
+        //End
+
         if (auth()->user()->isApprover(auth()->user()->id)) {
             TaskHelper::statusUpdateOrInsert([
                 'code' => TaskHelper::getStatusKey('task_approver_edited'),

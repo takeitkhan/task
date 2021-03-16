@@ -50,7 +50,7 @@
                 $method = 'post';
             } ?>
 
-            {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
+            {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'class' => 'task_material_table',  'files' => true, 'autocomplete' => 'off')) }}
 
             @if($task_id)
                 {{ Form::hidden('task_id', $task_id ?? '') }}
@@ -63,10 +63,10 @@
                 $materials = \Tritiyo\Material\Models\Material::get();
                 $getTaskMaterial = \Tritiyo\Task\Models\TaskMaterial::where('task_id', $task_id)->get()
             @endphp
+            <div id="myTable">
             @if(count( $getTaskMaterial) > 0)
                 @foreach( $getTaskMaterial as $mat)
-                    <div id="myTable">
-                        <div class="columns s{{$mat->id}}">
+                    <div class="columns s{{$mat->id}}">
                             <div class="column is-2">
                                 <div class="field">
                                     {{ Form::label('material_id', 'Material', array('class' => 'label')) }}
@@ -101,10 +101,8 @@
                             </div>
 
                         </div>
-                    </div>
                 @endforeach
             @else
-                <div id="myTable">
                     <div class="columns">
                         <div class="column is-2">
                             <label for="material_id" class="label">Material</label>
@@ -132,9 +130,9 @@
                             <a><span class="tag is-danger is-small ibtnDel">Delete</span></a>
                         </div>
                     </div>
-                </div>
-            @endif
 
+            @endif
+            </div>
 
             <div class="columns">
                 <div class="column">
@@ -161,38 +159,7 @@
 
 
 @section('cusjs')
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script type="text/javascript">
-        Vue.prototype.$axios = axios
-        new Vue({
-            el: '#app',
-            data: {
-                breakdowns: [{}],
-            },
-            methods: {
-                deleteRow(index, breakdown) {
-                    var idx = this.breakdowns.indexOf(breakdown);
-                    console.log(idx, index);
-                    if (idx > -1) {
-                        this.breakdowns.splice(idx, 1);
-                    }
-                },
-                addNewRow() {
-                    this.breakdowns.push({});
-                },
-                getInputName(index, dataName) {
-                    console, log(index);
-                    return "breakdowns[" + index + "][" + dataName + "]";
-                },
-            }
-        });
-    </script>
-
-
-
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
     <script>
         //Add Row Function
         $(document).ready(function () {

@@ -1,5 +1,12 @@
 {{--    <article class="panel is-primary">--}}
 {{--        <div class="customContainer">--}}
+@if($task->manager_override_task_chunck != null)
+    <script>
+        $('form.task_table button').addClass('is-hidden');
+        $('form.task_table input').attr('disabled', true);
+        $('form.task_table textarea').attr('disabled', true);
+    </script>
+@endif
 
 @if(auth()->user()->isManager(auth()->user()->id))
     {{--    @include('task::taskaction.ready_for_assign_to_head')--}}

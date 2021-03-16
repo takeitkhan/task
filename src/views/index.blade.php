@@ -27,6 +27,7 @@
             'spAddUrl' => $addbtn,
             'spAllData' => route('tasks.index'),
             'spSearchData' => route('tasks.search'),
+            'spTitle' => 'Tasks',
         ])
 
         @include('component.filter_set', [
@@ -39,7 +40,8 @@
 </section>
 {{-- ||--}}
 <?php
-function userAccess($arg){
+function userAccess($arg)
+{
     return auth()->user()->$arg(auth()->user()->id);
 }
 ?>
@@ -67,7 +69,7 @@ function userAccess($arg){
                     @include('task::tasklist.index_template')
                 @endforeach
 
-            {{--   Cfo--}}
+                {{--   Cfo--}}
             @elseif(auth()->user()->isCFO(auth()->user()->id))
                 @php
                     $getCFOTask =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
@@ -84,7 +86,7 @@ function userAccess($arg){
                     {{$getCFOTask->links('pagination::bootstrap-4')}}
                 </div>
 
-            {{--  Accountant          --}}
+                {{--  Accountant          --}}
             @elseif(auth()->user()->isAccountant(auth()->user()->id))
                 @php
                     $getAccountantTask =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
@@ -103,7 +105,7 @@ function userAccess($arg){
 
 
 
-            {{--   End         --}}
+                {{--   End         --}}
             @endif
         @endif
     </div>

@@ -49,7 +49,7 @@
                 $method = 'post';
             } ?>
 
-            {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
+            {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'class' => 'task_vehicle_table', 'files' => true, 'autocomplete' => 'off')) }}
 
             @if($task_id)
                 {{ Form::hidden('task_id', $task_id ?? '') }}
@@ -62,9 +62,10 @@
                 $vehicles = \Tritiyo\Vehicle\Models\Vehicle::get();
                 $getTaskVehicle = \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task_id)->get();
             @endphp
+            <div id="myTable">
             @if(count( $getTaskVehicle) > 0)
                 @foreach( $getTaskVehicle as $veh)
-                    <div id="myTable">
+
                         <div class="columns s{{$veh->id}}">
                             <div class="column is-2">
                                 <div class="field">
@@ -93,10 +94,10 @@
                             </div>
 
                         </div>
-                    </div>
+{{--                    </div>--}}
                 @endforeach
             @else
-                <div id="myTable">
+{{--                <div id="myTable">--}}
                     <div class="columns">
                         <div class="column is-2">
                             <label for="vehicle_id" class="label">Vehicle</label>
@@ -120,9 +121,9 @@
                             <a><span class="tag is-danger is-small ibtnDel">Delete</span></a>
                         </div>
                     </div>
-                </div>
-            @endif
 
+            @endif
+            </div>
 
             <div class="columns">
                 <div class="column">
@@ -146,7 +147,6 @@
 @endsection
 @section('cusjs')
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
     <script>
         //Add Row Function
         $(document).ready(function () {

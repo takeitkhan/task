@@ -122,6 +122,13 @@ class TaskMaterialController extends Controller
      */
     public function update(Request $request)
     {
+        /**
+         * if manager edited any data during requisition after approver data
+         * action delete this approver approved status from tasksstatus table
+         */
+        $task_id = $request->task_id;
+        TaskHelper::ManagerOverrideData($task_id);
+        //End
         //dd($request->all());
 
         if (auth()->user()->isApprover(auth()->user()->id)) {

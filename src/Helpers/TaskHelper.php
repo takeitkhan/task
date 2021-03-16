@@ -2,6 +2,7 @@
 
 namespace Tritiyo\Task\Helpers;
 
+use Tritiyo\Task\Models\Task;
 use Tritiyo\Task\Models\TaskStatus;
 
 class TaskHelper
@@ -41,6 +42,10 @@ class TaskHelper
             'approver_declined' => array(
                 'key' => 'approver_declined',
                 'message' => 'Declined by approver'
+            ),
+            'task_override_data' => array(
+                'key' => 'task_override_data',
+                'message' => 'Task data override by manager'
             ),
 
             // Newly Added... Not yet used
@@ -241,6 +246,60 @@ class TaskHelper
      * @return string
      */
 
+
+
+    public static function ManagerOverrideData($task_id){
+        /**
+         * if manager edited any data during requisition after approver data
+         * action delete this approver approved status from tasksstatus table
+         */
+        //dd('ok')
+        $approved_task_status = TaskStatus::where('task_id', $task_id)->where('code', 'approver_approved')->first();
+        $taskInfo = Task::where('id', $task_id)->first();
+        if (auth()->user()->isManager(auth()->user()->id) && $taskInfo->override_status == 'No'|| $approved_task_status != null) {
+            //Old data enter store in to manager_override_chunk
+            $chunck = [
+                'task' => \Tritiyo\Task\Models\Task::select('id', 'user_id', 'task_name', 'task_code', 'task_type', 'project_id', 'site_head', 'task_details', 'anonymous_proof_details', 'task_assigned_to_head', 'task_for', 'override_status', 'is_active', 'created_at', 'updated_at')->where('id', $task_id)->get()->toArray(),
+                'task_site' => \Tritiyo\Task\Models\TaskSite::where('task_id', $task_id)->get()->toArray(),
+                'task_vehicle' => \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task_id)->get()->toArray(),
+                'task_material' => \Tritiyo\Task\Models\TaskMaterial::where('task_id', $task_id)->get()->toArray(),
+            ];
+            $put = Task::find($task_id);
+            $put->manager_override_chunck = $chunck;
+            $put->override_status = 'No';
+            //dd($put);
+            $put->save();
+            //delete approver staatus
+            if (!empty($approved_task_status->id)){
+                $data = TaskStatus::find($approved_task_status->id);
+                $data->delete();
+            }
+            //override data status
+            TaskHelper::statusUpdateOrInsert([
+                'code' => TaskHelper::getStatusKey('task_override_data'),
+                'task_id' => $task_id,
+                'action_performed_by' => auth()->user()->id,
+                'performed_for' => null,
+                'requisition_id' => null,
+                'message' => TaskHelper::getStatusMessage('task_override_data')
+            ]);
+        }
+
+    }
+
+
+    public static function hiddenInput(){
+        $html = '<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>';
+        $html .= '<script>';
+        //$html .= // $('form#requisition_form input').attr('disabled', true);
+        //$html .= // $('form#requisition_form button').addClass('is-hidden');
+        $html .= "$('form#add_route button').addClass('is-hidden')";
+        $html .= "$('form#add_route input').attr('disabled', true)";
+        $html .= "$('form#add_route textarea').attr('disabled', true)";
+        $html .=   "$('form#add_route select').attr('disabled', true)";
+        $html .= '</script>';
+        return $html;
+    }
 
 
 }

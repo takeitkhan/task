@@ -122,6 +122,13 @@ class TaskVehicleController extends Controller
     public function update(Request $request)
     {
         //dd($request->all());
+        /**
+         * if manager edited any data during requisition after approver data
+         * action delete this approver approved status from tasksstatus table
+         */
+        $task_id = $request->task_id;
+        TaskHelper::ManagerOverrideData($task_id);
+        //End
 
         if (auth()->user()->isApprover(auth()->user()->id)) {
             TaskHelper::statusUpdateOrInsert([

@@ -2,6 +2,7 @@
 
 namespace Tritiyo\Task\Controllers;
 
+use Tritiyo\Task\Models\Task;
 use Tritiyo\Task\Models\TaskRequisitionBill;
 use Tritiyo\Task\Models\TaskStatus;
 use Tritiyo\Task\Helpers\TaskHelper;
@@ -55,6 +56,12 @@ class TaskStatusController extends Controller
      */
     public function store(Request $request)
     {
+        $taskInfo = Task::where('id', $request->task_id)->first();
+        if (auth()->user()->isApprover(auth()->user()->id) && $taskInfo->override_status == 'Yes') {
+            $put = Task::find($taskInfo->id);
+            $put->override_status = 'Overriden';
+            $put->save();
+        }
 //        dd($request->all());
         $validator = Validator::make($request->all(),
             [

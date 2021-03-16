@@ -25,7 +25,10 @@ class CreateTasksTable extends Migration
             $table->text('anonymous_proof_details')->nullable();
             $table->enum('task_assigned_to_head', ['Yes', 'No'])->nullable();
             $table->date('task_for')->nullable();
+            $table->json('manager_override_chunck')->nullable();
+            $table->json('override_status', ['Yes', 'No', 'Overriden'])->nullable();
             $table->string('is_active')->default('1');
+            $table->json('	manager_override_chunck')->nullable();
             $table->timestamps();
         });
     }

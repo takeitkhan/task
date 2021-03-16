@@ -17,6 +17,7 @@
             'spAddUrl' => route('tasks.create'),
             'spAllData' => route('tasks.index'),
             'spSearchData' => route('tasks.search'),
+            'spTitle' => 'Tasks',
         ])
 
         @include('component.filter_set', [
@@ -33,12 +34,11 @@
         <a style="display:block; float: right;" class="button is-small is-danger">
             <span><i class="fas fa-plus"></i> {{$task->task_type}}</span>
         </a>
-            @include('task::layouts.tab')
-
+        @include('task::layouts.tab')
 
 
         <div class="customContainer">
-            {{ Form::open(array('url' => route('tasks.update', $task->id), 'method' => 'PUT', 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
+            {{ Form::open(array('url' => route('tasks.update', $task->id), 'method' => 'PUT', 'value' => 'PATCH', 'id' => 'add_route', 'class' => 'task_table', 'files' => true, 'autocomplete' => 'off')) }}
 
             {{ Form::hidden('task_type', $task->task_type ?? '') }}
             {{ Form::hidden('task_assigned_to_head', $task->task_assigned_to_head != null ?? 'Yes') }}
@@ -58,8 +58,27 @@
                     <div class="field">
                         {{ Form::label('site_head', 'Site Head', array('class' => 'label')) }}
                         <div class="control">
-                            <?php $siteHead = \App\Models\User::where('role', 2)->pluck('name', 'id')->prepend('Select Site Head', ''); ?>
-                            {{ Form::select('site_head', $siteHead, $task->site_head ?? NULL, ['class' => 'input', 'id' => 'sitehead_select']) }}
+                            <?php
+                            //dd(date('Y-m-d'));
+                            $today = date('Y-m-d');
+                            $current_user = auth()->user()->id;
+                            //$siteHead = \DB::select("SELECT * FROM (SELECT *, (SELECT site_head FROM tasks WHERE tasks.site_head = users.id AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '$today') AS site_head, (SELECT user_id FROM tasks WHERE tasks.user_id = '$current_user' AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '$today' LIMIT 0,1) AS manager FROM users WHERE users.role = 2) AS QQ WHERE QQ.manager = '$current_user' AND QQ.site_head = ");
+                            $siteHead = \App\Models\User::where('role', 2)->get();
+                            ?>
+                            <select class="input" name="site_head" id="sitehead_select">
+                                <option></option>
+                                @foreach($siteHead as $resource)
+
+                                    <option
+                                        value="{{ $resource->id }}" {{ $resource->id == $task->site_head ? 'selected=""' : NULL }}>
+                                        {{ $resource->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+
+                            <?php //$siteHead = \App\Models\User::where('role', 2)->pluck('name', 'id')->prepend('Select Site Head', ''); ?>
+                            {{--                            {{ Form::select('site_head', $siteHead, $task->site_head ?? NULL, ['class' => 'input', 'id' => 'sitehead_select']) }}--}}
                         </div>
                     </div>
                 </div>

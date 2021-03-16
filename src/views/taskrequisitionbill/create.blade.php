@@ -198,7 +198,8 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                             <a href="{{route('taskmaterial.create')}}?task_id={{$task_id}}&information=materialInformation"
                                class="is-link is-size-7 is-small"> Edit </a>
                         </label>
-                        @foreach( $getTaskMaterial as $mat)
+                        @if(is_array($getTaskMaterial))
+                            @foreach( $getTaskMaterial as $mat)
                             <div class="columns">
                                 <div class="column is-3">
                                     <div class="field">
@@ -229,7 +230,9 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                 </div>
                             </div>
                         @endforeach
+                        @endif
                     </fieldset>
+
                     <!-- End Material -->
 
 

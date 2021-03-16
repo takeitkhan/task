@@ -17,6 +17,7 @@
             'spAddUrl' => route('tasks.create'),
             'spAllData' => route('tasks.index'),
             'spSearchData' => route('tasks.search'),
+            'spTitle' => 'Tasks',
         ])
 
         @include('component.filter_set', [
@@ -63,7 +64,7 @@
                         {{ Form::label('project_id', 'Project', array('class' => 'label')) }}
                         <div class="control">
                             <?php $projects = \Tritiyo\Project\Models\Project::pluck('name', 'id')->prepend('Select Project', ''); ?>
-                            {{ Form::select('project_id', $projects, $task->project_id ?? NULL, ['class' => 'input', 'id' => 'project_select']) }}
+                            {{ Form::select('project_id', $projects, $task->project_id ?? NULL, ['class' => 'input', 'required' => true,  'id' => 'project_select']) }}
                         </div>
                     </div>
                 </div>
@@ -71,23 +72,18 @@
                     <div class="field">
                         {{ Form::label('site_head', 'Site Head', array('class' => 'label')) }}
                         <div class="control">
-                            <?php $siteHead = \App\Models\User::where('role', 2)->pluck('name', 'id')->prepend('Select Site Head', ''); ?>
+                            <?php //$siteHead = \App\Models\User::where('role', 2)->pluck('name', 'id')->prepend('Select Site Head', ''); ?>
                             <?php
                             //dd(date('Y-m-d'));
-//                            $today = date('Y-m-d');
-//                            $siteHead = \App\Models\User::
-//                            leftjoin('tasks', 'tasks.site_head', '!=', 'users.id')
-//                                ->leftjoin('tasks_site', 'tasks_site.resource_id', '!=', 'users.id')
-//                                ->where('users.role', 2)
-//                                //->whereRaw("DATE_FORMAT(`tasks`.`created_at`, \'%Y-%m-%d\') = " . $today.')
-//                                //->whereRaw(date_format('tasks.created_at', 'Y-m-d') . '=' . $today)
-//                                ->whereDate('tasks.created_at', $today)
-//                                //->toSql();
-//                                ->pluck('users.name', 'users.id')
-//                                ->prepend('Select Site Head', '');
-                            //dd($siteHead);
+                            $today = date('Y-m-d');
+                            $siteHead = \DB::select("SELECT * FROM (SELECT *, (SELECT site_head FROM tasks WHERE tasks.site_head = users.id AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '$today') AS site_head FROM users WHERE users.role = 2) AS QQ WHERE QQ.site_head IS NULL");
                             ?>
-                            {{ Form::select('site_head', $siteHead, $task->site_head ?? NULL, ['class' => 'input', 'id' => 'sitehead_select']) }}
+                            <select class="input" name="site_head" id="sitehead_select" required>
+                                <option></option>
+                                @foreach($siteHead as $resource)
+                                    <option value="{{ $resource->id }}">{{ $resource->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -96,7 +92,7 @@
                     <div class="field">
                         {{ Form::label('task_name', 'Task Name', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::text('task_name', $task->task_name ?? NULL, ['class' => 'input is-small', 'placeholder' => 'Enter Task Name...']) }}
+                            {{ Form::text('task_name', $task->task_name ?? NULL, ['class' => 'input is-small', 'required' => true, 'placeholder' => 'Enter Task Name...']) }}
                         </div>
                     </div>
                 </div>
@@ -107,7 +103,7 @@
                     <div class="field">
                         {{ Form::label('task_details', 'Task details [Please put all the activity details here]', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::textarea('task_details', $task->task_details ?? NULL, ['class' => 'textarea', 'rows' => 5, 'placeholder' => 'Enter task details...']) }}
+                            {{ Form::textarea('task_details', $task->task_details ?? NULL, ['class' => 'textarea', 'required' => true,  'rows' => 5, 'placeholder' => 'Enter task details...']) }}
                         </div>
                     </div>
                 </div>
@@ -152,3 +148,21 @@
 @endsection
 
 
+<?php
+/**
+$siteHead = \DB::select("
+SELECT * FROM (
+SELECT *,
+(
+SELECT created_at FROM tasks WHERE tasks.site_head = users.id AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '2021-03-14'
+) AS task_created,
+(
+SELECT site_head FROM tasks WHERE tasks.site_head = users.id AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '2021-03-14'
+) AS site_head
+
+FROM users WHERE users.role = 2
+) AS QQ
+WHERE QQ.site_head IS NULL
+");
+ **/
+?>
