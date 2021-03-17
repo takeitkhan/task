@@ -1,4 +1,4 @@
-<div class="column is-4">
+<div class="column is-3">
     <div class="borderedCol" style="position: relative;">
         <?php
         $latest = \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->where('code', 'approver_approved')->orderBy('id', 'desc')->first();
@@ -15,7 +15,8 @@
         ?>
         <div style="position: absolute; right: 5px; top: 5px;">
             @if(!empty($requisition->requisition_approved_by_accountant) && $requisition->requisition_approved_by_accountant == 'Yes')
-                <a href="{{ route('tasks.add_bill', $task->id) }}" class="button is-small is-tag is-link is-light is-rounded">
+                <a href="{{ route('tasks.add_bill', $task->id) }}"
+                   class="button is-small is-tag is-link is-light is-rounded">
                     <i class="fas fa-plus"></i>&nbsp;Bill
                 </a>
             @endif
@@ -36,6 +37,15 @@
                         <strong>Project: </strong>
                         @php $project = \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first() @endphp
                         {{  $project->name }}
+                    </small>
+                    <br/>
+                    <small>
+                        <strong>Project Manager: </strong>
+                        @php
+                            $project = \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first()
+                        @endphp
+                        {{ \App\Models\User::where('id', $project->manager)->first()->name }}
+                        ({{  $project->manager }})
                     </small>
                     <br/>
                     <small>
