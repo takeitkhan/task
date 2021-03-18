@@ -2,6 +2,7 @@
 namespace Tritiyo\Task\Repositories;
 
 use Tritiyo\Task\Models\Task;
+use DB;
 
 class TaskEloquent implements TaskInterface
 {
@@ -138,5 +139,61 @@ class TaskEloquent implements TaskInterface
     {
         $this->getById($id)->delete();
         return true;
+    }
+
+
+
+    public function advanced_search(array $options) {
+        $default = [
+            'q' => null,
+            'project_id' => null,
+            'site_head_id' => null,
+            'daterange' => null
+        ];
+
+        $new_options = array_merge($default, $options);
+        $search = $new_options['q'];
+
+        $getResult = DB::select("SELECT * FROM `tasks_datas`
+                    LEFT JOIN users_datas AS creator ON creator.id = tasks_datas.user_id
+                    LEFT JOIN users_datas AS site_head ON site_head.id = tasks_datas.site_head
+                    LEFT JOIN projects_datas ON projects_datas.id = tasks_datas.project_id
+                    LEFT JOIN requisition_datas ON requisition_datas.task_id = tasks_datas.id
+                    LEFT JOIN tasks_site_datas ON tasks_site_datas.task_id = tasks_datas.id
+                    
+                    WHERE (
+                        task_name LIKE '%$search%'
+                        OR task_type LIKE '%$search%'
+                        OR task_code LIKE '%$search%'
+                        OR project_id LIKE '%$search%'
+                        OR site_head LIKE '%$search%'
+                        OR task_for LIKE '%$search%'
+                        OR all_tasks_datas LIKE '%$search%'
+                        OR creator.name LIKE '%$search%'
+                        OR creator.email LIKE '%$search%'
+                        OR creator.username LIKE '%$search%'
+                        OR creator.phone LIKE '%$search%'
+                        OR creator.all_users_datas LIKE '%$search%'
+                    
+                        OR site_head.name LIKE '%$search%'
+                        OR site_head.email LIKE '%$search%'
+                        OR site_head.username LIKE '%$search%'
+                        OR site_head.phone LIKE '%$search%'
+                        OR site_head.all_users_datas LIKE '%$search%'
+                    
+                        OR code LIKE '%$search%'
+                        OR type LIKE '%$search%'
+                        OR manager LIKE '%$search%'
+                        OR all_projects_datas LIKE '%$search%'
+                        OR all_requisition_datas LIKE '%$search%'
+                        
+                        OR site_id LIKE '%$search%'
+                        OR resource_id LIKE '%$search%'
+                        OR all_tasks_sites_datas LIKE '%$search%'
+                    
+                    )"
+        );
+
+        return $getResult;
     }
 }

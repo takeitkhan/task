@@ -287,4 +287,22 @@ class TaskController extends Controller
         return view('task::taskanonymousproof.create', compact('task'));
     }
 
+
+
+    // Search 
+    public function search(Request $request) {
+        if($request->search) {          
+            $options = [
+                'q' => $request->q,
+                'project_id' => $request->project_id,
+                'site_head_id' => $request->site_head_id,
+                'daterange' => $request->daterange
+            ];            
+            $search_result = $this->task->advanced_search($options);            
+        } else {
+            $search_result = [];
+        }
+        return view('task::tasklist.search', compact('search_result'));     
+    }
+
 }

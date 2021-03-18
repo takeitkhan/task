@@ -14,4 +14,6 @@ interface TaskInterface
     public function update($id, array $attributes);
 
     public function delete($id);
+    
+    public function advanced_search(array $attributes);
 }
