@@ -13,12 +13,22 @@
             $taskEditUrl = route('tasks.edit', $task->id) . '?task_id=' . $task->id . '&information=taskinformation';
         }
         ?>
-        <div style="position: absolute; right: 5px; top: 5px;">
+        <div style="position: absolute; right: 5px; top: 5px;">        
             @if(!empty($requisition->requisition_approved_by_accountant) && $requisition->requisition_approved_by_accountant == 'Yes')
-                <a href="{{ route('tasks.add_bill', $task->id) }}"
-                   class="button is-small is-tag is-link is-light is-rounded">
-                    <i class="fas fa-plus"></i>&nbsp;Bill
-                </a>
+                @if(auth()->user()->isResource(auth()->user()->id))
+                    @if($requisition->bill_submitted_by_resource == NULL)
+                        <a href="{{ route('tasks.add_bill', $task->id) }}"
+                            class="button is-small is-tag is-link is-light is-rounded">
+                            Submit&nbsp;Bill
+                        </a>
+                    @endif
+                @endif
+
+                @if($requisition->bill_submitted_by_resource == 'Yes')
+                    <a href="{{ route('tasks.add_bill', $task->id) }}" class="button is-small is-tag is-link is-light is-rounded">
+                        Approve&nbsp;Bill
+                    </a>
+                @endif
             @endif
         </div>
         <article class="media">
@@ -42,7 +52,7 @@
                     <small>
                         <strong>Project Manager: </strong>
                         @php
-                            $project = \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first()
+                            $project = \Tritiyo\Project\Models\Project::where('id', $task->project_id)->first();
                         @endphp
                         {{ \App\Models\User::where('id', $project->manager)->first()->name }}
                         ({{  $project->manager }})
@@ -54,8 +64,9 @@
                         ({{ $task->site_head ?? NULL }})
                     </small>
                     <br/>
-
-
+                    <strong>Task Date: </strong>
+                    {{ $task->task_for ?? NULL }}
+                    <br/>
                     @php
                         $task_status = \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->orderBy('created_at', 'desc')->first();
                     @endphp
@@ -74,12 +85,12 @@
                     <div class="level-left">
                         <a href="{{ route('tasks.show', $task->id) }}"
                            class="level-item"
-                           title="View user data">
+                           title="View task and requisition data">
                             <span class="icon is-small"><i class="fas fa-eye"></i></span>
                         </a>
                         <!-- userAccess() assign to  index.blade   -->
                         @if (userAccess('isManager') || userAccess('isApprover') || userAccess('isCFO') || userAccess('isAccountant') || userAccess('isAdmin'))
-                            <a href="{{ $taskEditUrl }}" class="level-item" title="View all transaction">
+                            <a href="{{ $taskEditUrl }}" class="level-item" title="Edit task and requisition data">
                                 <span class="icon is-info is-small"><i class="fas fa-edit"></i></span>
                             </a>
                             {{--  {!! delete_data('tasks.destroy',  $task->id) !!}--}}

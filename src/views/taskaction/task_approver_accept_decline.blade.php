@@ -35,7 +35,7 @@
 
         @elseif(!empty($taskStatuss)  && $taskStatuss->code == 'approver_declined')
 
-        <button class="button is-danger">Task Declined</button>
+        <button class="button is-danger is-small">Task Declined</button>
 
         @else
             @if( $task->override_status == 'Yes' || $task->override_status == Null)

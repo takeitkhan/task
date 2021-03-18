@@ -90,7 +90,7 @@ function userAccess($arg)
             @elseif(auth()->user()->isAccountant(auth()->user()->id))
                 @php
                     $getAccountantTask =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
-                                    ->where('tasks_requisition_bill.requisition_approved_by_cfo', 'Yes')
+                                    ->where('tasks_requisition_bill.requisition_approved_by_cfo', 'Yes')->orderBy('tasks.id', 'desc')
                                     ->paginate('18');
                     //dd($getCFOTask);
                 @endphp

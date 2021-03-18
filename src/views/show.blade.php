@@ -13,6 +13,7 @@
         $alldatas = '#';
     }
 @endphp
+
 <section class="hero is-white borderBtmLight">
     <nav class="level">
         @include('component.title_set', [
@@ -38,6 +39,7 @@
         ])
     </nav>
 </section>
+
 @section('column_left')
     {{--    <article class="panel is-primary">--}}
     {{--        <div class="customContainer">--}}

@@ -3,6 +3,7 @@ global $taskID;
 $taskID = $task->id;
 global $getData;
 $getData = \Tritiyo\Task\Models\TaskRequisitionBill::where('task_id', $taskID)->get()->toArray();
+
 function requisitiomData($column, $person){
 global $taskID;
 global $getData;
@@ -129,7 +130,6 @@ $totalAmount = 0;
 
         </tr>
 
-
     </table>
 @endif
 @if(is_array($transport))
@@ -178,7 +178,6 @@ $totalAmount = 0;
             <th width="70%">Note</th>
             <th width="30%">Purchase Amount</th>
         </tr>
-
         @php
             $pa_sum = array();
             $i = 0;
@@ -200,7 +199,6 @@ $totalAmount = 0;
             <td>{{ $total_purchase_amount }}</td>
             <?php $totalAmount += $total_purchase_amount;?>
         </tr>
-        <br/>
     </table>
 @endif
 <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
@@ -216,10 +214,12 @@ return $content;
 }
 ?>
 <?php //dd($getData) ;?>
-@if(is_array($getData))
-    @if (auth()->user()->isResource(auth()->user()->id))
 
-    @else
+
+    @if(is_array($getData))
+        @if (auth()->user()->isResource(auth()->user()->id))
+
+        @else
 
         <div class="card tile is-child quick_view">
             <header class="card-header">
@@ -254,7 +254,6 @@ return $content;
                         <div class="is-active" data-rcontent="1">
                             <?php echo requisitiomData('requisition_prepared_by_manager', 'Manager');?>
                         </div>
-
                         <div data-rcontent="2">
                             <?php echo requisitiomData('requisition_edited_by_cfo', 'CFO');?>
                         </div>
@@ -267,62 +266,62 @@ return $content;
             </div>
         </div>
 
-    @endif
+        @endif
 
-    <div class="card tile is-child quick_view">
-        <header class="card-header">
-            <p class="card-header-title">
-                <span class="icon"><i class="fas fa-tasks default"></i></span>
-                Bill Data
-            </p>
-        </header>
-        <div class="card-content">
-            <div class="card-data">
-                <div class="tabs is-centered is-boxed is-small" id="bill_tabs">
-                    <ul>
-                        <li class="is-active" data-bill="1">
-                            <a>
-                                <span>Resource Submitted</span>
-                            </a>
-                        </li>
-                        <li data-bill="2">
-                            <a>
-                                <span>Manager Edited</span>
-                            </a>
-                        </li>
-                        <li data-bill="3">
-                            <a>
-                                <span>CFO Edited</span>
-                            </a>
-                        </li>
-                        <li data-bill="4">
-                            <a>
-                                <span>Accountant Disbursed</span>
-                            </a>
-                        </li>
-                    </ul>
+        <div class="card tile is-child quick_view">
+            <header class="card-header">
+                <p class="card-header-title">
+                    <span class="icon"><i class="fas fa-tasks default"></i></span>
+                    Bill Data
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="card-data">
+                    <div class="tabs is-centered is-boxed is-small" id="bill_tabs">
+                        <ul>
+                            <li class="is-active" data-bill="1">
+                                <a>
+                                    <span>Resource Submitted</span>
+                                </a>
+                            </li>
+                            <li data-bill="2">
+                                <a>
+                                    <span>Manager Edited</span>
+                                </a>
+                            </li>
+                            <li data-bill="3">
+                                <a>
+                                    <span>CFO Edited</span>
+                                </a>
+                            </li>
+                            <li data-bill="4">
+                                <a>
+                                    <span>Accountant Disbursed</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="bill-tab-content">
+
+                        <div class="is-active" data-bcontent="1">
+                            <?php echo requisitiomData('bill_prepared_by_resource', 'Resource');?>
+                        </div>
+
+                        <div data-bcontent="2">
+                            <?php echo requisitiomData('bill_edited_by_manager', 'Manager');?>
+                        </div>
+                        <div data-bcontent="3">
+                            <?php echo requisitiomData('bill_edited_by_cfo', 'CFO');?>
+                        </div>
+                        <div data-bcontent="4">
+                            <?php echo requisitiomData('bill_edited_by_accountant', 'Accountant');?>
+                        </div>
+                    </div>
+
                 </div>
-                <div id="bill-tab-content">
-
-                    <div class="is-active" data-bcontent="1">
-                        <?php echo requisitiomData('bill_prepared_by_resource', 'Resource');?>
-                    </div>
-
-                    <div data-bcontent="2">
-                        <?php echo requisitiomData('bill_edited_by_manager', 'Manager');?>
-                    </div>
-                    <div data-bcontent="3">
-                        <?php echo requisitiomData('bill_edited_by_cfo', 'CFO');?>
-                    </div>
-                    <div data-bcontent="4">
-                        <?php echo requisitiomData('bill_edited_by_accountant', 'Accountant');?>
-                    </div>
-                </div>
-
             </div>
         </div>
-    </div>
-@endif
+    @endif
 
 
 
@@ -386,4 +385,10 @@ return $content;
             $('div[data-bcontent="' + bill + '"]').addClass('is-active');
         });
     });
+</script>
+
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bulma-accordion@2.0.1/dist/js/bulma-accordion.min.js"></script>
+<script>
+    var accordions = bulmaAccordion.attach();
 </script>

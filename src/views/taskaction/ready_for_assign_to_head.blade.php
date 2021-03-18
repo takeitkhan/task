@@ -37,7 +37,7 @@ $approved_task_status = \Tritiyo\Task\Models\TaskStatus::where('task_id', $task-
         @if(!empty($task))
             {{ Form::hidden('task_assigned_to_head', 'Yes' ?? '') }}
             {{ Form::hidden('task_message_handler', 'task_assigned_to_head' ?? '') }}
-            <input type="submit" value="Assign to head" class="button is-success"/>
+            <input type="submit" value="Assign to head" class="button is-success is-small"/>
         @endif
         {{ Form::close() }}
     @endif

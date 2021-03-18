@@ -44,7 +44,12 @@ class SiteHeadTotal
                                     COLUMNS (vehicle_rent VARCHAR(255) PATH '$.vehicle_rent')) task_vehicle
                                     WHERE tasks_requisition_bill.task_id = " . $this->task_id);
         //dd($vehicle_rent);
-        return $vehicle_rent[0]->vehicle_rent_total;
+        if(!empty($vehicle_rent)) {
+            return $vehicle_rent[0]->vehicle_rent_total;
+        } else {
+            return false;
+        }
+        
     }
 
     public function getMaterialTotal()
@@ -55,7 +60,11 @@ class SiteHeadTotal
                                    COLUMNS (material_amount VARCHAR(255) PATH '$.material_amount')) task_material
                                    WHERE tasks_requisition_bill.task_id = " . $this->task_id);
        //dd($material_amount);
-       return $material_amount[0]->material_amount_total;
+       if(!empty($material_amount)) {
+            return $material_amount[0]->material_amount_total;
+       } else {
+           return false;
+       }
 
     }
 
@@ -71,7 +80,12 @@ class SiteHeadTotal
                             FROM tasks_requisition_bill WHERE task_id = $this->task_id
                         ) AS hhhmm");
         //dd($regular_total_amount[0]->regular_total_amount);
-        return $regular_total_amount[0]->regular_total_amount;
+        //return $regular_total_amount[0]->regular_total_amount;
+        if(!empty($regular_total_amount)) {
+            return $regular_total_amount[0]->regular_total_amount;
+        } else {
+            return false;
+        }
     }
 
 
@@ -81,8 +95,12 @@ class SiteHeadTotal
                                     FROM tasks_requisition_bill, JSON_TABLE($this->column, '$.task_transport_breakdown[*]'
                                     COLUMNS (ta_amount VARCHAR(255) PATH '$.ta_amount')) task_transport_breakdown
                                     WHERE tasks_requisition_bill.task_id = " . $this->task_id);
-        //dd($vehicle_rent);
-        return $transport_total[0]->transport_total;
+
+        if(!empty($transport_total)) {
+            return $transport_total[0]->transport_total;
+       } else {
+           return false;
+       }
     }
 
     public function getPurchaseTotal()
@@ -91,8 +109,12 @@ class SiteHeadTotal
                                     FROM tasks_requisition_bill, JSON_TABLE($this->column, '$.task_purchase_breakdown[*]'
                                     COLUMNS (pa_amount VARCHAR(255) PATH '$.pa_amount')) task_purchase_breakdown
                                     WHERE tasks_requisition_bill.task_id = " . $this->task_id);
-        //dd($vehicle_rent);
-        return $purchase_total[0]->purchase_total;
+
+        if(!empty($purchase_total)) {
+            return $purchase_total[0]->purchase_total;
+       } else {
+           return false;
+       }
     }
 
 

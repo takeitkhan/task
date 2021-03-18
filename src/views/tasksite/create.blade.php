@@ -17,6 +17,7 @@
             'spAddUrl' => route('tasks.create'),
             'spAllData' => route('tasks.index'),
             'spSearchData' => route('tasks.search'),
+            'spTitle' => 'Tasks',
         ])
 
         @include('component.filter_set', [
@@ -69,7 +70,9 @@
                         {{ Form::label('site_id', 'Sites', array('class' => 'label')) }}
                         <div class="control">
                             <div dclass="select is-multiple">
-                                @php $sites = \Tritiyo\Site\Models\Site::get() @endphp
+                                @php
+                                    $sites = \Tritiyo\Site\Models\Site::where('project_id', \Tritiyo\Task\Models\Task::where('id', $task_id)->first()->project_id)->get();
+                                @endphp
                                 <select id="site_select" multiple="multiple" name="site_id[]" class="input" required>
                                     @foreach($sites as $site)
                                         <option value="{{$site->id}}"
@@ -102,7 +105,10 @@
                                 <select id='resource_select' multiple="multiple" name="resource_id[]" class="input"
                                         required>
                                     @foreach($resources as $resource)
-                                        <option value="{{$resource->id}}"
+                                        @php
+                                            $count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($resource->id);
+                                        @endphp
+                                        <option value="{{$resource->id}}" data-result="{{ $count_result }}"
                                         @if(isset($taskSites))
                                             @foreach($taskSites as $data)
                                                 {{$data->resource_id == $resource->id ? 'selected' : ''}}
@@ -131,6 +137,7 @@
             {{ Form::close() }}
         </div>
     </article>
+
 @endsection
 
 @section('column_right')
@@ -143,22 +150,34 @@
 
 @section('cusjs')
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
 
-    <script>
-        $(document).ready(function () {
-            $('#resource_select').select2({
-                placeholder: "Select Resource",
-                allowClear: true
-            });
-            $('#site_select').select2({
-                placeholder: "Select Site",
-                allowClear: true
-            });
+<script>
+    $(document).ready(function () {
+        $('#resource_select').select2({
+            placeholder: "Select Resource",
+            allowClear: true
         });
+        $('#site_select').select2({
+            placeholder: "Select Site",
+            allowClear: true
+        });
+    });
+</script>
+
+
+<script>
+
+    $('select#resource_select').on('change', function(){
+        var v = $(this).find(':selected').attr('data-result')
+        if(v == 'Yes'){
+            alert('Your selected resource has atleast 3 pending bills. You can\'t select this resource.');
+        }        
+    })
     </script>
 
 @endsection

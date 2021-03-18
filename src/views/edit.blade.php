@@ -49,7 +49,12 @@
                     <div class="field">
                         {{ Form::label('project_id', 'Project', array('class' => 'label')) }}
                         <div class="control">
-                            <?php $projects = \Tritiyo\Project\Models\Project::pluck('name', 'id')->prepend('Select Project', ''); ?>
+                            @if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isHR(auth()->user()->id))
+                                <?php $projects = \Tritiyo\Project\Models\Project::where('manager', auth()->user()->id)->pluck('name', 'id')->prepend('Select Project', ''); ?>
+                            @else
+                                <?php $projects = \Tritiyo\Project\Models\Project::pluck('name', 'id')->prepend('Select Project', ''); ?>
+                            @endif
+                            <?php //$projects = \Tritiyo\Project\Models\Project::pluck('name', 'id')->prepend('Select Project', ''); ?>
                             {{ Form::select('project_id', $projects, $task->project_id ?? NULL, ['class' => 'input', 'id' => 'project_select']) }}
                         </div>
                     </div>
@@ -68,8 +73,11 @@
                             <select class="input" name="site_head" id="sitehead_select">
                                 <option></option>
                                 @foreach($siteHead as $resource)
-
+                                    @php
+                                        $count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($resource->id);
+                                    @endphp                                    
                                     <option
+                                        data-result="{{ $count_result }}"
                                         value="{{ $resource->id }}" {{ $resource->id == $task->site_head ? 'selected=""' : NULL }}>
                                         {{ $resource->name }}
                                     </option>
@@ -140,6 +148,15 @@
             placeholder: "Select Project",
             allowClear: true
         });
+    </script>
+
+    <script>
+        $('select#sitehead_select').on('change', function(){
+            var v = $(this).find(':selected').attr('data-result')
+            if(v == 'Yes'){
+                alert('Your selected resource has atleast 3 pending bills. You can\'t select this resource.');
+            }        
+        })
     </script>
 
 @endsection

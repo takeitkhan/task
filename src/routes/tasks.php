@@ -46,6 +46,18 @@ Route::group(['middleware' => ['web', 'role:1,2,3,4,5,8']], function () {
     Route::resources([
         'taskrequisitionbill' => TaskRequisitionBillController::class,
     ]);
+
+
+    Route::get('manager/overridden-data/task_id={task_id}', function($task_id){
+        if(!empty($task_id)){
+            return view('task::manager_overridden_data', compact('task_id'));
+        } else {
+            return redirect()->back();
+        }
+
+    })->name('tasks.manager.overridden.data');
+
+
 });
 
 Route::group(['middleware' => ['web', 'role:2']], function () {

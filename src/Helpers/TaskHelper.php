@@ -209,9 +209,9 @@ class TaskHelper
     {
 
         $html = '<input type="hidden" name="accept[approve_code]" value="' . $approve . '" class="button is-success"/>';
-        $html .= '<input type="submit" name="accept[approve]" value="Approve" class="button is-success"/>';
+        $html .= '<input type="submit" name="accept[approve]" value="Approve" class="button is-success is-small"/>';
         $html .= '<input type="hidden" name="decline[decline_code]" value="' . $decline . '" class="button is-danger"/>';
-        $html .= '<input type="submit" name="decline[decline]" value="Decline" class="button is-danger"/>';
+        $html .= '<input type="submit" name="decline[decline]" value="Decline" class="button is-danger is-small ml-2"/>';
         return $html;
     }
 
@@ -299,6 +299,22 @@ class TaskHelper
         $html .=   "$('form#add_route select').attr('disabled', true)";
         $html .= '</script>';
         return $html;
+    }
+
+
+    public static function getPendingBillCountStatus($resource_id) {
+        $bill_not_submitted = \Tritiyo\Task\Models\Task::select('tasks.id', 'tasks.site_head', 'trb.*')
+                                ->leftJoin('tasks_requisition_bill AS trb', 'trb.task_id', 'tasks.id')
+                                ->where('trb.requisition_approved_by_accountant', '=', 'Yes')
+                                ->whereRaw('trb.bill_submitted_by_resource IS NULL')
+                                ->where('tasks.site_head', $resource_id)->get();
+        $total_blank = $bill_not_submitted->count();
+        //dd($total_blank);
+        if($total_blank > 1) {
+            return 'Yes';
+        } else {
+            return 'No';
+        }
     }
 
 

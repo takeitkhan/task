@@ -12,7 +12,7 @@
                     @if(auth()->user()->isManager(auth()->user()->id) && $task->override_status == 'No')
                         {{ Form::open(array('url' => route('tasks.update', $task->id), 'method' => 'PUT', 'value' => 'PATCH', 'id' => 'add_route', 'class' => 'task_table', 'files' => true, 'autocomplete' => 'off')) }}
                         <input type="hidden" name="finish_editing" value="Yes"/>
-                        <button onclick="return confirm('Are you sure?')" type="submit" class="button is-info">
+                        <button onclick="return confirm('Are you sure?')" type="submit" class="button is-info is-small">
                             Finish editing and send to approver
                         </button>
                         {{ Form::close() }}
@@ -113,6 +113,13 @@
                     <div class="statusSuccessMessage">
                         {{ \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->orderBy('id', 'desc')->first()->message }}
                     </div>
+                    @if(auth()->user()->isApprover(auth()->user()->id) && ($task->override_status == 'Yes' || $task->override_status == 'Overriden'))
+                    <a href="{{route('tasks.manager.overridden.data', $task->id)}}" target="_blank">
+                        <div class="statusSuccessMessage has-background-link-dark mt-2 has-text-white-ter">
+                            Previous Data of Manager
+                        </div>
+                    </a>
+                    @endif
                 </div>
             </div>
             <div class="columns">

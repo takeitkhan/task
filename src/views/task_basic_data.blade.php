@@ -11,6 +11,15 @@
         <p class="card-header-title">
             <span class="icon"><i class="fas fa-tasks default"></i></span>
                 Task General Information
+                @if(request()->routeIs('tasks.show', $task->id))
+                    @if(auth()->user()->isResource(auth()->user()->id))
+                    
+                    @else
+                        <a href="{{ route('tasks.edit', $task->id) }}?task_id={{ $task->id }}&information=taskinformation" target="__blank" class="tag is-link" style="position: absolute; right: 10px;">
+                            Edit
+                        </a>
+                    @endif
+                @endif
         </p>
     </header>
 
