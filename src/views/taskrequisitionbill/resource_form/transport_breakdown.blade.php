@@ -26,7 +26,7 @@
                 </div>
                 <div class="column is-3">
                     <input type="text" name="transport[{{$ta_count = $key}}][where_to_where]"
-                           class="where_to_where input is-small" value="{{$item->where_to_where}}"/>
+                           class="where_to_where input is-small" value="{{$item->where_to_where}}" required/>
                 </div>
                 <div class="column is-2">
                     <div class="control">
@@ -36,7 +36,7 @@
                                 'Bus', 'Rickshaw', 'CNG', 'Taxi', 'Auto', 'Tempo', 'Van', 'Train', 'Boat', 'Other'
                             ];
                             ?>
-                            <select name="transport[{{$ta_count = $key}}][transport_type]">
+                            <select name="transport[{{$ta_count = $key}}][transport_type]" required>
                                 <option value="">Select Transport Type</option>
                                 @foreach($transports as $transport)
                                     <option
@@ -49,12 +49,12 @@
                 <div class="column is-2">
                     <input class="input is-small" name="transport[{{$ta_count = $key}}][ta_amount]"
                            type="number" min="0"
-                           step=".01" value="{{$item->ta_amount}}"/>
+                           step=".01" value="{{$item->ta_amount}}" required/>
                 </div>
                 <div class="column">
                     <input class="input is-small" name="transport[{{$ta_count = $key}}][ta_note]"
                            type="text"
-                           value="{{$item->ta_note}}"/>
+                           value="{{$item->ta_note}}" required/>
                 </div>
             </div>
         @endforeach
@@ -71,7 +71,7 @@
             <div class="column is-3">
                 <input type="text" name="transport[0][where_to_where]"
                        class="where_to_where input is-small"
-                       placeholder="Where to Where"/>
+                       placeholder="Where to Where" required/>
             </div>
             <div class="column is-2">
                 <div class="control">
@@ -81,7 +81,7 @@
                             'Bus', 'Rickshaw', 'CNG', 'Taxi', 'Auto', 'Tempo', 'Van', 'Train', 'Boat', 'Other'
                         ];
                         ?>
-                        <select name="transport[0][transport_type]">
+                        <select name="transport[0][transport_type]" required>
                             <option>Select Transport Type</option>
                             @foreach($transports as $transport)
                                 <option value="{{ $transport }}">{{ $transport }}</option>
@@ -92,11 +92,11 @@
             </div>
             <div class="column is-2">
                 <input class="input is-small" name="transport[0][ta_amount]" type="number" min="0"
-                       step=".01" placeholder="TA Amount"/>
+                       step=".01" placeholder="TA Amount" required/>
             </div>
             <div class="column">
                 <input class="input is-small" name="transport[0][ta_note]" type="text"
-                       placeholder="TA Note"/>
+                       placeholder="TA Note" required/>
             </div>
         </div>
     @endif
@@ -115,7 +115,7 @@
         <div class="column is-3">
             <input type="text" name=""
                    class="input is-small where_to_where"
-                   placeholder="Where to Where"/>
+                   placeholder="Where to Where" required/>
         </div>
         <div class="column is-2">
             <div class="control">
@@ -125,7 +125,7 @@
                         'Bus', 'Rickshaw', 'CNG', 'Taxi', 'Auto', 'Tempo', 'Van', 'Train', 'Boat', 'Other'
                     ];
                     ?>
-                    <select name="" class="transport_type">
+                    <select name="" class="transport_type" required>
                         <option>Select Transport Type</option>
                         @foreach($transports as $transport)
                             <option value="{{ $transport }}">{{ $transport }}</option>
@@ -136,11 +136,11 @@
         </div>
         <div class="column is-2">
             <input class="input is-small ta_amount" name="" type="number" min="0" step=".01"
-                   placeholder="TA Amount"/>
+                   placeholder="TA Amount" required/>
         </div>
         <div class="column">
             <input class="input is-small ta_note" name="" type="text"
-                   placeholder="TA Note"/>
+                   placeholder="TA Note" required/>
         </div>
     </div>
 </script>

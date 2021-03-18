@@ -66,49 +66,72 @@ class TaskProofController extends Controller
         if (isset($request->task_id)) {
 
             $request->validate([
-                'resource_proof' => 'required', //|max:2048,
-                'vehicle_proof' => 'required', //|max:2048,
-                'material_proof' => 'required' //|max:2048,
+                //'resource_proof' => 'required', //|max:2048,
+                //'vehicle_proof' => 'required', //|max:2048,
+                //'material_proof' => 'required' //|max:2048,
             ]);
 
             //dd($request->anonymous_proof);
-            $resource_proof_image = [];
-            foreach ($request->resource_proof as $items) {
-                //dd($items);
-                $resource_proof = time() . $items->getClientOriginalName();
-                $resource_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
-                $resource_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $resource_proof);
+            //Resource Image Proof
+            if($request->file('resource_proof') != null){
+                $resource_proof_image = [];
+                foreach ($request->resource_proof as $items) {
+                    //dd($items);
+                    $resource_proof = time() . $items->getClientOriginalName();
+                    $resource_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
+                    $resource_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $resource_proof);
+                }
+                $resourceProofImage =  implode(' | ', $resource_proof_image);
+            } else {
+                $resourceProofImage = null;
             }
-
-            $vehicle_proof_image = [];
-            foreach ($request->vehicle_proof as $items) {
-                $vehicle_proof = time() . $items->getClientOriginalName();
-                $vehicle_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
-                $vehicle_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $vehicle_proof);
+            //Vehicle Image Proof
+            if($request->file('vehicle_proof') != null){
+                $vehicle_proof_image = [];
+                foreach ($request->vehicle_proof as $items) {
+                    $vehicle_proof = time() . $items->getClientOriginalName();
+                    $vehicle_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
+                    $vehicle_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $vehicle_proof);
+                }
+                $vehicleProofImage = implode(' | ', $vehicle_proof_image);
+            }else {
+                $vehicleProofImage = null;
             }
-
-            $material_proof_image = [];
-            foreach ($request->material_proof as $items) {
-                $material_proof = time() . $items->getClientOriginalName();
-                $material_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
-                $material_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $material_proof);
+            
+            //Material Image Proof
+            if($request->file('material_proof') != null){
+                $material_proof_image = [];
+                foreach ($request->material_proof as $items) {
+                    $material_proof = time() . $items->getClientOriginalName();
+                    $material_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
+                    $material_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $material_proof);
+                }
+                $materialProofImage = implode(' | ', $material_proof_image);
+            } else {
+                $materialProofImage = null;
             }
-
-            $anonymous_proof_image = [];
-            foreach ($request->anonymous_proof as $items) {
-                $anonymous_proof = time() . $items->getClientOriginalName();
-                $anonymous_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
-                $anonymous_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $anonymous_proof);
+            //Anonymous image proof
+            if($request->file('anonymous_proof') != null){
+                $anonymous_proof_image = [];
+                foreach ($request->anonymous_proof as $items) {
+                    $anonymous_proof = time() . $items->getClientOriginalName();
+                    $anonymous_proof_image[] = date('Y') . date('m') . '/' . time() . $items->getClientOriginalName();
+                    $anonymous_proof_data = $items->move(public_path('proofs/' . date('Y') . date('m')), $anonymous_proof);
+                }
+                $anonymousProofImage = implode(' | ', $anonymous_proof_image);
+            } else {
+                $anonymousProofImage = null;
             }
             //dd($anonymous_proof_image);
+            
 
             $attributes = [
                 'task_id' => $request->task_id,
                 'proof_sent_by' => auth()->user()->id,
-                'resource_proof' => implode(' | ', $resource_proof_image),
-                'vehicle_proof' => implode(' | ', $vehicle_proof_image),
-                'material_proof' => implode(' | ', $material_proof_image),
-                'anonymous_proof' => implode(' | ', $anonymous_proof_image),
+                'resource_proof' => $resourceProofImage,
+                'vehicle_proof' => $vehicleProofImage,
+                'material_proof' => $materialProofImage,
+                'anonymous_proof' => $anonymousProofImage,
                 'lat_proof' => null,
                 'long_proof' => null
             ];

@@ -65,6 +65,19 @@
                 <tr>
                     <td colspan="4">{{ $task->task_details ?? NULL }}</td>
                 </tr>
+
+                @if(!empty($task->anonymous_proof_details))
+                    <tr>
+                        <td colspan="4"><strong>Anonymous Proof</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                                <?php echo preg_replace("/[\n]/","<br/>", $task->anonymous_proof_details);?>                     
+                        </td>
+                    </tr>
+                @endif
+
+
                 @if(!empty($task_sites))
                     <tr>
                         <td colspan="4"><strong>Site and resource information</strong></td>

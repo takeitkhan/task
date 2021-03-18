@@ -27,12 +27,12 @@
                 <input class="input is-small" name="purchase[{{$pa_count = $key}}][pa_amount]"
                        type="number" min="0"
                        step=".01"
-                       value="{{$item->pa_amount}}"/>
+                       value="{{$item->pa_amount}}" required/>
             </div>
             <div class="column">
                 <input class="input is-small" name="purchase[{{$pa_count = $key}}][pa_note]"
                        type="text"
-                       value="{{$item->pa_note}}"/>
+                       value="{{$item->pa_note}}" required/>
             </div>
         </div>
         @endforeach
@@ -49,11 +49,11 @@
             <div class="column is-2">
                 <input class="input is-small" name="purchase[0][pa_amount]" type="number" min="0"
                        step=".01"
-                       placeholder="PA Amount"/>
+                       placeholder="PA Amount" required/>
             </div>
             <div class="column">
                 <input class="input is-small" name="purchase[0][pa_note]" type="text"
-                       placeholder="PA Note"/>
+                       placeholder="PA Note" required/>
             </div>
         </div>
     @endif
@@ -70,11 +70,11 @@
         </div>
         <div class="column is-2">
             <input class="input is-small pa_amount" name="" type="number" min="0" step=".01"
-                   placeholder="PA Amount"/>
+                   placeholder="PA Amount" required/>
         </div>
         <div class="column">
             <input class="input is-small pa_note" name="" type="text"
-                   placeholder="PA Note"/>
+                   placeholder="PA Note" required/>
         </div>
     </div>
 </script>

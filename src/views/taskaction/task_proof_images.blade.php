@@ -1,6 +1,9 @@
 @php
     $taskproofs = \Tritiyo\Task\Models\TaskProof::where('task_id', $task->id)->get();
+
+    //$proofs  variable assign in show.blade
 @endphp
+
 @if($taskproofs->count() > 0)
     <div class="card tile is-child quick_view">
         <header class="card-header">
@@ -19,22 +22,27 @@
                                 Task Accepted. Please submit your proof
                             </div>
                         @endif
-                        <div class="columns">
-                            <div class="column is-12">
-                                <strong>Resource Proof</strong><br/>
-                                @if(($proofs != NULL))
-                                    @foreach(explode(' | ', $proofs->resource_proof) as $key => $img_link)
-                                        <figure class="image is-48x48 is-inline-block">
-                                            <a class="modal-button" data-target="resource_proof{{$key}}">
-                                                <img src="{{ url('public/proofs/' .   $img_link) }}" class="image_wrap"/>
-                                            </a>
-                                            <?php echo Tritiyo\Task\Helpers\TaskHelper::modalImage('resource_proof' . $key, url('public/proofs/' . $img_link));?>
-                                        </figure>
-                                    @endforeach
-                                @endif
-                            </div>
-                        </div>
 
+                        
+                        @if(!empty($proofs->resource_proof))
+                            <div class="columns">
+                                <div class="column is-12">
+                                    <strong>Resource Proof</strong><br/>
+                                    @if(($proofs != NULL))
+                                        @foreach(explode(' | ', $proofs->resource_proof) as $key => $img_link)
+                                            <figure class="image is-48x48 is-inline-block">
+                                                <a class="modal-button" data-target="resource_proof{{$key}}">
+                                                    <img src="{{ url('public/proofs/' .   $img_link) }}" class="image_wrap"/>
+                                                </a>
+                                                <?php echo Tritiyo\Task\Helpers\TaskHelper::modalImage('resource_proof' . $key, url('public/proofs/' . $img_link));?>
+                                            </figure>
+                                        @endforeach
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+
+                        @if(!empty($proofs->vehicle_proof))
                         <div class="columns">
                             <div class="column is-12">
                                 <strong>Vehicle Proof</strong><br/>
@@ -50,41 +58,46 @@
                                 @endif
                             </div>
                         </div>
+                        @endif
 
                     </div>
                     <div class="column is-6">
 
-                        <div class="columns">
-                            <div class="column is-12">
-                                <strong>Material Proof</strong><br/>
-                                @if(($proofs != NULL))
-                                    @foreach(explode(' | ', $proofs->material_proof) as $key => $img_link)
-                                        <figure class="image is-48x48 is-inline-block">
-                                            <a class="modal-button" data-target="material_proof{{$key}}">
-                                                <img src="{{ url('public/proofs/' .   $img_link) }}" class="image_wrap"/>
-                                            </a>
-                                            <?php echo Tritiyo\Task\Helpers\TaskHelper::modalImage('material_proof' . $key, url('public/proofs/' . $img_link));?>
-                                        </figure>
-                                    @endforeach
-                                @endif
+                        @if(!empty($proofs->material_proof))
+                            <div class="columns">
+                                <div class="column is-12">
+                                    <strong>Material Proof</strong><br/>
+                                    @if(($proofs != NULL))
+                                        @foreach(explode(' | ', $proofs->material_proof) as $key => $img_link)
+                                            <figure class="image is-48x48 is-inline-block">
+                                                <a class="modal-button" data-target="material_proof{{$key}}">
+                                                    <img src="{{ url('public/proofs/' .   $img_link) }}" class="image_wrap"/>
+                                                </a>
+                                                <?php echo Tritiyo\Task\Helpers\TaskHelper::modalImage('material_proof' . $key, url('public/proofs/' . $img_link));?>
+                                            </figure>
+                                        @endforeach
+                                    @endif
+                                </div>
                             </div>
-                        </div>
+                        @endif
 
-                        <div class="columns">
-                            <div class="column is-12">
-                                <strong>Anonymous Proof</strong><br/>
-                                @if(($proofs != NULL))
-                                    @foreach(explode(' | ', $proofs->anonymous_proof) as $key => $img_link)
-                                        <figure class="image is-48x48 is-inline-block">
-                                            <a class="modal-button" data-target="anonymous_proof{{$key}}">
-                                                <img src="{{ url('public/proofs/' .   $img_link) }}" class="image_wrap"/>
-                                            </a>
-                                            <?php echo Tritiyo\Task\Helpers\TaskHelper::modalImage('anonymous_proof' . $key, url('public/proofs/' . $img_link));?>
-                                        </figure>
-                                    @endforeach
-                                @endif
+                        @if(!empty($proofs->anonymous_proof))
+                            <div class="columns">
+                                <div class="column is-12">
+                                    <strong>Anonymous Proof</strong><br/>
+                                    @if(($proofs != NULL))
+                                        @foreach(explode(' | ', $proofs->anonymous_proof) as $key => $img_link)
+                                            <figure class="image is-48x48 is-inline-block">
+                                                <a class="modal-button" data-target="anonymous_proof{{$key}}">
+                                                    <img src="{{ url('public/proofs/' .   $img_link) }}" class="image_wrap"/>
+                                                </a>
+                                                <?php echo Tritiyo\Task\Helpers\TaskHelper::modalImage('anonymous_proof' . $key, url('public/proofs/' . $img_link));?>
+                                            </figure>
+                                        @endforeach
+                                    @endif
+                                </div>
                             </div>
-                        </div>
+                        @endif
 
                     </div>
                 </div>

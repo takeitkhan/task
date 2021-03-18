@@ -55,15 +55,20 @@ function userAccess($arg)
                     @endif
                 @endforeach
             @elseif(auth()->user()->isApprover(auth()->user()->id))
+
                 @foreach($tasks->where('task_assigned_to_head', 'Yes') as $task)
                     @php
                         $proof_check = \Tritiyo\Task\Models\TaskStatus::where('code', 'proof_given')->where('task_id', $task->id)->first();
-                        //dump($proof_check);
+                        $checkRequisitionApprovedByCFO = \Tritiyo\Task\Models\TaskRequisitionBill::where('task_id', $task->id)->first();
                     @endphp
                     @if($proof_check != null && $proof_check->code)
-                        @include('task::tasklist.index_template')
+                        @if(!empty($checkRequisitionApprovedByCFO) && $checkRequisitionApprovedByCFO->requisition_approved_by_cfo == Null)
+                            @include('task::tasklist.index_template')
+                        @endif
                     @endif
                 @endforeach
+
+
             @elseif(auth()->user()->isManager(auth()->user()->id))
                 @foreach($tasks->where('user_id', auth()->user()->id) as $task)
                     @include('task::tasklist.index_template')

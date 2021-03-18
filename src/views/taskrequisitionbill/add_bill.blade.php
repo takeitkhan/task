@@ -250,7 +250,19 @@ $taskrequisitionbill = Tritiyo\Task\Models\TaskRequisitionBill::where('task_id',
         $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
     @endphp
         @include('task::taskrequisitionbill.bill_accept_decline')
-{{--         @include('task::taskrequisitionbill.requistion_data')--}}
+
+
+
+
+    @if(auth()->user()->isresource(auth()->user()->id))
+    
+    @else(auth()->user()->isCFO(auth()->user()->id) || auth()->user()->isManager(auth()->user()->id) || auth()->user()->isAccountant(auth()->user()->id))
+        
+        @include('task::taskrequisitionbill.requistion_data')
+
+    @endif
+
+
 @endsection
 
 @endif
