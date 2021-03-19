@@ -29,6 +29,9 @@
 
         @include('component.filter_set', [
             'spShowFilterSet' => true,
+            'spAddUrl' => route('tasks.create'),
+            'spAllData' => route('tasks.index'),
+            'spSearchData' => route('tasks.search'),
             'spPlaceholder' => 'Search tasks...',
             'spMessage' => $message = $message ?? NULl,
             'spStatus' => $status = $status ?? NULL

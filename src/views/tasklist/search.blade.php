@@ -22,7 +22,7 @@
         ])
 
         @include('component.button_set', [
-            'spShowButtonSet' => true,
+            'spShowButtonSet' => false,
             'spAddUrl' => null,
             'spAddUrl' => $addbtn,
             'spAllData' => route('tasks.index'),
@@ -31,7 +31,7 @@
         ])
 
         @include('component.filter_set', [
-            'spShowFilterSet' => true,
+            'spShowFilterSet' => false,
             'spPlaceholder' => 'Search tasks...',
             'spMessage' => $message = $message ?? NULl,
             'spStatus' => $status = $status ?? NULL

@@ -32,6 +32,9 @@
 
         @include('component.filter_set', [
             'spShowFilterSet' => true,
+            'spAddUrl' => route('tasks.create'),
+            'spAllData' => route('tasks.index'),
+            'spSearchData' => route('tasks.search'),
             'spPlaceholder' => 'Search tasks...',
             'spMessage' => $message = $message ?? NULl,
             'spStatus' => $status = $status ?? NULL
@@ -107,6 +110,10 @@ function userAccess($arg)
                     {{$getAccountantTask->links('pagination::bootstrap-4')}}
                 </div>
                 {{--   End         --}}
+            @elseif(auth()->user()->isAdmin(auth()->user()->id))
+                @foreach($tasks as $task)
+                    @include('task::tasklist.index_template')
+                @endforeach
             @endif
         </div>
     @endif
