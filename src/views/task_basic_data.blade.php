@@ -30,18 +30,27 @@
                 <tr>
                     <td><strong>Task Type</strong></td>
                     <td><span class="tag is-info">{{ ucwords($task->task_type) ?? NULL }}</span></td>
-                    <td><strong>Task Name</strong></td>
-                    <td>{{ $task->task_name ?? NULL }}</td>
+                    <td>
+                        <strong>Task Name</strong>
+                    <br/><strong>Task Code</strong>
+                    </td>
+                    <td>
+                        {{ $task->task_name ?? NULL }} <br/>
+                        {{ $task->task_code ?? NULL }}
+                    
+                    </td>
+                   
                 </tr>
                 <tr>
                     <td><strong>Site Head</strong></td>
                     <td>
                         <span class="has-text-info">
-                            {{ \App\Models\User::where('id', $task->site_head)->first()->name }} ({{ $task->site_head ?? NULL }})
+                            <a href="{{route('hidtory.user', $task->site_head)}}" target="_blank">
+                                {{ \App\Models\User::where('id', $task->site_head)->first()->name }} ({{ $task->site_head ?? NULL }})
+                            </a>
                         </span>
                     </td>
-                    <td><strong>Task Code</strong></td>
-                    <td colspan="3">{{ $task->task_code ?? NULL }}</td>
+                    
                 </tr>
                 <tr>
                     <td><strong>Task Created Time</strong></td>
@@ -99,7 +108,7 @@
                         </td>
                     </tr>
                 @endif
-                @if($task_vehicle->count() > 0 || $task_material->count() > 0)
+                @if(count($task_vehicle) > 0 || count($task_material) > 0)
                     <tr>
                         <td colspan="2"><strong>Vehicle information</strong></td>
                         <td colspan="2"><strong>Material information</strong></td>
@@ -123,13 +132,15 @@
                             <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                                 <tr>
                                     <td>Material</td>
+                                    <td>Qty</td>
                                     <td>Amount</td>
                                 </tr>
-                                @if(is_array($task_material))
+                                @if(count($task_material) > 0)
                                     @foreach($task_material as $data)
                                         <tr>
                                             <td>{{ \Tritiyo\Material\Models\Material::where('id', $data->material_id)->first()->name  }}</td>
                                             <td>{{ $data->material_qty  }}</td>
+                                            <td>{{ $data->material_amount  }}</td>
                                         </tr>
                                     @endforeach
                                 @endif

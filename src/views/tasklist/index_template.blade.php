@@ -1,5 +1,5 @@
 <div class="column is-3">
-    <div class="borderedCol" style="position: relative;">
+    <div class="borderedCol {{$task->task_type == 'emergency' ? 'has-background-danger-light' : ''}}" style="position: relative;">
         <?php
         $latest = \Tritiyo\Task\Models\TaskStatus::where('task_id', $task->id)->where('code', 'approver_approved')->orderBy('id', 'desc')->first();
         $requisition = \Tritiyo\Task\Models\TaskRequisitionBill::where('task_id', $task->id)->first();

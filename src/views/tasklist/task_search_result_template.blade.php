@@ -1,8 +1,9 @@
+@if(!empty($task))
 <tr>
     <td>
         <small>
             <a href="{{ route('tasks.show', $task->id) }}"
-            title="View task" target="_blank">
+                title="View task" target="_blank">
                 <strong style="color: #555;">Task Name: </strong>
                 {{ $task->task_name }}
             </a>
@@ -27,6 +28,7 @@
                 {{ $task_status->message ?? NULL }}
             </div>
         @endif<br/>
+        
     </td>
     <td>
         <small>
@@ -58,3 +60,4 @@
         </small>
     </td>
 </tr>
+@endif

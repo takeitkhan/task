@@ -46,23 +46,22 @@
             <span class="icon"><i class="fas fa-tasks default"></i></span>
                 Task Advanced Search
         </p>
-    </header>
-
+    </header>    
     <div class="card-content">
         <div class="card-data">
         {{ Form::open(array('url' => route('tasks.search'), 'method' => 'GET', 'value' => 'PATCH', 'id' => 'tasks_advanced_search', 'autocomplete' => 'off')) }}
             <div class="columns">
                 <div class="column is-5">
-                    <input type="text" name="q" class="input is-small" placeholder="Search by any keyword" value="{{ request()->q ? request()->q : null }}" />
+                    <input type="text" name="key" class="input is-small" id="textboxID" placeholder="Search by any keyword" value="{{ request()->key ? request()->key : null }}" />
                 </div>
                 <div class="column">                    
                     @php
                         $projects = \Tritiyo\Project\Models\Project::get();
                     @endphp
                     <select id="task_type" class="input is-small" name="task_type">
-                        <option value=""></option>                        
-                        <option value="general">General</option>
-                        <option value="emergency">Emergency</option>
+                        <option value="">Select task type</option>                        
+                        <option value="general" {{ request()->get('task_type') == 'general' ? 'selected' : ''}}>General</option>
+                        <option value="emergency" {{ request()->get('task_type') == 'emergency' ? 'selected' : ''}}>Emergency</option>
                     </select>
                 </div>
                 <div class="column">                    
@@ -70,21 +69,32 @@
                     <select id="project_id" class="input is-small" name="project_id">
                         <option value=""></option>
                         @foreach($projects as $data)
-                            <option value={{$data->id}}>{{$data->name}}</option>
+                            <option value={{$data->id}} {{ $data->id == request()->get('project_id') ? 'selected' : ''}}>
+                                {{$data->name}}
+                            </option>
                         @endforeach
                     </select>
                 </div>
                 <div class="column">
                     <select id="site_head_id" class="input is-small" name="site_head_id">
                     @php $resources = \App\Models\User::where('role', '2')->get(); @endphp
-                        <option value=""></option>
+                        <option value="">Select site head</option>
                         @foreach($resources as $data)
-                        <option value={{$data->id}}>{{$data->name}}</option>
+                        <option value={{$data->id}} {{ $data->id == request()->get('site_head_id') ? 'selected' : ''}}>{{$data->name}}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="column">
-                    <input class="input is-small" type="text" name="daterange" value="01/01/2018 - 01/15/2018" />
+                    <select id="" class="input is-small" name="bill_status">
+                   
+                        <option value="">Filter By Bill Status</option>
+                       
+                        <option value='pending_bill'>Pending Bill</option>
+                      
+                    </select>
+                </div>
+                <div class="column">
+                    <input class="input is-small" type="text" name="daterange" value="" />
                 </div>
                 <div class="column">
                     <input name="search" type="submit" class="button is-small is-primary has-background-primary-dark" value="Search"/>
@@ -95,18 +105,20 @@
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
             <tr>
                 <th>Task Basic</th>
-                <th>Task Status</th>
+                <th>Task & Bill Status</th>
                 <th>Project and Site Info</th>                
                 <th>Transaction</th>
             </tr>
             @if(!empty($search_result))
-                @foreach($search_result as $task)                    
-                    @if(auth()->user()->isManager(auth()->user()->id))
-                        @if(auth()->user()->id == $task->user_id)
+                @foreach($search_result as $task)
+                    @if(!empty($task->id))
+                        @if(auth()->user()->isManager(auth()->user()->id))
+                            @if(auth()->user()->id == $task->user_id)
+                                @include('task::tasklist.task_search_result_template')
+                            @endif
+                        @else
                             @include('task::tasklist.task_search_result_template')
                         @endif
-                    @else
-                        @include('task::tasklist.task_search_result_template')
                     @endif
                 @endforeach
             @else
@@ -125,7 +137,9 @@
         </div>
     </div>
 </div>
-
+<script type="text/javascript">
+    document.getElementById('textboxID').select();
+</script>
 @endsection
 
 @section('cusjs')
@@ -141,30 +155,33 @@
 <script>
 $(function() {
   $('input[name="daterange"]').daterangepicker({
-    opens: 'left'
+    opens: 'left',
+    locale: {
+        format: 'YYYY-MM-DD'
+    }
   }, function(start, end, label) {
     console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
   });
 });
 </script>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
-    <script>
-        $('select#project_id').select2({
-            placeholder: "Select Project",
-            allowClear: true,
-        });
-        $('select#site_head_id').select2({
-            placeholder: "Select Site Head",
-            allowClear: true,
-        });
-        $('select#task_type').select2({
-            placeholder: "Select task type",
-            allowClear: true,
-        });
-    </script>
+<script>
+    $('select#project_id').select2({
+        placeholder: "Select Project",
+        allowClear: true,
+    });
+    $('select#site_head_id').select2({
+        placeholder: "Select Site Head",
+        allowClear: true,
+    });
+    $('select#task_type').select2({
+        placeholder: "Select task type",
+        allowClear: true,
+    });
+</script>
 
     <style type="text/css">
         .table.is-fullwidth {

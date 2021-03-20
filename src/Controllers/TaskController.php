@@ -178,7 +178,9 @@ class TaskController extends Controller
                  * if manager edited any data during requisition after approver data
                  * action delete this approver approved status from tasksstatus table
                  */
-                TaskHelper::ManagerOverrideData($task_id);
+                if($task->manager_override_chunck == null){
+                    TaskHelper::ManagerOverrideData($task_id);
+                }
             }
         }
 
@@ -291,14 +293,29 @@ class TaskController extends Controller
 
     // Search 
     public function search(Request $request) {
-        if($request->search) {          
+        //dd($request);
+        if($request->search) {         
+            if(!empty($request->daterange)) {
+                $dates = explode(' - ', $request->daterange);		
+                $start = $dates[0];
+                $end = $dates[1];
+            } else {
+                $start = date('Y-m-d');
+                $end = date('Y-m-d');
+            }
+            
             $options = [
-                'q' => $request->q,
+                'q' => $request->key,
+                'task_type' => $request->task_type,
+                'bill_status' => $request->bill_status,
                 'project_id' => $request->project_id,
                 'site_head_id' => $request->site_head_id,
-                'daterange' => $request->daterange
-            ];            
-            $search_result = $this->task->advanced_search($options);            
+                'start' => $start ?? date('Y-m-d'),
+                'end' => $end ?? date('Y-m-d')
+            ];    
+            //dd($options);
+            $search_result = $this->task->advanced_search($options);
+            //dd($search_result);
         } else {
             $search_result = [];
         }

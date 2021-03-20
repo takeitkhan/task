@@ -27,9 +27,19 @@
             'spAddUrl' => $addbtn,
             'spAllData' => route('tasks.index'),
             'spSearchData' => route('tasks.search'),
-            'spTitle' => 'Tasks',
+            'spTitle' => 'All Task',
         ])
-
+         @if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isCFO(auth()->user()->id) || auth()->user()->isAccountant(auth()->user()->id) )
+            @include('component.any_link', [
+                'spShowButtonSet' => true,
+                'spAddUrl' => null,
+                'spAddUrl' => '#',
+                'spCss' => 'is-warning',
+                'spAllData' => route('tasks.index').'?bill=pending',
+                'spTitle' => 'Pending Bills',
+            ])
+        @endif
+            
         @include('component.filter_set', [
             'spShowFilterSet' => true,
             'spAddUrl' => route('tasks.create'),
@@ -42,6 +52,7 @@
     </nav>
 </section>
 {{-- ||--}}
+
 <?php
 function userAccess($arg)
 {
@@ -51,12 +62,14 @@ function userAccess($arg)
 @section('column_left')
     @if(!empty($tasks))
         <div class="columns is-multiline">
+
             @if(auth()->user()->isResource(auth()->user()->id))
                 @foreach($tasks->where('task_assigned_to_head', 'Yes') as $task)
                     @if($task->user_id == auth()->user()->id || $task->site_head == auth()->user()->id)
                         @include('task::tasklist.index_template')
                     @endif
                 @endforeach
+
             @elseif(auth()->user()->isApprover(auth()->user()->id))
 
                 @foreach($tasks->where('task_assigned_to_head', 'Yes') as $task)
@@ -72,49 +85,81 @@ function userAccess($arg)
                 @endforeach
 
             @elseif(auth()->user()->isManager(auth()->user()->id))
+                @php
+                     if(request()->get('bill') == 'pending'){
+                        $tasks =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
+                                    ->where('tasks_requisition_bill.requisition_approved_by_accountant', 'Yes')            
+                                    ->where('tasks_requisition_bill.bill_submitted_by_resource', 'Yes')
+                                    ->where('tasks_requisition_bill.bill_approved_by_manager', Null)
+                                    ->paginate('48');
+                    }
+                @endphp
                 @foreach($tasks->where('user_id', auth()->user()->id) as $task)
                     @include('task::tasklist.index_template')
                 @endforeach
 
                 {{--   Cfo--}}
             @elseif(auth()->user()->isCFO(auth()->user()->id))
+
                 @php
-                    $getCFOTask =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
+                    if(request()->get('bill') == 'pending'){
+                        $tasks =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
+                                    ->where('tasks_requisition_bill.requisition_approved_by_accountant', 'Yes')    
+                                    ->where('tasks_requisition_bill.bill_submitted_by_resource', 'Yes')            
+                                    ->where('tasks_requisition_bill.bill_approved_by_manager', 'Yes')
+                                    ->where('tasks_requisition_bill.bill_approved_by_CFO', Null)
+                                    ->paginate('48');
+                    } else {
+                        $tasks =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
                                     ->where('tasks_requisition_bill.requisition_submitted_by_manager', 'Yes')
-                                    ->paginate('18');
-                    //dd($getCFOTask);
+                                    ->paginate('48');
+                    }
+                    
                 @endphp
 
-                @foreach($getCFOTask as $task)
+                @foreach($tasks as $task)
                     @include('task::tasklist.index_template')
                 @endforeach
 
                 <div class="pagination_wrap pagination is-centered">
-                    {{$getCFOTask->links('pagination::bootstrap-4')}}
+                    {{$tasks->links('pagination::bootstrap-4')}}
                 </div>
 
                 {{--  Accountant          --}}
             @elseif(auth()->user()->isAccountant(auth()->user()->id))
                 @php
-                    $getAccountantTask =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
+                     if(request()->get('bill') == 'pending'){
+                        $tasks =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
+                                    ->where('tasks_requisition_bill.requisition_approved_by_accountant', 'Yes')    
+                                    ->where('tasks_requisition_bill.bill_submitted_by_resource', 'Yes')            
+                                    ->where('tasks_requisition_bill.bill_approved_by_manager', 'Yes')
+                                    ->where('tasks_requisition_bill.bill_approved_by_CFO', 'Yes')
+                                    ->where('tasks_requisition_bill.bill_approved_by_accountant', Null)
+                                    ->paginate('48');
+                    } else {
+                        $tasks =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
                                     ->where('tasks_requisition_bill.requisition_approved_by_cfo', 'Yes')->orderBy('tasks.id', 'desc')
-                                    ->paginate('18');
-                    //dd($getCFOTask);
+                                    ->paginate('48');
+                    }
+                    
                 @endphp
 
-                @foreach($getAccountantTask as $task)
+                @foreach($tasks as $task)
                     @include('task::tasklist.index_template')
                 @endforeach
 
                 <div class="pagination_wrap pagination is-centered">
-                    {{$getAccountantTask->links('pagination::bootstrap-4')}}
+                    {{$tasks->links('pagination::bootstrap-4')}}
                 </div>
                 {{--   End         --}}
+
             @elseif(auth()->user()->isAdmin(auth()->user()->id))
                 @foreach($tasks as $task)
                     @include('task::tasklist.index_template')
                 @endforeach
             @endif
+
+
         </div>
     @endif
 @endsection

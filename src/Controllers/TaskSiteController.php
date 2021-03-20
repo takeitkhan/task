@@ -142,7 +142,10 @@ class TaskSiteController extends Controller
          */
         if (auth()->user()->isManager(auth()->user()->id)) {
             $task_id = $request->task_id;
-            TaskHelper::ManagerOverrideData($task_id);
+            
+            if(Task::where('id', $task_id)->first()->manager_override_chunck == null){
+                TaskHelper::ManagerOverrideData($task_id);
+            }
         }
         //End
 

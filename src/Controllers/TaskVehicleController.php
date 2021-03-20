@@ -2,6 +2,7 @@
 
 namespace Tritiyo\Task\Controllers;
 
+use Tritiyo\Task\Models\Task;
 use Tritiyo\Task\Helpers\TaskHelper;
 use Tritiyo\Task\Models\TaskVehicle;
 use Tritiyo\Task\Repositories\TaskVehicle\TaskVehicleInterface;
@@ -129,7 +130,9 @@ class TaskVehicleController extends Controller
 
         if (auth()->user()->isManager(auth()->user()->id)) {
             $task_id = $request->task_id;
-            TaskHelper::ManagerOverrideData($task_id);
+            if(Task::where('id', $task_id)->first()->manager_override_chunck == null){
+                TaskHelper::ManagerOverrideData($task_id);
+            }
         }
         //End
 

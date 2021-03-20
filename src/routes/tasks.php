@@ -47,6 +47,12 @@ Route::group(['middleware' => ['web', 'role:1,2,3,4,5,8']], function () {
         'taskrequisitionbill' => TaskRequisitionBillController::class,
     ]);
 
+    Route::get('history/{user_id}/users', function($user_id){
+
+        return view('task::user_history', compact('user_id'));
+    
+    })->name('hidtory.user');
+
 
     Route::get('manager/overridden-data/task_id={task_id}', function($task_id){
         if(!empty($task_id)){

@@ -145,6 +145,7 @@
                                     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                                         <tr>
                                             <td>Material</td>
+                                            <td>Qty</td>
                                             <td>Amount</td>
                                         </tr>
                                         @if(is_array($task_material))
@@ -152,6 +153,7 @@
                                                 <tr>
                                                     <td>{{ \Tritiyo\Material\Models\Material::where('id', $data->material_id)->first()->name  }}</td>
                                                     <td>{{ $data->material_qty  }}</td>
+                                                    <td>{{ $data->material_amount  }}</td>
                                                 </tr>
                                             @endforeach
                                         @endif
