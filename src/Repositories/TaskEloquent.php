@@ -155,24 +155,24 @@ class TaskEloquent implements TaskInterface
         ];
         $mo = (object) array_merge($default, $options);
 
-        
+
 
         $search = $mo->q;
 
-        if($mo->project_id != NULL) {            
+        if($mo->project_id != NULL) {
             $project_id = " AND tasks_datas.project_id = $mo->project_id";
             //dd($project_id);
         } else {
             $project_id = " ";
         }
 
-        if($mo->site_head_id != NULL) {            
+        if($mo->site_head_id != NULL) {
             $site_head = " AND tasks_datas.site_head = $mo->site_head_id";
         } else {
             $site_head = " ";
         }
 
-        if($mo->task_type != NULL) {            
+        if($mo->task_type != NULL) {
             $task_type = " AND task_type = '$mo->task_type'";
         } else {
             $task_type = " ";
@@ -180,12 +180,22 @@ class TaskEloquent implements TaskInterface
 
 
         if($mo->start != NULL && $mo->end != NULL) {
-            $daterange = " AND task_for BETWEEN '$mo->start' AND '$mo->end'";            
+            $daterange = " AND task_for BETWEEN '$mo->start' AND '$mo->end'";
         } else {
             $daterange = " ";
         }
 
-        $getResult = DB::select("SELECT * FROM `tasks_datas`
+        $getResult = DB::select("SELECT
+                    tasks_datas.id AS main_task_id,
+                    tasks_datas.*,
+                    creator.*,
+                    site_head.*,
+                    projects_datas.*,
+                    requisition_datas.*,
+                    tasks_site_datas.*,
+                    tasks_vehicle_datas.*,
+                    tasks_material_datas.*
+            FROM `tasks_datas`
             LEFT JOIN users_datas AS creator ON creator.id = tasks_datas.user_id
             LEFT JOIN users_datas AS site_head ON site_head.id = tasks_datas.site_head
             LEFT JOIN projects_datas ON projects_datas.id = tasks_datas.project_id
@@ -196,8 +206,8 @@ class TaskEloquent implements TaskInterface
 
             WHERE (
                 task_name LIKE '%$search%' OR task_type LIKE '%$search%' OR task_code LIKE '%$search%' OR project_id LIKE '%$search%'
-                OR site_head LIKE '%$search%' OR task_for LIKE '%$search%' OR all_tasks_datas LIKE '%$search%' OR creator.name LIKE '%$search%' 
-                OR creator.email LIKE '%$search%' OR creator.username LIKE '%$search%' OR creator.phone LIKE '%$search%' 
+                OR site_head LIKE '%$search%' OR task_for LIKE '%$search%' OR all_tasks_datas LIKE '%$search%' OR creator.name LIKE '%$search%'
+                OR creator.email LIKE '%$search%' OR creator.username LIKE '%$search%' OR creator.phone LIKE '%$search%'
                 OR creator.all_users_datas LIKE '%$search%'
 
                 OR site_head.name LIKE '%$search%' OR site_head.email LIKE '%$search%' OR site_head.username LIKE '%$search%' OR site_head.phone LIKE '%$search%'
@@ -207,11 +217,11 @@ class TaskEloquent implements TaskInterface
                 OR all_requisition_datas LIKE '%$search%'
 
                 OR site_id LIKE '%$search%' OR resource_id LIKE '%$search%' OR all_tasks_sites_datas LIKE '%$search%'
-                
+
                 OR tasks_vehicle_datas LIKE '%$search%'
                 OR tasks_material_datas LIKE '%$search%'
-            ) 
-            
+            )
+
             $task_type
 
             $daterange

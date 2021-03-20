@@ -291,19 +291,19 @@ class TaskController extends Controller
 
 
 
-    // Search 
+    // Search
     public function search(Request $request) {
         //dd($request);
-        if($request->search) {         
+        if($request->search) {
             if(!empty($request->daterange)) {
-                $dates = explode(' - ', $request->daterange);		
+                $dates = explode(' - ', $request->daterange);
                 $start = $dates[0];
                 $end = $dates[1];
             } else {
                 $start = date('Y-m-d');
                 $end = date('Y-m-d');
             }
-            
+
             $options = [
                 'q' => $request->key,
                 'task_type' => $request->task_type,
@@ -312,14 +312,14 @@ class TaskController extends Controller
                 'site_head_id' => $request->site_head_id,
                 'start' => $start ?? date('Y-m-d'),
                 'end' => $end ?? date('Y-m-d')
-            ];    
+            ];
             //dd($options);
             $search_result = $this->task->advanced_search($options);
             //dd($search_result);
         } else {
             $search_result = [];
         }
-        return view('task::tasklist.search', compact('search_result'));     
+        return view('task::tasklist.search', compact('search_result'));
     }
 
 }
