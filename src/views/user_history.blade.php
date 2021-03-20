@@ -86,6 +86,39 @@
                                         <td></td>
                                     </tr>
                                 </table>
+                                @if(auth()->user()->isCFO(auth()->user()->id) || auth()->user()->isAdmin(auth()->user()->id) )
+                                    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                                        <tr>
+                                            <th>Task Name</th>
+                                            <th>Task For</th>
+                                            <th>Project Name</th>
+                                            <th>Project Manager</th>
+                                            <th>Task Type</th>
+                                        </tr>
+
+                                        @php $tasks = Tritiyo\Task\Models\Task::where('site_head', $user_id)->paginate('15'); @endphp
+                                        @foreach($tasks as $task)
+                                            <tr>
+                                                <td>
+                                                    <a href="{{route('tasks.show', $task->id)}}" target="__blank">
+                                                        {{$task->task_name}}
+                                                    </a>
+                                                </td>
+                                                <td>{{$task->task_for}}</td>
+                                                <td>
+                                                    @php $project = Tritiyo\Project\Models\Project::where('id', $task->project_id)->first(); @endphp
+                                                    <a target="__blank" href="{{route('projects.show', $project->id)}}">{{$project->name}}</a>
+                                                </td>
+                                                <td>{{App\Models\User::where('id', $task->user_id)->first()->name}}</td>
+                                                <td>{{$task->task_type}}</td>
+
+                                            </tr>
+                                        @endforeach
+                                    </table>
+                                    <div class="pagination_wrap pagination is-centered">
+                                        {{$tasks->links('pagination::bootstrap-4')}}
+                                    </div>
+                                @endif
                             </div>
                             <div class="column is-4">
                                 <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
