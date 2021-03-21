@@ -13,7 +13,7 @@
                 Task General Information
                 @if(request()->routeIs('tasks.show', $task->id))
                     @if(auth()->user()->isResource(auth()->user()->id))
-                    
+
                     @else
                         <a href="{{ route('tasks.edit', $task->id) }}?task_id={{ $task->id }}&information=taskinformation" target="__blank" class="tag is-link" style="position: absolute; right: 10px;">
                             Edit
@@ -37,20 +37,20 @@
                     <td>
                         {{ $task->task_name ?? NULL }} <br/>
                         {{ $task->task_code ?? NULL }}
-                    
+
                     </td>
-                   
+
                 </tr>
                 <tr>
                     <td><strong>Site Head</strong></td>
                     <td>
                         <span class="has-text-info">
-                            <a href="{{route('hidtory.user', $task->site_head)}}" target="_blank">
+                            <a href="{{ route('hidtory.user', $task->site_head) }}" target="_blank">
                                 {{ \App\Models\User::where('id', $task->site_head)->first()->name }} ({{ $task->site_head ?? NULL }})
                             </a>
                         </span>
                     </td>
-                    
+
                 </tr>
                 <tr>
                     <td><strong>Task Created Time</strong></td>
@@ -81,7 +81,7 @@
                     </tr>
                     <tr>
                         <td colspan="4">
-                                <?php echo preg_replace("/[\n]/","<br/>", $task->anonymous_proof_details);?>                     
+                                <?php echo preg_replace("/[\n]/","<br/>", $task->anonymous_proof_details);?>
                         </td>
                     </tr>
                 @endif
