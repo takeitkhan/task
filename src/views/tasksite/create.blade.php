@@ -38,7 +38,7 @@
         //$taskId = !empty($task_id) ?? $task_id;
         ?>
 
-            @include('task::layouts.tab')
+        @include('task::layouts.tab')
 
         <div class="customContainer">
             <?php
@@ -97,24 +97,40 @@
                             <div sclass="select is-multiple">
 
                                 @php
-                                    $site_head_id = \Tritiyo\Task\Models\Task::select('site_head')->where('id', $taskId)->first();
-                                    $resources = \App\Models\User::where('role', '2')->select('name', 'id')
-                                    ->whereNotIn('id', array($site_head_id->site_head))
-                                    ->get();
+                                    $today = date('Y-m-d');
+                                    $resources = \DB::select("SELECT * FROM (SELECT *, (SELECT site_head FROM tasks WHERE tasks.site_head = users.id AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '$today') AS site_head,
+                                            (SELECT user_id FROM tasks WHERE tasks.site_head = users.id AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '$today') AS manager,
+                                            (SELECT resource_id FROM tasks_site WHERE tasks_site.resource_id = users.id AND DATE_FORMAT(`tasks_site`.`created_at`, '%Y-%m-%d') = '$today' GROUP BY tasks_site.site_id LIMIT 0,1) AS resource_used,
+                                            users.id AS useriddddd
+                                        FROM users WHERE users.role = 2) AS mm WHERE mm.site_head IS NULL AND mm.resource_used IS NULL");
+                                            //$site_head_id = \Tritiyo\Task\Models\Task::select('site_head')->where('id', $taskId)->first();
+                                            //$resources = \App\Models\User::where('role', '2')->select('name', 'id')->whereNotIn('id', array($site_head_id->site_head))->get();
                                 @endphp
+
                                 <select id='resource_select' multiple="multiple" name="resource_id[]" class="input"
                                         required>
+                                    @php
+                                        $all_resources = \Tritiyo\Task\Models\TaskSite::where('task_id', $task_id)->groupBy('resource_id')->get();
+                                    @endphp
+                                    @foreach($all_resources as $resource)
+                                        @php
+                                            $count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($resource->id);
+                                        @endphp
+                                        <option value="{{$resource->id}}" data-result="{{ $count_result }}" selected>
+                                            {{ \App\Models\User::where('id', $resource->resource_id)->first()->name }}
+                                        </option>
+                                    @endforeach
+
                                     @foreach($resources as $resource)
                                         @php
                                             $count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($resource->id);
                                         @endphp
-                                        <option value="{{$resource->id}}" data-result="{{ $count_result }}"
-                                        @if(isset($taskSites))
-                                            @foreach($taskSites as $data)
-                                                {{$data->resource_id == $resource->id ? 'selected' : ''}}
-                                                @endforeach
-                                            @endif
-                                        >
+                                        <option value="{{$resource->id}}" data-result="{{ $count_result }}">
+{{--                                            @if(isset($taskSites))--}}
+{{--                                                @foreach($taskSites as $data)--}}
+{{--                                                    {{$data->resource_id == $resource->id ? 'selected' : ''}}--}}
+{{--                                                @endforeach--}}
+{{--                                            @endif--}}
                                             {{ $resource->name }}
                                         </option>
                                     @endforeach
@@ -151,33 +167,33 @@
 @section('cusjs')
 
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
 
-<script>
-    $(document).ready(function () {
-        $('#resource_select').select2({
-            placeholder: "Select Resource",
-            allowClear: true
+    <script>
+        $(document).ready(function () {
+            $('#resource_select').select2({
+                placeholder: "Select Resource",
+                allowClear: true
+            });
+            $('#site_select').select2({
+                placeholder: "Select Site",
+                allowClear: true
+            });
         });
-        $('#site_select').select2({
-            placeholder: "Select Site",
-            allowClear: true
-        });
-    });
-</script>
+    </script>
 
 
-<script>
+    <script>
 
-    $('select#resource_select').on('change', function(){
-        var v = $(this).find(':selected').attr('data-result')
-        if(v == 'Yes'){
-            alert('Your selected resource has atleast 3 pending bills. You can\'t select this resource.');
-        }        
-    })
+        $('select#resource_select').on('change', function () {
+            var v = $(this).find(':selected').attr('data-result')
+            if (v == 'Yes') {
+                alert('Your selected resource has atleast 3 pending bills. You can\'t select this resource.');
+            }
+        })
     </script>
 
 @endsection

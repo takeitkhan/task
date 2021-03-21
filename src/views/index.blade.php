@@ -39,7 +39,7 @@
                 'spTitle' => 'Pending Bills',
             ])
         @endif
-            
+
         @include('component.filter_set', [
             'spShowFilterSet' => true,
             'spAddUrl' => route('tasks.create'),
@@ -74,8 +74,8 @@ function userAccess($arg)
 
                 @foreach($tasks->where('task_assigned_to_head', 'Yes') as $task)
                     @php
-                        $proof_check = \Tritiyo\Task\Models\TaskStatus::where('code', 'proof_given')->where('task_id', $task->id)->first(); 
-                        $checkRequisitionApprovedByCFO = \Tritiyo\Task\Models\TaskRequisitionBill::where('task_id', $task->id)->first();                       
+                        $proof_check = \Tritiyo\Task\Models\TaskStatus::where('code', 'proof_given')->where('task_id', $task->id)->first();
+                        $checkRequisitionApprovedByCFO = \Tritiyo\Task\Models\TaskRequisitionBill::where('task_id', $task->id)->first();
                     @endphp
                     @if($proof_check != null && $proof_check->code)
                         @if(empty($checkRequisitionApprovedByCFO) || (!empty($checkRequisitionApprovedByCFO) && $checkRequisitionApprovedByCFO->requisition_approved_by_cfo == NULL))
@@ -88,9 +88,10 @@ function userAccess($arg)
                 @php
                      if(request()->get('bill') == 'pending'){
                         $tasks =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
-                                    ->where('tasks_requisition_bill.requisition_approved_by_accountant', 'Yes')            
+                                    ->where('tasks_requisition_bill.requisition_approved_by_accountant', 'Yes')
                                     ->where('tasks_requisition_bill.bill_submitted_by_resource', 'Yes')
                                     ->where('tasks_requisition_bill.bill_approved_by_manager', Null)
+                                    ->orderBy('tasks.id', 'Desc')
                                     ->paginate('48');
                     }
                 @endphp
@@ -104,17 +105,19 @@ function userAccess($arg)
                 @php
                     if(request()->get('bill') == 'pending'){
                         $tasks =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
-                                    ->where('tasks_requisition_bill.requisition_approved_by_accountant', 'Yes')    
-                                    ->where('tasks_requisition_bill.bill_submitted_by_resource', 'Yes')            
+                                    ->where('tasks_requisition_bill.requisition_approved_by_accountant', 'Yes')
+                                    ->where('tasks_requisition_bill.bill_submitted_by_resource', 'Yes')
                                     ->where('tasks_requisition_bill.bill_approved_by_manager', 'Yes')
                                     ->where('tasks_requisition_bill.bill_approved_by_CFO', Null)
+                                    ->orderBy('tasks.id', 'Desc')
                                     ->paginate('48');
                     } else {
                         $tasks =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
                                     ->where('tasks_requisition_bill.requisition_submitted_by_manager', 'Yes')
+                                    ->orderBy('tasks.id', 'Desc')
                                     ->paginate('48');
                     }
-                    
+
                 @endphp
 
                 @foreach($tasks as $task)
@@ -130,18 +133,19 @@ function userAccess($arg)
                 @php
                      if(request()->get('bill') == 'pending'){
                         $tasks =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
-                                    ->where('tasks_requisition_bill.requisition_approved_by_accountant', 'Yes')    
-                                    ->where('tasks_requisition_bill.bill_submitted_by_resource', 'Yes')            
+                                    ->where('tasks_requisition_bill.requisition_approved_by_accountant', 'Yes')
+                                    ->where('tasks_requisition_bill.bill_submitted_by_resource', 'Yes')
                                     ->where('tasks_requisition_bill.bill_approved_by_manager', 'Yes')
                                     ->where('tasks_requisition_bill.bill_approved_by_CFO', 'Yes')
                                     ->where('tasks_requisition_bill.bill_approved_by_accountant', Null)
+                                    ->orderBy('tasks.id', 'Desc')
                                     ->paginate('48');
                     } else {
                         $tasks =  Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
                                     ->where('tasks_requisition_bill.requisition_approved_by_cfo', 'Yes')->orderBy('tasks.id', 'desc')
                                     ->paginate('48');
                     }
-                    
+
                 @endphp
 
                 @foreach($tasks as $task)

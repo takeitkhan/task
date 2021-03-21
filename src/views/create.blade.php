@@ -78,7 +78,7 @@
                             @else
                                 <?php $projects = \Tritiyo\Project\Models\Project::pluck('name', 'id')->prepend('Select Project', ''); ?>
                             @endif
-                            
+
                             {{ Form::select('project_id', $projects, $task->project_id ?? NULL, ['class' => 'input', 'required' => true,  'id' => 'project_select']) }}
                         </div>
                     </div>
@@ -89,22 +89,23 @@
                         <div class="control">
                             <?php //$siteHead = \App\Models\User::where('role', 2)->pluck('name', 'id')->prepend('Select Site Head', ''); ?>
                             <?php
-                                //dd(date('Y-m-d'));
-                                $today = date('Y-m-d');
-                                $siteHead = \DB::select("SELECT * FROM (SELECT *, (SELECT site_head FROM tasks WHERE tasks.site_head = users.id AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '$today') AS site_head FROM users WHERE users.role = 2) AS QQ WHERE QQ.site_head IS NULL");
-                            
-                                // SELECT tasks.id, tasks.site_head, tasks_requisition_bill.* FROM `tasks` 
-                                // LEFT JOIN tasks_requisition_bill ON tasks_requisition_bill.task_id = tasks.id
-                                // WHERE tasks_requisition_bill.requisition_approved_by_accountant = 'Yes' 
-                                // AND tasks_requisition_bill.bill_submitted_by_resource IS NULL    
+                            //dd(date('Y-m-d'));
+                            $today = date('Y-m-d');
+                            $siteHead = \DB::select("SELECT * FROM (SELECT *, (SELECT site_head FROM tasks WHERE tasks.site_head = users.id AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '$today') AS site_head,
+                                    (SELECT user_id FROM tasks WHERE tasks.site_head = users.id AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '$today') AS manager,
+                                    (SELECT resource_id FROM tasks_site WHERE tasks_site.resource_id = users.id AND DATE_FORMAT(`tasks_site`.`created_at`, '%Y-%m-%d') = '$today' GROUP BY tasks_site.site_id LIMIT 0,1) AS resource_used,
+                                    users.id AS useriddddd
+                                FROM users WHERE users.role = 2) AS mm WHERE mm.site_head IS NULL AND mm.resource_used IS NULL");
                             ?>
+
                             <select class="input" name="site_head" id="sitehead_select" required>
                                 <option></option>
                                 @foreach($siteHead as $resource)
                                     @php
                                         $count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($resource->id);
                                     @endphp
-                                    <option value="{{ $resource->id }}" data-result="{{ $count_result }}">{{ $resource->name }}</option>
+                                    <option value="{{ $resource->id }}"
+                                            data-result="{{ $count_result }}">{{ $resource->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -169,12 +170,12 @@
     </script>
 
     <script>
-    $('select#sitehead_select').on('change', function(){
-        var v = $(this).find(':selected').attr('data-result')
-        if(v == 'Yes'){
-            alert('Your selected resource has atleast 3 pending bills. You can\'t select this resource.');
-        }        
-    })
+        $('select#sitehead_select').on('change', function () {
+            var v = $(this).find(':selected').attr('data-result')
+            if (v == 'Yes') {
+                alert('Your selected resource has atleast 3 pending bills. You can\'t select this resource.');
+            }
+        })
     </script>
 
 @endsection

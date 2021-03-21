@@ -34,9 +34,9 @@
 @section('column_left')
 
     <article class="panel is-primary">
-{{--        <a style="display:block; float: right;" class="button is-small is-danger">--}}
-{{--            <span><i class="fas fa-plus"></i> {{$task->task_type}}</span>--}}
-{{--        </a>--}}
+        {{--        <a style="display:block; float: right;" class="button is-small is-danger">--}}
+        {{--            <span><i class="fas fa-plus"></i> {{$task->task_type}}</span>--}}
+        {{--        </a>--}}
         @include('task::layouts.tab')
 
 
@@ -70,15 +70,21 @@
                             //dd(date('Y-m-d'));
                             $today = date('Y-m-d');
                             $current_user = auth()->user()->id;
-                            //$siteHead = \DB::select("SELECT * FROM (SELECT *, (SELECT site_head FROM tasks WHERE tasks.site_head = users.id AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '$today') AS site_head, (SELECT user_id FROM tasks WHERE tasks.user_id = '$current_user' AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '$today' LIMIT 0,1) AS manager FROM users WHERE users.role = 2) AS QQ WHERE QQ.manager = '$current_user' AND QQ.site_head = ");
-                            $siteHead = \App\Models\User::where('role', 2)->get();
+                            //$siteHead = \App\Models\User::where('role', 2)->get();
+                            $siteHead = \DB::select("SELECT * FROM (SELECT *, (SELECT site_head FROM tasks WHERE tasks.site_head = users.id AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '$today') AS site_head,
+                                    (SELECT user_id FROM tasks WHERE tasks.site_head = users.id AND DATE_FORMAT(`tasks`.`created_at`, '%Y-%m-%d') = '$today') AS manager,
+                                    (SELECT resource_id FROM tasks_site WHERE tasks_site.resource_id = users.id AND DATE_FORMAT(`tasks_site`.`created_at`, '%Y-%m-%d') = '$today' GROUP BY tasks_site.site_id LIMIT 0,1) AS resource_used,
+                                    users.id AS useriddddd
+                                FROM users WHERE users.role = 2) AS mm WHERE mm.site_head IS NULL AND mm.resource_used IS NULL");
                             ?>
                             <select class="input" name="site_head" id="sitehead_select">
-                                <option></option>
+                                <option value="{{ $task->site_head }}" selected>
+                                    {{ \App\Models\User::where('id', $task->site_head)->first()->name }}
+                                </option>
                                 @foreach($siteHead as $resource)
                                     @php
                                         $count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($resource->id);
-                                    @endphp                                    
+                                    @endphp
                                     <option
                                         data-result="{{ $count_result }}"
                                         value="{{ $resource->id }}" {{ $resource->id == $task->site_head ? 'selected=""' : NULL }}>
@@ -154,11 +160,11 @@
     </script>
 
     <script>
-        $('select#sitehead_select').on('change', function(){
+        $('select#sitehead_select').on('change', function () {
             var v = $(this).find(':selected').attr('data-result')
-            if(v == 'Yes'){
+            if (v == 'Yes') {
                 alert('Your selected resource has atleast 3 pending bills. You can\'t select this resource.');
-            }        
+            }
         })
     </script>
 

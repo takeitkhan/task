@@ -26,12 +26,12 @@ $requisitionbillInformation = 'requisitionbillInformation';
     <a class="{{request()->get('information') == $taskInformation ? 'is-active' : ''}}"
        href="{{route('tasks.edit', $task_id) }}?task_id={{$task_id}}&information={{$taskInformation}}">Task
         Information</a>
-    <a class="{{request()->get('information') == $anonymousProofInformation ? 'is-active' : ''}}"
-       href="{{route('tasks.anonymousproof.edit', $task_id)}}?task_id={{$task_id}}&information={{$anonymousProofInformation}}"
-       class="">Anonymous Proof</a>
     <a class="{{request()->get('information') == $siteInformation ? 'is-active' : ''}}"
        href="{{route('tasks.site.edit', $task_id) }}?task_id={{$task_id}}&information={{$siteInformation}}">Site
         Information</a>
+    <a class="{{request()->get('information') == $anonymousProofInformation ? 'is-active' : ''}}"
+       href="{{route('tasks.anonymousproof.edit', $task_id)}}?task_id={{$task_id}}&information={{$anonymousProofInformation}}"
+       class="">Anonymous Proof</a>
     <a class="{{request()->get('information') == $vehicleInformation ? 'is-active' : ''}}"
        href="{{route('taskvehicle.create')}}?task_id={{$task_id}}&information={{$vehicleInformation}}" class="">Vehicle
         Information</a>
