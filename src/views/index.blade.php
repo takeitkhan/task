@@ -153,7 +153,11 @@ function userAccess($arg)
                 @endforeach
 
                 <div class="pagination_wrap pagination is-centered">
-                    {{$tasks->links('pagination::bootstrap-4')}}
+                    @if(Request::get('key'))
+                        {{ $tasks->appends(['key' => Request::get('key')])->links('pagination::bootstrap-4') }}
+                    @else
+                        {{$tasks->links('pagination::bootstrap-4')}}
+                    @endif
                 </div>
                 {{--   End         --}}
 

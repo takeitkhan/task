@@ -86,7 +86,22 @@
                                         <td></td>
                                     </tr>
                                 </table>
-                                @if(auth()->user()->isCFO(auth()->user()->id) || auth()->user()->isAdmin(auth()->user()->id) )
+{{--                                @if(auth()->user()->isCFO(auth()->user()->id) || auth()->user()->isAdmin(auth()->user()->id) )--}}
+                                    <form method="post" action="{{route('hidtory.user', $user_id)}}">
+                                        <div class="columns mb-0">
+                                            <div class="column is-8">
+
+                                            </div>
+
+                                            @csrf
+                                            <div class="column is-3">
+                                                <input class="input is-small" type="text" name="daterange" id="textboxID"  value="{{$task_for_date ?? null}}" />
+                                            </div>
+                                            <div class="column is-1">
+                                                <input name="search" type="submit" class="button is-small is-primary has-background-primary-dark" value="Search"/>
+                                            </div>
+                                        </div>
+                                    </form>
                                     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                                         <tr>
                                             <th>Task Name</th>
@@ -96,7 +111,15 @@
                                             <th>Task Type</th>
                                         </tr>
 
-                                        @php $tasks = Tritiyo\Task\Models\Task::where('site_head', $user_id)->paginate('15'); @endphp
+                                        @php
+                                            if(!empty($task_for_date)){
+                                                $date = explode(' - ', $task_for_date);
+                                                //dd($date);
+                                                $tasks = Tritiyo\Task\Models\Task::where('site_head', $user_id)->whereBetween('task_for', [$date[0], $date[1]])->paginate('15');
+                                            }else {
+                                                 $tasks = Tritiyo\Task\Models\Task::where('site_head', $user_id)->paginate('15');
+                                            }
+                                        @endphp
                                         @foreach($tasks as $task)
                                             <tr>
                                                 <td>
@@ -118,7 +141,7 @@
                                     <div class="pagination_wrap pagination is-centered">
                                         {{$tasks->links('pagination::bootstrap-4')}}
                                     </div>
-                                @endif
+{{--                                @endif--}}
                             </div>
                             <div class="column is-4">
                                 <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
@@ -195,5 +218,32 @@
         </div>
     </div>
 
+
+@endsection
+
+@section('cusjs')
+
+@section('cusjs')
+    <script type="text/javascript"  src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+    <script type="text/javascript">
+        document.getElementById('textboxID').select();
+    </script>
+
+    <script>
+        $(function() {
+            $('input[name="daterange"]').daterangepicker({
+                opens: 'left',
+                locale: {
+                    format: 'YYYY-MM-DD'
+                }
+            }, function(start, end, label) {
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            });
+        });
+    </script>
 
 @endsection

@@ -4,15 +4,26 @@ $taskID = $task->id;
 global $getData;
 $getData = \Tritiyo\Task\Models\TaskRequisitionBill::where('task_id', $taskID)->get()->toArray();
 
-function requisitiomData($column, $person){
+function requisitiomData($column, $person) {
 global $taskID;
 global $getData;
 $rd = new \Tritiyo\Task\Helpers\RequisitionData($column, $taskID);
+
+//if($matchColumn != null) {
+//    $matching = new \Tritiyo\Task\Helpers\RequisitionData($matchColumn, $taskID);
+//} else {
+//    $matching = new \Tritiyo\Task\Helpers\RequisitionData($matchColumn, $taskID);
+//}
+
 //$arr = $rd->getSiteHead();
 
 $vehicle = $rd->getVehicleData();
+
 $material = $rd->getMaterialData();
+
 $regular = $rd->getRegularData();
+
+
 //dump($regular);
 
 $transport = $rd->getTransportData();
@@ -53,7 +64,7 @@ $totalAmount = 0;
                 $total_vehicle_rent = array_sum($vehicle_sum);
             @endphp
             <tr>
-                <td colspan="2"><strong>Total<strong></td>
+                <td colspan="2"><strong>Total</strong></td>
                 <td><strong>{{ $total_vehicle_rent }}</strong></td>
                 <?php $totalAmount += $total_vehicle_rent;?>
             </tr>
@@ -116,7 +127,9 @@ $totalAmount = 0;
         <tr>
             <td>labour</td>
             <td>{{$regular['labour']->labour_notes}}</td>
-            <td>{{ $regular['labour']->labour_amount}}</td>
+            <td>
+                    {{ $regular['labour']->labour_amount}}
+            </td>
         </tr>
         <tr>
             <td>Other</td>
@@ -126,7 +139,9 @@ $totalAmount = 0;
 
         <tr class="th-bg">
             <td colspan="2"><strong>Total</strong></td>
-            <td><strong>{{$regularAmount = $regular['da']->da_amount + $regular['labour']->labour_amount + $regular['other']->other_amount}}</strong></td>
+            <td>
+                <strong>{{$regularAmount = $regular['da']->da_amount + $regular['labour']->labour_amount + $regular['other']->other_amount}}</strong>
+            </td>
             <?php $totalAmount += $regularAmount;?>
 
         </tr>
@@ -224,52 +239,52 @@ return $content;
 
         @else
 
-        <div class="card tile is-child quick_view accordion">
-            <header class="card-header accordion-header toggle">
-                <p class="card-header-title">
-                    <span class="icon"><i class="fas fa-tasks default"></i></span>
-                    Requisition Data
-                </p>
-            </header>
-            <div class="accordion-body">
-                <div class="card-content">
-                    <div class="card-data accordion-content">
-                        <div class="tabs is-centered is-boxed is-small" id="requisition_tabs">
-                            <ul>
-                                <li class="is-active" data-requisition="1">
-                                    <a>
-                                        <span>Manager Submitted</span>
-                                    </a>
-                                </li>
-                                <li data-requisition="2">
-                                    <a>
-                                        <span>CFO Edited</span>
-                                    </a>
-                                </li>
-                                <li data-requisition="3">
-                                    <a>
-                                        <span>Accountant Disbursed</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div id="requisition-tab-content">
+            <div class="card tile is-child quick_view accordion">
+                <header class="card-header accordion-header toggle">
+                    <p class="card-header-title">
+                        <span class="icon"><i class="fas fa-tasks default"></i></span>
+                        Requisition Data
+                    </p>
+                </header>
+                <div class="accordion-body">
+                    <div class="card-content">
+                        <div class="card-data accordion-content">
+                            <div class="tabs is-centered is-boxed is-small" id="requisition_tabs">
+                                <ul>
+                                    <li class="is-active" data-requisition="1">
+                                        <a>
+                                            <span>Manager Submitted</span>
+                                        </a>
+                                    </li>
+                                    <li data-requisition="2">
+                                        <a>
+                                            <span>CFO Edited</span>
+                                        </a>
+                                    </li>
+                                    <li data-requisition="3">
+                                        <a>
+                                            <span>Accountant Disbursed</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div id="requisition-tab-content">
 
-                            <div class="is-active" data-rcontent="1">
-                                <?php echo requisitiomData('requisition_prepared_by_manager', 'Manager');?>
+                                <div class="is-active" data-rcontent="1">
+                                    <?php echo requisitiomData('requisition_prepared_by_manager', 'Manager');?>
+                                </div>
+                                <div data-rcontent="2">
+                                    <?php echo requisitiomData('requisition_edited_by_cfo', 'CFO'); ?>
+                                </div>
+                                <div data-rcontent="3">
+                                    <?php echo requisitiomData('requisition_edited_by_accountant', 'Accountant');?>
+                                </div>
                             </div>
-                            <div data-rcontent="2">
-                                <?php echo requisitiomData('requisition_edited_by_cfo', 'CFO');?>
-                            </div>
-                            <div data-rcontent="3">
-                                <?php echo requisitiomData('requisition_edited_by_accountant', 'Accountant');?>
-                            </div>
-                        </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
         @endif
 
@@ -334,68 +349,70 @@ return $content;
 </section>
 
 
+<style type="text/css">
+    .tile.is-child.quick_view {
+        margin-top: 15px !important;
+    }
 
-    <style type="text/css">
-        .tile.is-child.quick_view {
-            margin-top: 15px !important;
-        }
+    .quick_view, .quick_view table {
+        font-size: 12px;
+    }
 
-        .quick_view, .quick_view table {
-            font-size: 12px;
-        }
+    .quick_view table th {
+        color: darkblue;
+    }
 
-        .quick_view table th {
-            color: darkblue;
-        }
+    #requisition-tab-content div {
+        display: none;
+    }
 
-        #requisition-tab-content div {
-            display: none;
-        }
+    #requisition-tab-content div.is-active {
+        display: block;
+    }
 
-        #requisition-tab-content div.is-active {
-            display: block;
-        }
+    #bill-tab-content div {
+        display: none;
+    }
 
-        #bill-tab-content div {
-            display: none;
-        }
+    #bill-tab-content div.is-active {
+        display: block;
+    }
 
-        #bill-tab-content div.is-active {
-            display: block;
-        }
-        .tabs li.is-active a {
-            border-bottom-color: #3273dc;
-            color: #3273dc !important;
-        }
+    .tabs li.is-active a {
+        border-bottom-color: #3273dc;
+        color: #3273dc !important;
+    }
 
-        /* Accordion */
-        section#requisitionAccordion.accordions .accordion .accordion-header {
-            align-items: center;
-            background-color: rgba(0,0,0,.03) !important;
-            border-radius: 4px 4px 0 0;
-            color: #fff;
-            display: flex;
-            line-height: 0em;
-            padding: 0em .0em !important; 
-            position: relative;
-            border : 0px;
-        }
-        section#requisitionAccordion.accordions .accordion {
-            display: flex;
-            flex-direction: column;
-            background-color: #ffffff;
-            border-radius: 4px;
-            font-size: 13px;
-            border: 0px;
-        }
-        section#requisitionAccordion.accordions .accordion  .accordion-header+.accordion-body .accordion-content {
-            padding: 0em 0em;
-        }
-        section#requisitionAccordion.accordions .accordion a:not(.button):not(.tag) {
-            text-decoration: none;
-        }
-    </style>
+    /* Accordion */
+    section#requisitionAccordion.accordions .accordion .accordion-header {
+        align-items: center;
+        background-color: rgba(0, 0, 0, .03) !important;
+        border-radius: 4px 4px 0 0;
+        color: #fff;
+        display: flex;
+        line-height: 0em;
+        padding: 0em .0em !important;
+        position: relative;
+        border: 0px;
+    }
 
+    section#requisitionAccordion.accordions .accordion {
+        display: flex;
+        flex-direction: column;
+        background-color: #ffffff;
+        border-radius: 4px;
+        font-size: 13px;
+        border: 0px;
+    }
+
+    section#requisitionAccordion.accordions .accordion .accordion-header + .accordion-body .accordion-content {
+        padding: 0em 0em;
+    }
+
+    section#requisitionAccordion.accordions .accordion a:not(.button):not(.tag) {
+        text-decoration: none;
+    }
+</style>
 
 
 <script type="text/javascript">
@@ -425,7 +442,8 @@ return $content;
 </script>
 
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bulma-accordion@2.0.1/dist/js/bulma-accordion.min.js"></script>
+<script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/bulma-accordion@2.0.1/dist/js/bulma-accordion.min.js"></script>
 
 <script>
 

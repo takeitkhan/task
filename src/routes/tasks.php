@@ -7,6 +7,7 @@ use Tritiyo\Task\Controllers\TaskMaterialController;
 use Tritiyo\Task\Controllers\TaskProofController;
 use Tritiyo\Task\Controllers\TaskStatusController;
 use Tritiyo\Task\Controllers\TaskRequisitionBillController;
+use Illuminate\Http\Request;
 
 Route::group(['middleware' => ['web', 'role:1,2,3,4,5,8']], function () {
     //TaskStatus
@@ -47,10 +48,14 @@ Route::group(['middleware' => ['web', 'role:1,2,3,4,5,8']], function () {
         'taskrequisitionbill' => TaskRequisitionBillController::class,
     ]);
 
-    Route::get('history/{user_id}/users', function($user_id){
+    Route::any('history/{user_id}/users', function(Request $request, $user_id){
+        if(!empty($request->daterange)){
+            $task_for_date = $request->daterange;
+        } else {
+            $task_for_date = '';
+        }
+        return view('task::user_history', compact('user_id', 'task_for_date'));
 
-        return view('task::user_history', compact('user_id'));
-    
     })->name('hidtory.user');
 
 
