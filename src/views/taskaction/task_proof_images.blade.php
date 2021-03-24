@@ -5,16 +5,17 @@
 @endphp
 
 @if($taskproofs->count() > 0)
-    <div class="card tile is-child quick_view">
-        <header class="card-header">
+<section id="proofAccordion" class="accordions">
+    <div class="card tile is-child quick_view accordion">
+        <header class="card-header accordion-header toggle">
             <p class="card-header-title">
                 <span class="icon"><i class="fas fa-tasks default"></i></span>
                 Proof Images Panel
             </p>
         </header>
-
-        <div class="card-content">
-            <div class="card-data">
+        <div class="accordion-body">
+            <div class="card-content">
+            <div class="card-data accordion-content">
                 <div class="columns">
                     <div class="column is-6">
                         @if(!empty($taskStatus) && $taskStatus->code == 'head_accepted' && auth()->user()->id == $taskStatus->action_performed_by)
@@ -23,7 +24,7 @@
                             </div>
                         @endif
 
-                        
+
                         @if(!empty($proofs->resource_proof))
                             <div class="columns">
                                 <div class="column is-12">
@@ -103,7 +104,9 @@
                 </div>
             </div>
         </div>
+        </div>
     </div>
+</section>
 @endif
 <script type="text/javascript" src="https://unpkg.com/bulma-modal-fx/dist/js/modal-fx.min.js"></script>
 <style>
@@ -115,5 +118,36 @@
     }
     .card-header-title {
         padding: .25rem 1rem !important;
+    }
+
+
+    /* Accordion */
+    section#proofAccordion.accordions .accordion .accordion-header {
+        align-items: center;
+        background-color: rgba(0, 0, 0, .03) !important;
+        border-radius: 4px 4px 0 0;
+        color: #fff;
+        display: flex;
+        line-height: 0em;
+        padding: 0em .0em !important;
+        position: relative;
+        border: 0px;
+    }
+
+    section#proofAccordion.accordions .accordion {
+        display: flex;
+        flex-direction: column;
+        background-color: #ffffff;
+        border-radius: 4px;
+        font-size: 13px;
+        border: 0px;
+    }
+
+    section#proofAccordion.accordions .accordion .accordion-header + .accordion-body .accordion-content {
+        padding: 0em 0em;
+    }
+
+    section#proofAccordion.accordions .accordion a:not(.button):not(.tag) {
+        text-decoration: none;
     }
 </style>

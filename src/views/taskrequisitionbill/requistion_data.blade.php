@@ -7,7 +7,7 @@ $getData = \Tritiyo\Task\Models\TaskRequisitionBill::where('task_id', $taskID)->
 function requisitiomData($column, $person) {
 global $taskID;
 global $getData;
-$rd = new \Tritiyo\Task\Helpers\RequisitionData($column, $taskID);
+    $rd = new \Tritiyo\Task\Helpers\RequisitionData($column, $taskID);
 
 //if($matchColumn != null) {
 //    $matching = new \Tritiyo\Task\Helpers\RequisitionData($matchColumn, $taskID);
@@ -239,7 +239,7 @@ return $content;
 
         @else
 
-            <div class="card tile is-child quick_view accordion">
+            <div class="card tile is-child quick_view accordion is-active">
                 <header class="card-header accordion-header toggle">
                     <p class="card-header-title">
                         <span class="icon"><i class="fas fa-tasks default"></i></span>

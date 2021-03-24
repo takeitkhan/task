@@ -43,8 +43,10 @@
             {{ \App\Models\User::where('id', $project->manager)->first()->name }}
             ({{  $project->manager }})<br/>
             <strong>Site Head:</strong>
-            {{ \App\Models\User::where('id', $task->site_head)->first()->name }}
-            ({{ $task->site_head ?? NULL }})<br/>
+                <a href="{{ route('hidtory.user', $task->site_head) }}" target="_blank">
+                    {{ \App\Models\User::where('id', $task->site_head)->first()->name }}
+                </a>
+            <br/>
         </small>
     </td>
     <td>

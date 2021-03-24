@@ -89,8 +89,14 @@
 {{--                                @if(auth()->user()->isCFO(auth()->user()->id) || auth()->user()->isAdmin(auth()->user()->id) )--}}
                                     <form method="post" action="{{route('hidtory.user', $user_id)}}">
                                         <div class="columns mb-0">
-                                            <div class="column is-8">
+                                            <div class="column is-6">
 
+                                            </div>
+                                            <div class="column is-2">
+                                                <a href="{{ route('download_excel_user') }}?id={{ $user_id }}&daterange={{ !empty($task_for_date) ? $task_for_date :  date('Y-m-d', strtotime(date('Y-m-d'). ' - 30 days')) . ' - ' . date('Y-m-d') }}"
+                                                   class="button is-primary is-small">
+                                                    Download as excel
+                                                </a>
                                             </div>
 
                                             @csrf
@@ -103,23 +109,87 @@
                                         </div>
                                     </form>
                                     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                                        <tr>
-                                            <th>Task Name</th>
-                                            <th>Task For</th>
-                                            <th>Project Name</th>
-                                            <th>Project Manager</th>
-                                            <th>Task Type</th>
-                                        </tr>
 
                                         @php
                                             if(!empty($task_for_date)){
+                                                //dump($task_for_date);
                                                 $date = explode(' - ', $task_for_date);
-                                                //dd($date);
-                                                $tasks = Tritiyo\Task\Models\Task::where('site_head', $user_id)->whereBetween('task_for', [$date[0], $date[1]])->paginate('15');
-                                            }else {
-                                                 $tasks = Tritiyo\Task\Models\Task::where('site_head', $user_id)->paginate('15');
+                                                //dump($date);
+                                                //$tasks = Tritiyo\Task\Models\Task::where('site_head', $user_id)->whereBetween('task_for', [$date[0], $date[1]])->paginate('50');
+                                                $tasks = Tritiyo\Task\Models\Task::leftjoin('tasks_site', 'tasks_site.task_id', 'tasks.id')
+                                                                                    ->select('tasks.*', 'tasks_site.site_id', 'tasks_site.resource_id')
+                                                                                     ->where(function($q) use ($user_id){
+                                                                                        $q->where('tasks.user_id', $user_id)
+                                                                                        ->orWhere('tasks.site_head', $user_id)
+                                                                                        ->orWhere('tasks_site.resource_id', $user_id);
+                                                                                    })
+                                                                                    ->whereBetween('tasks.task_for', [$date[0], $date[1]])
+                                                                                    ->groupBy('tasks.id')
+                                                                                    ->paginate('50');
+                                                //dump($tasks);
+                                            } else {
+                                                 $tasks = Tritiyo\Task\Models\Task::leftjoin('tasks_site', 'tasks_site.task_id', 'tasks.id')
+                                                                                    ->select('tasks.*', 'tasks_site.site_id', 'tasks_site.resource_id')
+                                                                                    ->where(function($q) use ($user_id){
+                                                                                        $q->where('tasks.user_id', $user_id)
+                                                                                        ->orWhere('tasks.site_head', $user_id)
+                                                                                        ->orWhere('tasks_site.resource_id', $user_id);
+                                                                                    })
+                                                                                    ->groupBy('tasks.id')
+                                                                                    //->groupBy('tasks_site.resource_id')
+                                                                                    ->paginate('50');
+
                                             }
+                                            //dd($tasks);
+                                            $checkManager = $tasks->contains('user_id', $user_id);
+                                            $checkSitehead = $tasks->contains('site_head', $user_id);
+                                            $checktaskresource = $tasks->contains('resource_id', $user_id);
+                                            //dump($checktaskresource);
                                         @endphp
+                                        <tr>
+                                            <th>Task Name</th>
+                                            <th>Task For</th>
+                                            <th>Task Type</th>
+                                            <th>Play Role</th>
+                                            <th>Site Code</th>
+
+                                            <th>
+{{--                                                @if($checkSitehead == true)--}}
+{{--                                                @else--}}
+                                                Site Head
+{{--                                                @endif--}}
+                                            </th>
+
+
+                                            <th>Project Name</th>
+                                            <th class="project_manager">
+{{--                                                @if($checkManager == true)--}}
+{{--                                                @else--}}
+                                                    Project Manager
+{{--                                                @endif--}}
+                                            </th>
+{{--                                            @if($checkManager == true)--}}
+                                                <th>Vehicle Rent</th>
+{{--                                            @endif--}}
+
+                                            <th>
+{{--                                                @if($checkSitehead == true)--}}
+                                                Requsition Approved
+{{--                                                @endif--}}
+                                            </th>
+                                            <th>
+{{--                                                @if($checkSitehead == true)--}}
+                                                Bill Submit
+{{--                                                @endif--}}
+                                            </th>
+                                            <th>
+{{--                                                @if($checkSitehead == true)--}}
+                                                    Bill Approved
+{{--                                                @endif--}}
+                                            </th>
+
+                                        </tr>
+
                                         @foreach($tasks as $task)
                                             <tr>
                                                 <td>
@@ -128,12 +198,87 @@
                                                     </a>
                                                 </td>
                                                 <td>{{$task->task_for}}</td>
+                                                <td>{{$task->task_type}}</td>
+                                                <td title="Play role">
+                                                    <?php
+                                                        $resources = \Tritiyo\Task\Models\TaskSite::where('task_id', $task->id)
+                                                                                                    ->select('resource_id')
+                                                                                                    ->groupBy('resource_id')
+                                                                                                       ->get();
+                                                    //dump($resources);
+                                                    //dump(in_array($user_id, $resources));
+                                                    $issetResource = $resources->contains('resource_id', $user_id);
+                                                    ?>
+                                                    @if($user_id == $task->user_id)
+                                                        Project Manager
+                                                    @elseif($user_id == $task->site_head)
+                                                        Site Head
+                                                    @elseif($issetResource == true)
+                                                        As a Resource
+                                                    @endif
+                                                </td>
+                                                <td title="Site Code">
+                                                    @php
+                                                        $sites = \Tritiyo\Task\Models\TaskSite::leftjoin('sites', 'sites.id', 'tasks_site.site_id')
+                                                                                                ->select('sites.site_code')
+                                                                                                ->where('task_id', $task->id)
+                                                                                                ->groupBy('sites.site_code')
+                                                                                                ->get()->toArray();
+                                                        echo implode('<br>', array_column($sites, 'site_code'));
+                                                    @endphp
+                                                </td>
+                                                @if($user_id == $task->site_head)
+                                                    <td></td>
+                                                @else
+                                                    <td title="Site head">
+                                                        <a href="{{route('hidtory.user', $task->site_head)}}" target="_blank">
+                                                            {{App\Models\User::where('id', $task->site_head)->first()->name}}
+                                                        </a>
+                                                    </td>
+                                                @endif
                                                 <td>
                                                     @php $project = Tritiyo\Project\Models\Project::where('id', $task->project_id)->first(); @endphp
                                                     <a target="__blank" href="{{route('projects.show', $project->id)}}">{{$project->name}}</a>
                                                 </td>
-                                                <td>{{App\Models\User::where('id', $task->user_id)->first()->name}}</td>
-                                                <td>{{$task->task_type}}</td>
+                                                @if($user_id == $task->user_id)
+                                                    <td></td>
+                                                @else
+                                                <td title="Project Manager">
+                                                    <a href="{{route('hidtory.user', $task->user_id)}}" target="_blank">
+                                                        {{App\Models\User::where('id', $task->user_id)->first()->name}}
+                                                    </a>
+                                                </td>
+                                                @endif
+                                                @if($user_id == $task->user_id)
+                                                <td>
+                                                    @php
+                                                        $vehicle = \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task->id)
+                                                                                        ->groupBy('vehicle_id')
+                                                                                        ->get()->toArray();
+                                                        //dump($vehicle);
+                                                        echo implode('<br> ', array_column($vehicle, 'vehicle_rent'));
+                                                    @endphp
+                                                </td>
+                                                @else
+                                                    <td></td>
+                                                @endif
+
+                                                @if($user_id == $task->site_head)
+                                                    <td>
+                                                         {{ (new \Tritiyo\Task\Helpers\SiteHeadTotal('requisition_edited_by_accountant', $task->id, true))->getTotal() }}
+                                                    </td>
+                                                    <td>
+                                                        {{ (new \Tritiyo\Task\Helpers\SiteHeadTotal('bill_prepared_by_resource', $task->id, true))->getTotal() }}
+                                                    </td>
+                                                    <td>
+                                                        {{ (new \Tritiyo\Task\Helpers\SiteHeadTotal('bill_edited_by_accountant', $task->id, true))->getTotal() }}
+                                                    </td>
+                                                @else
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                @endif
+
 
                                             </tr>
                                         @endforeach

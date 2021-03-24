@@ -154,7 +154,7 @@ class TaskEloquent implements TaskInterface
             'end' => null,
         ];
         $mo = (object) array_merge($default, $options);
-
+        //dd($mo);
 
 
         $search = $mo->q;
@@ -232,6 +232,8 @@ class TaskEloquent implements TaskInterface
 
 
             GROUP BY tasks_datas.id");
+
+        //dd($getResult);
 
         return $getResult;
     }

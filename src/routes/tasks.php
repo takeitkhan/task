@@ -77,3 +77,19 @@ Route::group(['middleware' => ['web', 'role:2']], function () {
         'taskproof' => TaskProofController::class,
     ]);
 });
+
+
+Route::group(['middleware' => ['web']], function () {
+    Route::get('live/resource-usage/', function () {
+        return view('task::live_resource_usage');
+    })->name('live.resource.usage');
+
+});
+
+Route::group(['middleware' => ['web', 'role:5']], function () {
+
+Route::get('excel/requisition-report/accountant', function () {
+    return view('task::excel.requisition_by_accountant');
+})->name('excel.requisition.report.accountant');
+
+});
