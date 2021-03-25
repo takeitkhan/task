@@ -53,6 +53,7 @@
                                     $disabled = '';
                                 @endphp
                             @endif
+                            <input type="hidden" name="anonymousproof_details" value="anonymousproof_details">
                             <textarea class="textarea" rows="5" placeholder="Enter Task Anonymous Proof Details..."
                                       name="anonymous_proof_details" cols="50"
                                       id="anonymous_proof_details" {{ $disabled }}>{{$task->anonymous_proof_details}}</textarea>

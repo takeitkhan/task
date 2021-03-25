@@ -194,10 +194,20 @@ class TaskController extends Controller
             }
         }
 
-        if (auth()->user()->isManager(auth()->user()->id) && $request->anonymous_proof_details) {
-            $atts = Task::find($task->id);
-            $atts->anonymous_proof_details = $request->anonymous_proof_details ?? null;
-            $atts->save();
+        if($request->anonymousproof_details){
+            if (auth()->user()->isManager(auth()->user()->id)) {
+                /*
+                 && $request->anonymous_proof_details
+                Task::where('id', $task->id)
+                      ->update(['anonymous_proof_details' => $request->anonymous_proof_details]);
+                */
+
+
+                $atts = Task::find($task->id);
+                $atts->anonymous_proof_details = $request->anonymous_proof_details;
+                $atts->save();
+
+            }
             return redirect()->back()->with('message', 'Saved successfully')->with('status', 1);
         }
 
